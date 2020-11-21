@@ -1,0 +1,88 @@
+{
+  "name": "server",
+  "version": "0.0.0",
+  "scripts": {
+    "build": "ts-node build.ts && tsc --build tsconfig.prod.json",
+    "lint": "eslint . --ext .ts",
+    "start": "node -r module-alias/register ./dist --env=production",
+    "start:dev": "nodemon",
+    "test": "nodemon --config ./_tests_/nodemon.json"
+  },
+  "nodemonConfig": {
+    "watch": ["src"],
+    "ext": "ts, html",
+    "ignore": ["src/public"],
+    "exec": "ts-node -r tsconfig-paths/register ./src"
+  },
+  "_moduleAliases": {
+    "@dals": "dist/dals",
+    "@entities": "dist/entities",
+    "@shared": "dist/shared",
+    "@server": "dist/Server",
+     "@lib": "dist/lib",
+    "@interfaces": "dist/lib/interfaces"
+  },
+  "eslintConfig": {
+    "parser": "@typescript-eslint/parser",
+    "plugins": ["@typescript-eslint"],
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:@typescript-eslint/recommended-requiring-type-checking"
+    ],
+    "parserOptions": {"project": "server/tsconfig.json"},
+    "rules": {
+      "max-len": ["error",{"code": 100}],
+      "no-console": 1,
+      "no-extra-boolean-cast": 0,
+      "@typescript-eslint/restrict-plus-operands": 0,
+      "@typescript-eslint/explicit-module-boundary-types": 0,
+      "@typescript-eslint/no-explicit-any": 0,
+      "@typescript-eslint/no-floating-promises": 0,
+      "@typescript-eslint/no-unsafe-member-access": 0,
+      "@typescript-eslint/no-unsafe-assignment": 0
+    }
+  },
+  "eslintIgnore": ["src/public/","build.ts"],
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "colors": "^1.4.0",
+    "command-line-args": "^5.1.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
+    "helmet": "^4.2.0",
+    "http-status-codes": "^2.1.4",
+    "jet-logger": "^1.0.4",
+    "jsonfile": "^6.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "module-alias": "^2.2.2",
+    "morgan": "^1.10.0",
+    "randomstring": "^1.1.5"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^3.0.0",
+    "@types/command-line-args": "^5.0.0",
+    "@types/express": "^4.17.9",
+    "@types/find": "^0.2.1",
+    "@types/fs-extra": "^9.0.4",
+    "@types/jasmine": "^3.6.2",
+    "@types/jsonfile": "^6.0.0",
+    "@types/jsonwebtoken": "^8.5.0",
+    "@types/morgan": "^1.9.2",
+    "@types/node": "^14.14.9",
+    "@types/randomstring": "^1.1.6",
+    "@types/supertest": "^2.0.10",
+    "@typescript-eslint/eslint-plugin": "^4.8.1",
+    "@typescript-eslint/parser": "^4.8.1",
+    "eslint": "^7.13.0",
+    "find": "^0.3.0",
+    "fs-extra": "^9.0.1",
+    "jasmine": "^3.6.3",
+    "nodemon": "^2.0.6",
+    "supertest": "^6.0.1",
+    "ts-node": "^9.0.0",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "^4.1.2"
+  }
+}

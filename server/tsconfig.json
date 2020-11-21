@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+  "target": "es6",
+  "module": "commonjs",
+  "outDir": "dist",
+  "strict": true,
+  "baseUrl": "./",
+  "esModuleInterop": true,
+  "skipLibCheck": true,
+  "forceConsistentCasingInFileNames": true,
+  "paths": {
+    "@dals/*": ["src/dals/*"],
+    "@entities/*": ["src/entities/*"],
+    "@shared/*": ["src/shared/*"],
+    "@server": ["src/Server"],
+    "@lib": ["src/lib"],
+    "@interfaces": ["src/lib/interfaces"]
+    },
+  },
+  "include": ["src/**/*.ts","_tests_/**/*.ts"],
+  "exclude": ["src/public/"]
+}
