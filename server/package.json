@@ -9,32 +9,42 @@
     "test": "nodemon --config ./_tests_/nodemon.json"
   },
   "nodemonConfig": {
-    "watch": ["src"],
+    "watch": [
+      "src"
+    ],
     "ext": "ts, html",
-    "ignore": ["src/public"],
+    "ignore": [
+      "src/public"
+    ],
     "exec": "ts-node -r tsconfig-paths/register ./src"
   },
   "_moduleAliases": {
     "@dals": "dist/dals",
     "@entities": "dist/entities",
-    "@shared": "dist/shared",
     "@server": "dist/Server",
-     "@lib": "dist/lib",
-    "@interfaces": "dist/lib/interfaces"
+    "@interfaces": "dist/lib/interfaces",
+    "@constants": "dist/lib/constants",
+    "@logger": "dist/lib/Logger"
   },
   "eslintConfig": {
     "parser": "@typescript-eslint/parser",
-    "plugins": ["@typescript-eslint"],
+    "plugins": [
+      "@typescript-eslint"
+    ],
     "extends": [
       "eslint:recommended",
       "plugin:@typescript-eslint/recommended",
       "plugin:@typescript-eslint/recommended-requiring-type-checking"
     ],
-    "parserOptions": {"project": "server/tsconfig.json"},
+    "parserOptions": {
+      "project": "server/tsconfig.json"
+    },
     "rules": {
-      "max-len": ["error",{"code": 100}],
       "no-console": 1,
       "no-extra-boolean-cast": 0,
+      "@typescript-eslint/restrict-template-expressions": 0,
+      "@typescript-eslint/no-inferrable-types": 0,
+      "@typescript-eslint/no-unsafe-call": 0,
       "@typescript-eslint/restrict-plus-operands": 0,
       "@typescript-eslint/explicit-module-boundary-types": 0,
       "@typescript-eslint/no-explicit-any": 0,
@@ -43,7 +53,10 @@
       "@typescript-eslint/no-unsafe-assignment": 0
     }
   },
-  "eslintIgnore": ["src/public/","build.ts"],
+  "eslintIgnore": [
+    "src/public/",
+    "build.ts"
+  ],
   "dependencies": {
     "bcrypt": "^5.0.0",
     "colors": "^1.4.0",
@@ -57,6 +70,8 @@
     "jsonfile": "^6.1.0",
     "jsonwebtoken": "^8.5.1",
     "module-alias": "^2.2.2",
+    "mongodb": "^3.6.3",
+    "mongoose": "^5.10.15",
     "morgan": "^1.10.0",
     "randomstring": "^1.1.5"
   },
@@ -69,6 +84,8 @@
     "@types/jasmine": "^3.6.2",
     "@types/jsonfile": "^6.0.0",
     "@types/jsonwebtoken": "^8.5.0",
+    "@types/mongodb": "^3.5.34",
+    "@types/mongoose": "^5.10.1",
     "@types/morgan": "^1.9.2",
     "@types/node": "^14.14.9",
     "@types/randomstring": "^1.1.6",

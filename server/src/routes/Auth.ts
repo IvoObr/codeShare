@@ -2,8 +2,9 @@ import bcrypt from 'bcrypt';
 import { Request, Response, Router } from 'express';
 import StatusCodes from 'http-status-codes';
 
-import { JwtService } from '@shared/JwtService';
-import { paramMissingError, loginFailedErr, IRequest } from '@shared/constants';
+import { JwtService } from 'src/lib/JwtService';
+import { UserRequest } from '@interfaces';
+import { paramMissingError, loginFailedErr, IRequest } from 'src/lib/constants';
 
 const router = Router();
 // const userDal = new UserDal();
@@ -23,7 +24,7 @@ router.post('/login', async (req: IRequest, res: Response) => {
     /* Fetch user */
     
     //@ts-ignore
-    const user: any // todo get user by email
+    const user: any  = null// todo get user by email
 
     if (!user) {
         return res.status(UNAUTHORIZED).json({

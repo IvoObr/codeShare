@@ -11,10 +11,10 @@
   "paths": {
     "@dals/*": ["src/dals/*"],
     "@entities/*": ["src/entities/*"],
-    "@shared/*": ["src/shared/*"],
     "@server": ["src/Server"],
-    "@lib": ["src/lib"],
-    "@interfaces": ["src/lib/interfaces"]
+    "@constants": ["src/lib/constants"],
+    "@interfaces": ["src/lib/interfaces"],
+    "@logger": ["src/lib/Logger"],
     },
   },
   "include": ["src/**/*.ts","_tests_/**/*.ts"],

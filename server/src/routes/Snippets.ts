@@ -1,7 +1,9 @@
 import StatusCodes from 'http-status-codes';
 import { Request, Response, Router } from 'express';
 
-import { paramMissingError, IRequest } from '@shared/constants';
+import { paramMissingError, IRequest } from 'src/lib/constants';
+import { UserRequest } from '@interfaces';
+
 
 const router = Router();
 // todo instance of user dal
@@ -14,7 +16,7 @@ const { BAD_REQUEST, CREATED, OK } = StatusCodes;
 router.get('/all', async (req: Request, res: Response) => {
    
     //@ts-ignore
-    const snippets: any // todo get all snippet
+    const snippets: any = null // todo get all snippet
 
     return res.status(OK).json({ snippets });
 });
