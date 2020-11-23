@@ -3,7 +3,7 @@ import { Request, Response, Router } from 'express';
 import StatusCodes from 'http-status-codes';
 import { JwtService } from '../lib/JwtService';
 import { UserRequest } from '@interfaces';
-import { paramMissingError, loginFailedErr, IRequest } from '@constants';
+import { paramMissingError, loginFailedErr, IRequest, xAuth } from '@constants';
 
 const router = Router();
 // const userDal = new UserDal();
@@ -43,7 +43,7 @@ router.post('/login', async (req: IRequest, res: Response) => {
         role: user.role,
     });
 
-    res.header('x-auth', jwt).send({ user });
+    res.header(xAuth, jwt).send({ user });
     return res.status(OK).end();
 });
 

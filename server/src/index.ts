@@ -1,23 +1,22 @@
-import './preStart';
-import mongodb from 'mongodb';
+import './lib/preStart';
 import app from '@server';
 import logger from '@logger';
 import Mongo from './db/mongo';
 
-export let db: any;
+class Main {
 
-async function main(): Promise<void> {
-    try {
-        db = await Mongo.getConnection();
+    static async startServer(): Promise<void> {
+        try {
+            await new Mongo().connect();
+            const port = Number(process.env.PORT || 3000);
 
-        const port = Number(process.env.PORT || 3000);
+            app.listen(port, () => logger.success(
+                'Express server started on port: ' + port.toString().rainbow));
 
-        app.listen(port, () =>
-            logger.success('Express server started on port: ' + port.toString().rainbow));
-        
-    } catch (error) {
-        logger.err(error);
+        } catch (error) {
+            logger.err(error);
+        }
     }
 } 
 
-main();
+Main.startServer();

@@ -6,6 +6,7 @@ import { UserRoles } from '@entities/User';
 import { JwtService } from '../lib/JwtService';
 // import { IRequest } from '@shared/constants';
 import { UserRequest } from '@interfaces';
+import { xAuth } from '@constants';
 
 const jwtService = new JwtService();
 const { UNAUTHORIZED } = StatusCodes;
@@ -15,7 +16,7 @@ export default class Middleware {
     public static adminMW = async (req: Request, res: Response, next: NextFunction) => {
         try {
             /* Get json-web-token */
-            const jwt = req.header('x-auth');
+            const jwt = req.header(xAuth);
 
             if (!jwt) {
                 throw Error('JWT not present in request.');
@@ -37,7 +38,7 @@ export default class Middleware {
 
     // todo use this middleware!!!
     public static authenticate = (req: UserRequest, res: Response, next: NextFunction) => {
-        const token = req.header('x-auth') as string;
+        const token = req.header(xAuth) as string;
 
         //@ts-ignore
         const user: any // todo get user by token

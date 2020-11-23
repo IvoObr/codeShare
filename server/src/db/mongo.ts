@@ -2,25 +2,25 @@ import { MongoClient, Db } from 'mongodb';
 import logger from '@logger';''
 import { dbName } from '@constants';
 
-class Mongo {
+export default class Mongo {
 
-  private readonly uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.p73wf.mongodb.net/${dbName}?retryWrites=true&w=majority`;
+    private readonly uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.p73wf.mongodb.net/${dbName}?retryWrites=true&w=majority`;
 
-  public async getConnection(): Promise<Db> {
-    const client = new MongoClient(this.uri, { useNewUrlParser: true, useUnifiedTopology: true });
-    try {
-      await client.connect();
-      const db: Db = client.db("codeShare");
-      await db.command({ ping: 1 });
+    static db: Db;
+    
+    public async connect(): Promise<void> {
+        const client = new MongoClient(this.uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        try {
+            await client.connect();
+            const db: Db = client.db("codeShare");
+            await db.command({ ping: 1 });
 
-      logger.success("Connected to codeShare DB");
-      return db;
+            logger.success("Connected to codeShare DB");
+            Mongo.db = db;
 
-    } catch(error) {
-      await client.close();
-      throw(error)
+        } catch(error) {
+            await client.close();
+            throw(error)
+        }
     }
-  }
 }
-
-export default new Mongo();

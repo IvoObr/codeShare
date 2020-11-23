@@ -2,54 +2,45 @@ import morgan from 'morgan';
 import path from 'path';
 import helmet from 'helmet';
 import StatusCodes from 'http-status-codes';
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
+import * as core from "express-serve-static-core";
 import cors from 'cors';
 import bodyParser from 'body-parser';
-
 import 'express-async-errors';
-
 import BaseRouter from './routes';
 import logger from '@logger';
+import { xAuth } from '@constants';
 
-const app = express();
+class Server {
 
-app.use(cors({
-    origin: `http://localhost`,
-    exposedHeaders: ['x-auth'],
-}));
+    public app: core.Express; 
 
-const { BAD_REQUEST } = StatusCodes;
+    private readonly BAD_REQUEST: number = StatusCodes.BAD_REQUEST;
 
+    private readonly staticDir: string = path.join(__dirname, 'public');
 
-/* Server */
-app.use(express.json());
-app.use(express.urlencoded({extended: true}));
-
-app.use(bodyParser.json());
-
-
-const staticDir = path.join(__dirname, 'public');
-app.use(express.static(staticDir));
-
-/* Show routes called in console during development */
-if (process.env.NODE_ENV === 'development') {
-    app.use(morgan('dev'));
+    constructor() {
+        this.app = express();
+        this.app.use(express.json());
+        this.app.use(express.urlencoded({ extended: true }));
+        this.app.use(bodyParser.json());
+        this.app.use(express.static(this.staticDir));
+        this.app.use(cors({ origin: `http://localhost`, exposedHeaders: [xAuth] }));
+    
+        /* Show routes called in console during development */
+        process.env.NODE_ENV === 'development' && this.app.use(morgan('dev'));
+        /* Security */
+        process.env.NODE_ENV === 'production' && this.app.use(helmet());
+        /* Add APIs */
+        this.app.use('/api', BaseRouter);
+        
+        /* Print API errors */
+        this.app.use((error: Error, req: Request, res: Response) => {
+            logger.err(error, true);
+            return res.status(this.BAD_REQUEST)
+                .json({ error: error.message });
+        });
+    }
 }
 
-/* Security */
-if (process.env.NODE_ENV === 'production') {
-    app.use(helmet());
-}
-
-/* Add APIs */
-app.use('/api', BaseRouter);
-
-/* Print API errors */
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    logger.err(err, true);
-    return res.status(BAD_REQUEST).json({
-        error: err.message,
-    });
-});
-
-export default app;
+export default new Server().app;

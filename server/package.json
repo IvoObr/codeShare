@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "build": "ts-node build.ts && tsc --build tsconfig.prod.json",
-    "lint": "eslint . --ext .ts",
+    "eslint": "eslint . --ext .ts",
     "start": "node -r module-alias/register ./dist --env=production",
     "dev": "nodemon",
     "test": "nodemon --config ./_tests_/nodemon.json"
@@ -30,7 +30,8 @@
     "@interfaces": "dist/lib/interfaces",
     "@constants": "dist/lib/constants",
     "@logger": "dist/lib/Logger",
-    "@functions": "dist/lib/functions"
+    "@functions": "dist/lib/functions",
+    "@db": "dist/db/*"
   },
   "eslintConfig": {
     "parser": "@typescript-eslint/parser",
@@ -46,6 +47,11 @@
       "project": "server/tsconfig.json"
     },
     "rules": {
+      "indent": ["error", 4],
+      "no-spaced-func": "error",
+      "object-curly-spacing": ["error", "always"],
+      "array-bracket-spacing": ["error", "always"],
+      "computed-property-spacing": ["error", "always"],
       "no-console": 1,
       "no-extra-boolean-cast": 0,
       "@typescript-eslint/restrict-template-expressions": 0,

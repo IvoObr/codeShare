@@ -6,6 +6,7 @@ import { IUser } from '@entities/User';
 export const paramMissingError: string = 'One or more of the required parameters was missing.';
 export const loginFailedErr: string = 'Login failed';
 export const dbName: string = 'codeShare';
+export const xAuth: string = 'x-auth';
 
 /* Numbers */
 export const pwdSaltRounds: number = 12;

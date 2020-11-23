@@ -16,6 +16,7 @@
     "@constants": ["src/lib/constants"],
     "@logger": ["src/lib/Logger"],
     "@functions": ["src/lib/functions"],
+    "@db": ["src/db"],
     },
   },
   "include": ["src/**/*.ts","_tests_/**/*.ts", "_tests_/users.test.ts"],

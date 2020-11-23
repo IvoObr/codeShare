@@ -3,7 +3,7 @@ import { Request, Response, Router } from 'express';
 
 import { paramMissingError, IRequest } from '@constants';
 import { UserRequest } from '@interfaces';
-import { db } from '../index';
+import { Mongo } from '@db';
 
 
 const router = Router();
@@ -15,9 +15,9 @@ const { BAD_REQUEST, CREATED, OK } = StatusCodes;
 /* GET /api/user/all */
 
 router.get('/all', async (req: Request, res: Response) => {
-  const users = await db.collection('users').find().toArray();
+    const users = await Mongo.db.collection('users').find().toArray();
 
-  return res.status(OK).send(users);
+    return res.status(OK).send(users);
 });
 
 
@@ -25,15 +25,15 @@ router.get('/all', async (req: Request, res: Response) => {
 /* POST /api/user/add */
 
 router.post('/add', async (req: IRequest, res: Response) => {
-  // const { user } = req.body;
-  // if (!user) {
-  //     return res.status(BAD_REQUEST).json({
-  //         error: paramMissingError,
-  //     });
-  // }
+    // const { user } = req.body;
+    // if (!user) {
+    //     return res.status(BAD_REQUEST).json({
+    //         error: paramMissingError,
+    //     });
+    // }
 
-  // todo add user
-  return res.status(CREATED).end();
+    // todo add user
+    return res.status(CREATED).end();
 });
 
 
@@ -41,15 +41,15 @@ router.post('/add', async (req: IRequest, res: Response) => {
 /* PUT /api/user/update */
 
 router.put('/update', async (req: IRequest, res: Response) => {
-  const { user } = req.body;
-  if (!user) {
-    return res.status(BAD_REQUEST).json({
-      error: paramMissingError,
-    });
-  }
-  user.id = Number(user.id);
-  // todo user user
-  return res.status(OK).end();
+    const { user } = req.body;
+    if (!user) {
+        return res.status(BAD_REQUEST).json({
+            error: paramMissingError,
+        });
+    }
+    user.id = Number(user.id);
+    // todo user user
+    return res.status(OK).end();
 });
 
 
@@ -57,9 +57,9 @@ router.put('/update', async (req: IRequest, res: Response) => {
 /* DELETE /api/user/delete/:id */
 
 router.delete('/delete/:id', async (req: IRequest, res: Response) => {
-  const { id } = req.params;
-  // todo delete user by id
-  return res.status(OK).end();
+    const { id } = req.params;
+    // todo delete user by id
+    return res.status(OK).end();
 });
 
 export default router;
