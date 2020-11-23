@@ -3,19 +3,30 @@ import path from 'path';
 import helmet from 'helmet';
 import StatusCodes from 'http-status-codes';
 import express, { NextFunction, Request, Response } from 'express';
+import cors from 'cors';
+import bodyParser from 'body-parser';
 
 import 'express-async-errors';
 
 import BaseRouter from './routes';
-import logger from 'src/lib/Logger';
+import logger from '@logger';
 
 const app = express();
+
+app.use(cors({
+    origin: `http://localhost`,
+    exposedHeaders: ['x-auth'],
+}));
+
 const { BAD_REQUEST } = StatusCodes;
 
 
 /* Server */
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+
+app.use(bodyParser.json());
+
 
 const staticDir = path.join(__dirname, 'public');
 app.use(express.static(staticDir));

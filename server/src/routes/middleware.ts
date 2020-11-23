@@ -3,7 +3,7 @@ import StatusCodes from 'http-status-codes';
 import { Request, Response, NextFunction } from 'express';
 
 import { UserRoles } from '@entities/User';
-import { JwtService } from 'src/lib/JwtService';
+import { JwtService } from '../lib/JwtService';
 // import { IRequest } from '@shared/constants';
 import { UserRequest } from '@interfaces';
 

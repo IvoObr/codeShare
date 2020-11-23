@@ -1,8 +1,9 @@
 import StatusCodes from 'http-status-codes';
 import { Request, Response, Router } from 'express';
 
-import { paramMissingError, IRequest } from 'src/lib/constants';
+import { paramMissingError, IRequest } from '@constants';
 import { UserRequest } from '@interfaces';
+import { db } from '../index';
 
 
 const router = Router();
@@ -14,11 +15,9 @@ const { BAD_REQUEST, CREATED, OK } = StatusCodes;
 /* GET /api/user/all */
 
 router.get('/all', async (req: Request, res: Response) => {
+  const users = await db.collection('users').find().toArray();
 
-  //@ts-ignore
-  const users: any = null// todo get all user
-
-  return res.status(OK).json({ users });
+  return res.status(OK).send(users);
 });
 
 

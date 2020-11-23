@@ -1,7 +1,7 @@
 import StatusCodes from 'http-status-codes';
 import { Request, Response, Router } from 'express';
 
-import { paramMissingError, IRequest } from 'src/lib/constants';
+import { paramMissingError, IRequest } from '@constants';
 import { UserRequest } from '@interfaces';
 
 

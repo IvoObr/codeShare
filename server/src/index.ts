@@ -4,11 +4,11 @@ import app from '@server';
 import logger from '@logger';
 import Mongo from './db/mongo';
 
-export let db: mongodb.MongoClient;
+export let db: any;
 
 async function main(): Promise<void> {
     try {
-        db = await Mongo.getConnection()
+        db = await Mongo.getConnection();
 
         const port = Number(process.env.PORT || 3000);
 

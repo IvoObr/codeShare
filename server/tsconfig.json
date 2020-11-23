@@ -12,11 +12,12 @@
     "@dals/*": ["src/dals/*"],
     "@entities/*": ["src/entities/*"],
     "@server": ["src/Server"],
-    "@constants": ["src/lib/constants"],
     "@interfaces": ["src/lib/interfaces"],
+    "@constants": ["src/lib/constants"],
     "@logger": ["src/lib/Logger"],
+    "@functions": ["src/lib/functions"],
     },
   },
-  "include": ["src/**/*.ts","_tests_/**/*.ts"],
+  "include": ["src/**/*.ts","_tests_/**/*.ts", "_tests_/users.test.ts"],
   "exclude": ["src/public/"]
 }

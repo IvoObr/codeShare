@@ -1,10 +1,9 @@
 import bcrypt from 'bcrypt';
 import { Request, Response, Router } from 'express';
 import StatusCodes from 'http-status-codes';
-
-import { JwtService } from 'src/lib/JwtService';
+import { JwtService } from '../lib/JwtService';
 import { UserRequest } from '@interfaces';
-import { paramMissingError, loginFailedErr, IRequest } from 'src/lib/constants';
+import { paramMissingError, loginFailedErr, IRequest } from '@constants';
 
 const router = Router();
 // const userDal = new UserDal();
