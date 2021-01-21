@@ -1,7 +1,6 @@
 import { Request } from 'express';
 import { IUser } from '@entities/User';
 
-
 /* Strings */
 export const paramMissingError: string = 'One or more of the required parameters was missing.';
 export const loginFailedErr: string = 'Login failed';

@@ -15,8 +15,6 @@ class Server {
 
     public app: core.Express; 
 
-    private readonly BAD_REQUEST: number = StatusCodes.BAD_REQUEST;
-
     private readonly staticDir: string = path.join(__dirname, 'public');
 
     constructor() {
@@ -37,7 +35,7 @@ class Server {
         /* Print API errors */
         this.app.use((error: Error, req: Request, res: Response) => {
             logger.err(error, true);
-            return res.status(this.BAD_REQUEST)
+            return res.status(StatusCodes.BAD_REQUEST)
                 .json({ error: error.message });
         });
     }

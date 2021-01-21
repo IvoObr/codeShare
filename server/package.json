@@ -50,7 +50,7 @@
       "indent": ["error", 4],
       "no-spaced-func": "error",
       "object-curly-spacing": ["error", "always"],
-      "array-bracket-spacing": ["error", "always"],
+      "array-bracket-spacing": ["error", "never"],
       "computed-property-spacing": ["error", "always"],
       "no-console": 1,
       "no-extra-boolean-cast": 0,
