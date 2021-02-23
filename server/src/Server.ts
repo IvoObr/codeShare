@@ -12,33 +12,55 @@ import logger from '@logger';
 import { xAuth } from '@constants';
 
 class Server {
-
-    public app: core.Express; 
-
+    
+    private readonly app: core.Express;
+    
     private readonly staticDir: string = path.join(__dirname, 'public');
 
     constructor() {
         this.app = express();
+    }
+    
+    private useLibs(): Server {
         this.app.use(express.json());
-        this.app.use(express.urlencoded({ extended: true }));
+        this.app.use(express.urlencoded({extended: true}));
         this.app.use(bodyParser.json());
         this.app.use(express.static(this.staticDir));
-        this.app.use(cors({ origin: `http://localhost`, exposedHeaders: [xAuth] }));
+        this.app.use(cors({origin: `http://localhost`, exposedHeaders: [xAuth]}));
+        
+        return this;
+    }
     
+    private prepareEnv(): Server {
         /* Show routes called in console during development */
         process.env.NODE_ENV === 'development' && this.app.use(morgan('dev'));
         /* Security */
         process.env.NODE_ENV === 'production' && this.app.use(helmet());
+        
+        return this;
+    }
+    
+    private useAPIs(): Server {
         /* Add APIs */
         this.app.use('/api', BaseRouter);
         
+        return this;
+    }
+    
+    private printErrors() : Server {
         /* Print API errors */
         this.app.use((error: Error, req: Request, res: Response) => {
             logger.err(error, true);
             return res.status(StatusCodes.BAD_REQUEST)
-                .json({ error: error.message });
+            .json({error: error.message});
         });
+
+        return this;
+    }
+    
+    public initApp(): core.Express {
+        return this.useLibs().prepareEnv().useAPIs().printErrors().app
     }
 }
 
-export default new Server().app;
+export default Server;
