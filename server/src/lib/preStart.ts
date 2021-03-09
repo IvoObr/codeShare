@@ -18,5 +18,6 @@ const result2 = dotenv.config({
 });
 
 if (result2.error) {
+    debugger;
     throw result2.error;
 }

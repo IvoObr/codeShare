@@ -5,6 +5,9 @@
   "outDir": "dist",
   "strict": true,
   "baseUrl": "./",
+  "noEmit": false,
+  "sourceMap": true,
+  "inlineSourceMap": true,
   "esModuleInterop": true,
   "skipLibCheck": true,
   "forceConsistentCasingInFileNames": true,
@@ -20,5 +23,5 @@
     },
   },
   "include": ["src/**/*.ts","_tests_/**/*.ts", "_tests_/users.test.ts"],
-  "exclude": ["src/public/"]
+  "exclude": ["src/public/", "dist/"]
 }
