@@ -5,6 +5,7 @@
   "outDir": "dist",
   "strict": true,
   "baseUrl": "./",
+  "sourceMap": true,
   "esModuleInterop": true,
   "skipLibCheck": true,
   "forceConsistentCasingInFileNames": true,
