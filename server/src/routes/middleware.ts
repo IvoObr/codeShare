@@ -36,12 +36,12 @@ export default class Middleware {
         }
     }
 
-    // todo use this middleware!!!
+    // TODO use this middleware!!!
     public static authenticate = (req: UserRequest, res: Response, next: NextFunction) => {
         const token = req.header(xAuth) as string;
 
-        //@ts-ignore
-        const user: any // todo get user by token
+        //@ts-ignore: TODO put interface
+        const user: any // TODO get user by token
 
         req.user = user;
         req.token = token;

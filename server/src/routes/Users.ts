@@ -7,7 +7,7 @@ import { Mongo } from '@db';
 
 
 const router = Router();
-// todo instance of user dal
+//  instance of user dal
 
 const { BAD_REQUEST, CREATED, OK } = StatusCodes;
 
@@ -32,7 +32,7 @@ router.post('/add', async (req: IRequest, res: Response) => {
     //     });
     // }
 
-    // todo add user
+    // TODO add user
     return res.status(CREATED).end();
 });
 
@@ -48,7 +48,7 @@ router.put('/update', async (req: IRequest, res: Response) => {
         });
     }
     user.id = Number(user.id);
-    // todo user user
+    // TODO user user
     return res.status(OK).end();
 });
 
@@ -58,7 +58,7 @@ router.put('/update', async (req: IRequest, res: Response) => {
 
 router.delete('/delete/:id', async (req: IRequest, res: Response) => {
     const { id } = req.params;
-    // todo delete user by id
+    // TODO delete user by id
     return res.status(OK).end();
 });
 

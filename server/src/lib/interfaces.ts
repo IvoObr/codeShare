@@ -5,3 +5,7 @@ export interface UserRequest extends Request {
   user: IUser
   token: string;
 }
+
+export interface ITest {
+  key: string
+}

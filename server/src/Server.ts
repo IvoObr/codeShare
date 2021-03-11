@@ -26,7 +26,7 @@ class Server {
         this.app.use(express.urlencoded({ extended: true }));
         this.app.use(bodyParser.json());
         this.app.use(express.static(this.staticDir));
-        this.app.use(cors({ origin: `http://localhost`, exposedHeaders: [xAuth] }));
+        this.app.use(cors({ origin: `http://localhost`, exposedHeaders: [xAuth]}));
         
         return this;
     }

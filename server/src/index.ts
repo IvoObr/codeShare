@@ -1,8 +1,18 @@
+import 'module-alias/register';
 import './lib/preStart';
 import * as core from "express-serve-static-core";
+import * as Consts  from "@constants"
+
+console.log('===================')
+console.log(Consts)
+
 import Server from '@server';
+
+console.log('------------------')
+console.log(Server)
+
 import logger from '@logger';
-import Mongo from './db/mongo';
+import { Mongo } from '@db';
 
 class Main {
 

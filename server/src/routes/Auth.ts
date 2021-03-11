@@ -21,9 +21,9 @@ router.post('/login', async (req: IRequest, res: Response) => {
         return res.status(BAD_REQUEST).json({ error: paramMissingError });
     }
     /* Fetch user */
-    
-    //@ts-ignore
-    const user: any  = null// todo get user by email
+
+    //@ts-ignore: TODO put interface
+    const user: any = null// TODO get user by email
 
     if (!user) {
         return res.status(UNAUTHORIZED).json({
@@ -51,7 +51,7 @@ router.post('/login', async (req: IRequest, res: Response) => {
 
 router.get('/logout', (req: Request, res: Response) => {
     // const { key, options } = cookieProps;
-// todo
+    // todo
     // res.clearCookie(key, options);
 
     // req.user.removeToken(req.token).then(() => {
