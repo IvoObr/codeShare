@@ -1,0 +1,97 @@
+{
+    "window.zoomLevel": 1,
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 1,
+    "workbench.tree.indent": 20,
+    "editor.renderWhitespace": "none",
+    "editor.renderControlCharacters": false,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "workbench.editor.enablePreview": false,
+    "workbench.sideBar.location": "left",
+    "editor.fontSize": 16,
+    "editor.formatOnType": true,
+    "editor.codeLens": false,
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "terminal.external.linuxExec": "Terminal.app",
+    "explorer.confirmDragAndDrop": false,
+    "explorer.confirmDelete": false,
+    "workbench.activityBar.visible": false,
+    "javascript.updateImportsOnFileMove.enabled": "never",
+    "typescript.tsdk": "node_modules\\typescript\\lib",
+    "workbench.colorCustomizations": {
+        "[Default Dark+]": {
+            "editor.background": "#232323",
+            "editorGutter.background": "#333333"
+        }
+    },
+    "launch": {},
+    "editor.largeFileOptimizations": false,
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "editor.fontLigatures": true,
+    "editor.foldingStrategy": "indentation",
+    "editor.glyphMargin": true,
+    "editor.folding": true,
+    "http.proxyAuthorization": null,
+    "node-module-intellisense.scanBuiltinModules": true,
+    "node-module-intellisense.scanDevDependencies": true,
+    "node-module-intellisense.scanFileModules": true,
+    "extensions.ignoreRecommendations": true,
+    "window.title": "${rootName}/${activeEditorMedium}",
+    "workbench.iconTheme": "file-icons",
+    "todohighlight.include": [
+        "**/*.js",
+        "**/*.jsx",
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.html",
+        "**/*.php",
+        "**/*.css",
+        "**/*.scss"
+    ],
+    "todohighlight.exclude": [
+        "**/*.json",
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/bower_components/**",
+        "**/build/**",
+        "**/.vscode/**",
+        "**/.github/**",
+        "**/_output/**",
+        "**/*.min.*",
+        "**/*.map",
+        "*.json",
+    ],
+    "todohighlight.defaultStyle": {
+        "backgroundColor": "#555",
+        // "overviewRulerColor": "#fc034e",
+        // "color": "#fc034e"
+    },
+    "todohighlight.keywordsPattern": "todo|@ts-ignore",
+    "[json]": {
+        "editor.quickSuggestions": {
+            "strings": true
+        },
+        "editor.suggest.insertMode": "replace",
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2
+    },
+    "pigments.enabledExtensions": "js, json, ts",
+    "pigments.markerType": "background",
+    "gitlens.currentLine.enabled": false,
+    "gitlens.blame.highlight.locations": [
+        "gutter",
+        "overview",
+        "line"
+    ],
+    "gitlens.blame.format": "${message|10?} ${agoOrDate|14-}",
+    "workbench.editor.showTabs": true,
+    "workbench.statusBar.visible": true,
+    "todohighlight.isCaseSensitive": false,
+    "git.ignoreLimitWarning": true,
+    "god.tsconfig": "./tsconfig.json",
+    "todohighlight.keywords": [
+    
+    ],
+    "compile-hero.disable-compile-files-on-did-save-code": false
+}

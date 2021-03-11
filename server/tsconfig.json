@@ -6,7 +6,6 @@
   "strict": true,
   "baseUrl": "./",
   "noEmit": false,
-  "sourceMap": true,
   "inlineSourceMap": true,
   "esModuleInterop": true,
   "skipLibCheck": true,

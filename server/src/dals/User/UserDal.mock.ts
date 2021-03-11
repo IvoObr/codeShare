@@ -1,5 +1,5 @@
 import { IUser } from '@entities/User';
-import { getRandomInt } from '@functions';
+import { getRandomInt } from 'src/lib/utils';
 import { IUserDal } from './UserDal';
 import MockDaoMock from '../MockDb/MockDal.mock';
 
@@ -36,8 +36,8 @@ class UserDal extends MockDaoMock implements IUserDal {
     public async update(user: IUser): Promise<void> {
         const db = await super.openDb();
         for (let i = 0; i < db.users.length; i++) {
-            if (db.users[i].id === user.id) {
-                db.users[i] = user;
+            if (db.users[ i ].id === user.id) {
+                db.users[ i ] = user;
                 await super.saveDb(db);
                 return;
             }
@@ -49,7 +49,7 @@ class UserDal extends MockDaoMock implements IUserDal {
     public async delete(id: number): Promise<void> {
         const db = await super.openDb();
         for (let i = 0; i < db.users.length; i++) {
-            if (db.users[i].id === id) {
+            if (db.users[ i ].id === id) {
                 db.users.splice(i, 1);
                 await super.saveDb(db);
                 return;

@@ -15,7 +15,7 @@ const { BAD_REQUEST, CREATED, OK } = StatusCodes;
 
 router.get('/all', async (req: Request, res: Response) => {
    
-    //@ts-ignore
+    //@ts-ignore: todo put interface
     const snippets: any = null // todo get all snippet
 
     return res.status(OK).json({ snippets });
