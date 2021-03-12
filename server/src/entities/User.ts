@@ -3,7 +3,7 @@ import validator from 'validator';
 import { IUser } from "@interfaces";
 import * as Consts from '@constants';
 import { UserError } from '../lib/Errors';
-import { UserRoles, UserErrors } from '@enums';
+import { UserRolesType, UserErrorType } from '@enums';
 
 export default class User implements IUser {
 
@@ -11,7 +11,7 @@ export default class User implements IUser {
 
     constructor(
         public email: string,
-        public role: UserRoles,
+        public role: UserRolesType,
         public password: string,
         public id: number,
         public name: string
@@ -29,22 +29,22 @@ export default class User implements IUser {
             });
         
         if (!isEmailValid) {
-            throw new UserError(UserErrors.INVALID_EMAIL, 'message');
+            throw new UserError(UserErrorType.INVALID_EMAIL);
         }
 
         if (!isPassValid) {
-            throw new UserError(UserErrors.INVALID_PASSWORD);
+            throw new UserError(UserErrorType.INVALID_PASSWORD);
         }
 
         if (typeof this.name !== 'string' || this.name.length < 1) {
-            throw new UserError(UserErrors.INVALID_NAME);
+            throw new UserError(UserErrorType.INVALID_NAME);
         }
 
         const salt: string = await bcrypt.genSalt(Consts.saltRounds);
         this.password = await bcrypt.hash(this.password, salt);
 
         this.email = this.email || '';
-        this.role = this.role || UserRoles.Member;
+        this.role = this.role || UserRolesType.Member;
         this.password = this.password || '';
         this.id = this.id || -1;
 

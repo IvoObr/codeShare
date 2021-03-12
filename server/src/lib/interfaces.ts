@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { UserRoles } from '@enums';
+import { UserRolesType } from '@enums';
 
 export interface UserRequest extends Request {
   user: IUser
@@ -20,6 +20,6 @@ export interface IUser {
   name: string;
   email: string;
   password: string;
-  role: UserRoles;
+  role: UserRolesType;
   tokens: string[]
 }

@@ -1,9 +1,9 @@
-export enum UserRoles {
+export enum UserRolesType {
   Member,
   Admin,
 }
 
-export enum UserErrors {
+export enum UserErrorType {
   INVALID_PASSWORD,
   INVALID_EMAIL,
   INVALID_NAME

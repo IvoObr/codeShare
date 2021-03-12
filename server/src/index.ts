@@ -5,6 +5,8 @@ import logger from '@logger';
 import 'module-alias/register';
 import commandLineArgs from 'command-line-args';
 import * as core from "express-serve-static-core";
+import { UserError } from "@errors";
+import { UserErrorType } from "@enums";
 
 class Main {
 
@@ -46,4 +48,16 @@ class Main {
     }
 } 
 
+
+try {
+
+    throw new UserError(UserErrorType.INVALID_EMAIL);
+} catch (error) {
+
+    console.log(logger);
+    logger.err(error);
+}
+
 new Main().setEnv().startServer();
+
+

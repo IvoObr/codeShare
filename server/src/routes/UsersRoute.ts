@@ -3,7 +3,7 @@ import { UserRequest, IRequest } from '@interfaces';
 import StatusCodes from 'http-status-codes';
 import { Request, Response, Router } from 'express';
 import * as Consts from '@constants';
-import User from "@entities/User"
+import User from "@entities/User";
 import { logger } from '@logger';
 
 const router = Router();
@@ -39,7 +39,8 @@ router.post('/add', async (req: IRequest, res: Response) => {
             user?.name
         ).validate();
 
-            = await Mongo.db.collection(Consts.USER).insertOne();
+    
+            // = await Mongo.db.collection(Consts.USER).insertOne(newUser);
 
 
         return res.status(CREATED).end();
