@@ -12,15 +12,15 @@
   "forceConsistentCasingInFileNames": true,
   "paths": {
     "@db": ["src/db"],
-    "@dals": ["src/dals/*"],
+    "@dals/*": ["src/dals/*"],
     "@server": ["src/Server"],
     "@enums": ["src/lib/enums"],
     "@errors": ["src/lib/Errors"],
     "@logger": ["src/lib/Logger"],
-    "@entities": ["src/entities/*"],
+    "@entities/*": ["src/entities/*"],
     "@constants": ["src/lib/constants"],
     "@functions": ["src/lib/functions"],
-    "@interfaces": ["src/lib/interfaces"]           
+    "@interfaces": ["src/lib/interfaces"]
     },
   },
   "include": ["src/**/*.ts","_tests_/**/*.ts", "_tests_/users.test.ts"],

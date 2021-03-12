@@ -3,8 +3,8 @@ export enum UserRolesType {
   Admin,
 }
 
-export enum UserErrorType {
-  INVALID_PASSWORD,
-  INVALID_EMAIL,
-  INVALID_NAME
+export enum ErrorType {
+  INVALID_PASSWORD = "INVALID_PASSWORD",
+  INVALID_EMAIL = "INVALID_EMAIL",
+  INVALID_NAME = "INVALID_NAME"
 }

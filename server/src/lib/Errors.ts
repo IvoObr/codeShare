@@ -1,10 +1,10 @@
-import { UserErrorType } from "@enums";
+import { ErrorType } from "@enums";
 
 export class UserError extends Error {
-  public type: UserErrorType
+  public type: ErrorType
 
-  constructor(type: UserErrorType, message: string = 'invalid data provided',) {
-      super(message);
+  constructor(type: ErrorType) {
+      super(type as unknown as string);
       this.type = type;
   }
 }

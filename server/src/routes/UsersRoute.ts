@@ -4,7 +4,7 @@ import StatusCodes from 'http-status-codes';
 import { Request, Response, Router } from 'express';
 import * as Consts from '@constants';
 import User from "@entities/User";
-import { logger } from '@logger';
+import  logger from '@logger';
 
 const router = Router();
 //  instance of user dal
@@ -45,7 +45,7 @@ router.post('/add', async (req: IRequest, res: Response) => {
 
         return res.status(CREATED).end();
     } catch (error) {
-        logger.error(error);
+        logger.err(error);
         return res.status(BAD_REQUEST).end();
     }
 });

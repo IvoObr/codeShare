@@ -1,6 +1,6 @@
 import StatusCodes from 'http-status-codes';
 import { Request, Response, NextFunction } from 'express';
-import { UserRoles } from '@entities/User';
+import { UserRolesType } from '@enums';
 import { JwtService } from '../lib/JwtService';
 import { UserRequest, IRequest } from '@interfaces';
 import * as Consts from '@constants';
@@ -20,7 +20,7 @@ export default class Middleware {
             }
             /* Make sure user role is an admin */
             const clientData = await jwtService.decodeJwt(jwt);
-            if (clientData.role === UserRoles.Admin) {
+            if (clientData.role === UserRolesType.Admin) {
                 res.locals.userId = clientData.id;
                 next();
             } else {
@@ -38,7 +38,7 @@ export default class Middleware {
         const token = req.header(Consts.xAuth) as string;
 
         //@ts-ignore: TODO put interface
-        const user: any // TODO get user by token
+        const user: any; // TODO get user by token
 
         req.user = user;
         req.token = token;

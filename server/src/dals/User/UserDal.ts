@@ -1,5 +1,4 @@
-import { IUser } from '@entities/User';
-
+import { IUser } from '@interfaces';
 
 export interface IUserDal {
     getOne: (email: string) => Promise<IUser | null>;
