@@ -1,12 +1,9 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import StatusCodes from 'http-status-codes';
 import { Request, Response, NextFunction } from 'express';
-
 import { UserRoles } from '@entities/User';
 import { JwtService } from '../lib/JwtService';
-// import { IRequest } from '@shared/constants';
-import { UserRequest } from '@interfaces';
-import { xAuth } from '@constants';
+import { UserRequest, IRequest } from '@interfaces';
+import * as Consts from '@constants';
 
 const jwtService = new JwtService();
 const { UNAUTHORIZED } = StatusCodes;
@@ -16,7 +13,7 @@ export default class Middleware {
     public static adminMW = async (req: Request, res: Response, next: NextFunction) => {
         try {
             /* Get json-web-token */
-            const jwt = req.header(xAuth);
+            const jwt = req.header(Consts.xAuth);
 
             if (!jwt) {
                 throw Error('JWT not present in request.');
@@ -38,7 +35,7 @@ export default class Middleware {
 
     // TODO use this middleware!!!
     public static authenticate = (req: UserRequest, res: Response, next: NextFunction) => {
-        const token = req.header(xAuth) as string;
+        const token = req.header(Consts.xAuth) as string;
 
         //@ts-ignore: TODO put interface
         const user: any // TODO get user by token

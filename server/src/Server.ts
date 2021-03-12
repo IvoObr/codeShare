@@ -5,7 +5,7 @@ import morgan from 'morgan';
 import logger from '@logger';
 import 'express-async-errors';
 import BaseRouter from './routes';
-import { xAuth } from '@constants';
+import * as Consts from '@constants';
 import bodyParser from 'body-parser';
 import StatusCodes from 'http-status-codes';
 import * as core from "express-serve-static-core";
@@ -26,7 +26,7 @@ class Server {
         this.app.use(express.urlencoded({ extended: true }));
         this.app.use(bodyParser.json());
         this.app.use(express.static(this.staticDir));
-        this.app.use(cors({ origin: `http://localhost`, exposedHeaders: [xAuth]}));
+        this.app.use(cors({ origin: `http://localhost`, exposedHeaders: [Consts.xAuth]}));
         
         return this;
     }

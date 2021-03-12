@@ -1,20 +1,7 @@
-import { Request } from 'express';
-import { IUser } from '@entities/User';
-
-/* Strings */
-export const paramMissingError: string = 'One or more of the required parameters was missing.';
-export const loginFailedErr: string = 'Login failed';
+/* Errors */
+export const ERR_MISSING_PARAMETER: string = "ERR_MISSING_PARAMETER";
+export const ERR_LOGIN_FAILED: string = "ERR_LOGIN_FAILED";
+/* Constants */
 export const dbName: string = 'codeShare';
 export const xAuth: string = 'x-auth';
-
-/* Numbers */
-export const pwdSaltRounds: number = 12;
-
-/* IRequest object for express routes */
-export interface IRequest extends Request {
-    body: {
-        user: IUser;
-        email: string;
-        password: string;
-    }
-} 
+export const saltRounds: number = 12;

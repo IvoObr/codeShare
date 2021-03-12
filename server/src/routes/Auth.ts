@@ -2,8 +2,8 @@ import bcrypt from 'bcrypt';
 import { Request, Response, Router } from 'express';
 import StatusCodes from 'http-status-codes';
 import { JwtService } from '../lib/JwtService';
-import { UserRequest } from '@interfaces';
-import { paramMissingError, loginFailedErr, IRequest, xAuth } from '@constants';
+import { UserRequest, IRequest } from '@interfaces';
+import * as Consts from '@constants';
 
 const router = Router();
 // const userDal = new UserDal();
@@ -18,7 +18,7 @@ router.post('/login', async (req: IRequest, res: Response) => {
     const password: string = req.body.password;
 
     if (!(email && password)) {
-        return res.status(BAD_REQUEST).json({ error: paramMissingError });
+        return res.status(BAD_REQUEST).json({ error: Consts.ERR_MISSING_PARAMETER });
     }
     /* Fetch user */
 
@@ -27,14 +27,14 @@ router.post('/login', async (req: IRequest, res: Response) => {
 
     if (!user) {
         return res.status(UNAUTHORIZED).json({
-            error: loginFailedErr,
+            error: Consts.ERR_LOGIN_FAILED,
         });
     }
     /* Check password */
     const pwdPassed = await bcrypt.compare(password, user.pwdHash);
     if (!pwdPassed) {
         return res.status(UNAUTHORIZED).json({
-            error: loginFailedErr,
+            error: Consts.ERR_LOGIN_FAILED,
         });
     }
     /* Setup Admin JWT */
@@ -43,7 +43,7 @@ router.post('/login', async (req: IRequest, res: Response) => {
         role: user.role,
     });
 
-    res.header(xAuth, jwt).send({ user });
+    res.header(Consts.xAuth, jwt).send({ user });
     return res.status(OK).end();
 });
 

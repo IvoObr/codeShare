@@ -6,6 +6,11 @@ export interface UserRequest extends Request {
   token: string;
 }
 
-export interface ITest {
-  key: string
-}
+/* IRequest object for express routes */
+export interface IRequest extends Request {
+  body: {
+    user: IUser;
+    email: string;
+    password: string;
+  }
+} 

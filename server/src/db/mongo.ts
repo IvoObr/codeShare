@@ -1,10 +1,11 @@
-import { MongoClient, Db } from 'mongodb';
 import logger from '@logger';''
-import { dbName } from '@constants';
+import * as Consts from '@constants';
+import { MongoClient, Db } from 'mongodb';
 
 export default class Mongo {
 
-    private readonly uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.p73wf.mongodb.net/${dbName}?retryWrites=true&w=majority`;
+    private readonly uri: string =
+        `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.p73wf.mongodb.net/${Consts.dbName}?retryWrites=true&w=majority`;
 
     static db: Db;
     

@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 import Server from '@server';
 import logger from '@logger';
 import 'module-alias/register';
-// import * as Consts from "@constants"
 import commandLineArgs from 'command-line-args';
 import * as core from "express-serve-static-core";
 

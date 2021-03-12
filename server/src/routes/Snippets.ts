@@ -1,8 +1,7 @@
+import * as Consts from '@constants';
 import StatusCodes from 'http-status-codes';
 import { Request, Response, Router } from 'express';
-
-import { paramMissingError, IRequest } from '@constants';
-import { UserRequest } from '@interfaces';
+import { UserRequest, IRequest } from '@interfaces';
 
 
 const router = Router();
@@ -45,7 +44,7 @@ router.put('/update', async (req: IRequest, res: Response) => {
     const { user } = req.body;
     if (!user) {
         return res.status(BAD_REQUEST).json({
-            error: paramMissingError,
+            error: Consts.ERR_MISSING_PARAMETER,
         });
     }
     user.id = Number(user.id);
