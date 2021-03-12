@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import SnippetRouter from './Snippets';
-import UserRouter from './Users';
+import UserRouter from './UsersRoute';
 import AuthRouter from './Auth';
 
 const router = Router();

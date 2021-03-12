@@ -24,15 +24,17 @@
         }
     },
     "_moduleAliases": {
+        "@db": "dist/db",
+        "@lib": "dist/lib",
         "@dals": "dist/dals",
-        "@entities": "dist/entities",
         "@server": "dist/Server",
+        "@enums": "dist/lib/enums",
+        "@logger": "dist/lib/Logger",
+        "@errors": "dist/lib/Errors",
+        "@entities": "dist/entities",
         "@interfaces": "dist/lib/interfaces",
         "@constants": "dist/lib/constants",
-        "@logger": "dist/lib/Logger",
-        "@functions": "dist/lib/functions",
-        "@lib": "dist/lib",
-        "@db": "dist/db"
+        "@functions": "dist/lib/functions"
     },
     "eslintIgnore": [
         "src/public/",
@@ -43,6 +45,7 @@
         "@types/axios": "^0.14.0",
         "@types/cors": "^2.8.8",
         "@types/jest": "^26.0.15",
+        "@types/validator": "^13.1.3",
         "axios": "^0.21.0",
         "bcrypt": "^5.0.0",
         "colors": "^1.4.0",
@@ -62,7 +65,8 @@
         "mongoose": "^5.10.15",
         "morgan": "^1.10.0",
         "randomstring": "^1.1.5",
-        "ts-jest": "^26.4.4"
+        "ts-jest": "^26.4.4",
+        "validator": "^13.5.2"
     },
     "devDependencies": {
         "@types/bcrypt": "^3.0.0",

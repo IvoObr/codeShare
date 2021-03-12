@@ -23,7 +23,7 @@ router.post('/login', async (req: IRequest, res: Response) => {
     /* Fetch user */
 
     //@ts-ignore: TODO put interface
-    const user: any = null// TODO get user by email
+    const user: any = null;// TODO get user by email
 
     if (!user) {
         return res.status(UNAUTHORIZED).json({
@@ -31,7 +31,7 @@ router.post('/login', async (req: IRequest, res: Response) => {
         });
     }
     /* Check password */
-    const pwdPassed = await bcrypt.compare(password, user.pwdHash);
+    const pwdPassed = await bcrypt.compare(password, user.password);
     if (!pwdPassed) {
         return res.status(UNAUTHORIZED).json({
             error: Consts.ERR_LOGIN_FAILED,

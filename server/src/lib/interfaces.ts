@@ -1,5 +1,5 @@
-import { IUser } from '@entities/User';
 import { Request } from 'express';
+import { UserRoles } from '@enums';
 
 export interface UserRequest extends Request {
   user: IUser
@@ -14,3 +14,12 @@ export interface IRequest extends Request {
     password: string;
   }
 } 
+
+export interface IUser {
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+  role: UserRoles;
+  tokens: string[]
+}

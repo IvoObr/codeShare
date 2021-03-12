@@ -12,9 +12,21 @@
         "project": "./tsconfig.json"
     },
     "rules": {
+        "semi": "error",
         "indent": [
             "error",
             4
+        ],
+        "space-in-parens": [
+            "error",
+            "never"
+        ],
+        "comma-spacing": [
+            "error",
+            {
+                "before": false,
+                "after": true
+            }
         ],
         "no-spaced-func": "error",
         "object-curly-spacing": [

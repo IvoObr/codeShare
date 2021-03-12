@@ -59,7 +59,7 @@ class Server {
     }
     
     public start(): core.Express {
-        return this.useLibs().prepareEnv().useAPIs().printErrors().app
+        return this.useLibs().prepareEnv().useAPIs().printErrors().app;
     }
 }
 

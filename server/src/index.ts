@@ -19,7 +19,7 @@ class Main {
 
         } catch (error) {
             logger.err(error);
-            process.exit(1)
+            process.exit(1);
         }
     }
 
@@ -46,4 +46,4 @@ class Main {
     }
 } 
 
-new Main().setEnv().startServer()
+new Main().setEnv().startServer();
