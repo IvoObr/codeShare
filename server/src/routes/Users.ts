@@ -1,9 +1,8 @@
+import { Mongo } from '@db';
+import { UserRequest } from '@interfaces';
 import StatusCodes from 'http-status-codes';
 import { Request, Response, Router } from 'express';
-
 import { paramMissingError, IRequest } from '@constants';
-import { UserRequest } from '@interfaces';
-import { Mongo } from '@db';
 
 
 const router = Router();

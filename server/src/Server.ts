@@ -1,15 +1,15 @@
-import morgan from 'morgan';
+import cors from 'cors';
 import path from 'path';
 import helmet from 'helmet';
-import StatusCodes from 'http-status-codes';
-import express, { Request, Response } from 'express';
-import * as core from "express-serve-static-core";
-import cors from 'cors';
-import bodyParser from 'body-parser';
+import morgan from 'morgan';
+import logger from '@logger';
 import 'express-async-errors';
 import BaseRouter from './routes';
-import logger from '@logger';
 import { xAuth } from '@constants';
+import bodyParser from 'body-parser';
+import StatusCodes from 'http-status-codes';
+import * as core from "express-serve-static-core";
+import express, { Request, Response } from 'express';
 
 class Server {
     
@@ -58,7 +58,7 @@ class Server {
         return this;
     }
     
-    public initApp(): core.Express {
+    public start(): core.Express {
         return this.useLibs().prepareEnv().useAPIs().printErrors().app
     }
 }
