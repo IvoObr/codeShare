@@ -13,14 +13,14 @@ class Main {
     public async startServer(): Promise<void> {
         try {
             await new Mongo().connect();
-            const port = Number(process.env.PORT || 3000);
+            const port: number = Number(process.env.PORT || 3000);
 
             const app: core.Express = new Server().start();
-            app.listen(port, () => logger.success(
+            app.listen(port, (): void => logger.success(
                 'Express server started on port: ' + port.toString().rainbow));
 
         } catch (error) {
-            logger.err(error);
+            logger.error(error);
             process.exit(1);
         }
     }
@@ -52,7 +52,13 @@ class Main {
 try {
     throw new UserError(ErrorType.INVALID_EMAIL);
 } catch (error) {
-    logger.err(error, true);
+
+    logger.debug('Debug message');
+    logger.info('info message');
+    logger.warn('warn message');
+    logger.success('succes message');
+
+    logger.error(error);
 }
 
 new Main().setEnv().startServer();

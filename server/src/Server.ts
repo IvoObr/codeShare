@@ -50,7 +50,7 @@ class Server {
     private printErrors() : Server {
         /* Print API errors */
         this.app.use((error: Error, req: Request, res: Response) => {
-            logger.err(error);
+            logger.error(error);
             return res.status(StatusCodes.BAD_REQUEST)
                 .json({ error: error.message });
         });

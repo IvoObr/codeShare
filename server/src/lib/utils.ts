@@ -1,8 +1,8 @@
 import logger from './Logger';
 
 
-export const pErr = (err: Error) => err && logger.err(err);
+export const pErr = (err: Error): void => err && logger.error(err);
 
-export const getRandomInt = () => {
+export const getRandomInt = (): number => {
     return Math.floor(Math.random() * 1_000_000_000_000);
 };

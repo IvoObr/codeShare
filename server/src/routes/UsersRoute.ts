@@ -4,12 +4,18 @@ import StatusCodes from 'http-status-codes';
 import { Request, Response, Router } from 'express';
 import * as Consts from '@constants';
 import User from "@entities/User";
-import  logger from '@logger';
+import logger from '@logger';
 
 const router = Router();
 //  instance of user dal
 
 const { BAD_REQUEST, CREATED, OK } = StatusCodes;
+
+
+// TODO create class UserRouter
+// class UserRouter extends Router {
+
+// }
 
 
 /* GET /api/user/all */
@@ -40,12 +46,12 @@ router.post('/add', async (req: IRequest, res: Response) => {
         ).validate();
 
     
-            // = await Mongo.db.collection(Consts.USER).insertOne(newUser);
+        // = await Mongo.db.collection(Consts.USER).insertOne(newUser);
 
 
         return res.status(CREATED).end();
     } catch (error) {
-        logger.err(error);
+        logger.error(error);
         return res.status(BAD_REQUEST).end();
     }
 });

@@ -39,7 +39,8 @@
     "eslintIgnore": [
         "src/public/",
         "dist/",
-        "build.ts"
+        "build.ts",
+        "node_modules/"
     ],
     "dependencies": {
         "@types/axios": "^0.14.0",

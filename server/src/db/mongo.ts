@@ -1,4 +1,4 @@
-import logger from '@logger';''
+import logger from '@logger';'';
 import * as Consts from '@constants';
 import { MongoClient, Db } from 'mongodb';
 
@@ -21,7 +21,7 @@ export default class Mongo {
 
         } catch(error) {
             await client.close();
-            throw(error)
+            throw(error);
         }
     }
 }

@@ -11,5 +11,5 @@ describe('users api tests', () => {
         } catch (error) {
             error && console.log(error); 
         }
-    })
-})
+    });
+});
