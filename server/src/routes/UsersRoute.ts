@@ -18,7 +18,7 @@ const { BAD_REQUEST, CREATED, OK } = StatusCodes;
 
 /* GET /api/user/all */
 router.get('/all', async (req: Request, res: Response) => {
-    const users = await Mongo.db.collection(Consts.USER).find().toArray();
+    const users = await Mongo.db.collection(Consts.USERS).find().toArray();
 
     return res.status(OK).send(users);
 });

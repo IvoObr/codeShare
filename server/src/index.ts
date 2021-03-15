@@ -28,12 +28,13 @@ class Main {
     public setEnv(): this {
 
         /* Setup command line options */
-        const options = commandLineArgs([{
-            name: 'env',
-            alias: 'e',
-            defaultValue: 'development',
-            type: String
-        }]);
+        const options: commandLineArgs.CommandLineOptions =
+            commandLineArgs([{
+                name: 'env',
+                alias: 'e',
+                defaultValue: 'development',
+                type: String
+            }]);
 
         /* Set the env file  */
         const result2: dotenv.DotenvConfigOutput = dotenv.config({

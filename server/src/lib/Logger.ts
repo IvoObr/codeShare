@@ -2,7 +2,7 @@ import colors from 'colors';
 import fs from 'fs';
 import util from 'util';
 
-export type colorT = "red" | "green" | "yellow" | "strip" | "dim";
+export type colorT = "red" | "green" | "yellow" | "strip" | "dim" | "white";
 
 export interface ILogLevel {
     color: colorT,
@@ -40,7 +40,7 @@ class logger {
 
     public info(msg: string): void {
         this.printLog(msg, {
-            color: 'strip',
+            color: 'white',
             prefix: 'INFO:    '
         });
     }
