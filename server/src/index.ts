@@ -1,7 +1,7 @@
 import { Mongo } from '@db';
 import dotenv from 'dotenv';
 import Server from '@server';
-import logger from '@logger';
+import logger from 'logger-mogger-js';
 import 'module-alias/register';
 import commandLineArgs from 'command-line-args';
 import * as core from "express-serve-static-core";

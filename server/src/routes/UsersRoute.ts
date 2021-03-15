@@ -4,7 +4,7 @@ import StatusCodes from 'http-status-codes';
 import { Request, Response, Router } from 'express';
 import * as Consts from '@constants';
 import User from "@entities/User";
-import logger from '@logger';
+import logger from 'logger-mogger-js';
 
 const router = Router();
 //  instance of user dal

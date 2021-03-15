@@ -2,7 +2,7 @@ import cors from 'cors';
 import path from 'path';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import logger from '@logger';
+import logger from 'logger-mogger-js';
 import 'express-async-errors';
 import BaseRouter from './routes';
 import * as Consts from '@constants';
