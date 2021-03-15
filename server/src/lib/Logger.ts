@@ -1,86 +1,84 @@
 import colors from 'colors';
 import fs from 'fs';
+import util from 'util';
 
-export type colorT = "red" | "green" | "yellow" | "magenta";
+export type colorT = "red" | "green" | "yellow" | "strip" | "dim";
 
 export interface ILogLevel {
-    [key: string]: ILogLevelDetails
-}
-
-export interface ILogLevelDetails {
     color: colorT,
     prefix: string;
 }
 
-/*
-hard code colour
-write file option in the constructor
-file name
-*/
+export interface ILogOptions {
+    logFileName: string,
+    writeInFile: boolean
+}
 
 class logger {
 
-    private logFileName: string = 'jet-logger.log';
+    private logFileName: string = 'logger.log';
     private writeInFile: boolean = true;
 
-    private readonly Levels: ILogLevel = {
-        info: {
+    constructor(options?: ILogOptions) {
+
+        if (typeof options?.logFileName === 'string') {
+            this.logFileName = options?.logFileName;
+        }
+
+        if (typeof options?.writeInFile === 'boolean') {
+            this.writeInFile = options?.writeInFile;
+        }
+    }
+
+    public inspect(msg: string): void {
+        msg = util.inspect(msg);
+        this.printLog(msg, {
+            color: 'dim',
+            prefix: 'INSPECT: '
+        });
+    }
+
+    public info(msg: string): void {
+        this.printLog(msg, {
+            color: 'strip',
+            prefix: 'INFO:    '
+        });
+    }
+
+    public success(msg: string): void {
+        this.printLog(msg, {
             color: 'green',
-            prefix: 'INFO'
-        },
-        imp: {
-            color: 'magenta',
-            prefix: 'IMPORTANT'
-        },
-        warn: {
+            prefix: 'SUCCESS: '
+        });
+    }
+
+    public warn(msg: string): void {
+        this.printLog(msg, {
             color: 'yellow',
-            prefix: 'WARNING'
-        },
-        err: {
+            prefix: 'WARNING: '
+        });
+    }
+
+    public error(msg: Error | string): void {
+        // msg = util.inspect(msg);
+        this.printLog(msg, {
             color: 'red',
-            prefix: 'ERROR'
-        }
+            prefix: 'ERROR:   '
+        });
     }
 
-    debug(msg: string): void {
-        this.printLogHelper(msg, this.Levels.info);
-    }
+    private printLog(msg: string | Error, level: ILogLevel): void {
 
-    info(msg: string): void {
-        this.printLogHelper(msg, this.Levels.info);
-    }
-
-    success(msg: string): void {
-        this.printLogHelper(msg, this.Levels.imp);
-    }
-
-    warn(msg: string): void {
-        this.printLogHelper(msg, this.Levels.warn);
-    }
-
-    error(msg: string): void {
-        this.printLogHelper(msg, this.Levels.err);
-    }
-
-    printLogHelper(msg: string, level: ILogLevelDetails): void {
-        this.printLog(msg, level);
-    }
-
-    printLog(msg: any, level: ILogLevelDetails): void {
-
-        msg = level.prefix + ': ' + msg;
-        const time: string = '[' + new Date().toISOString().replace('T', ' ').substring(0, 19) + '] ';
-        msg = time + msg;
-        const colorFn: colors.Color = colors[ level.color ];
-        console.log(colorFn(msg));
-
+        const time: string = '[' + new Date().toISOString().replace('T', ' ').substring(0, 19) + ']';
+        const colorFn: colors.Color = colors[level.color];
+        console.log(`${time} ${colorFn(level.prefix).bold} ${colorFn(msg as string)}`);
+         
         if (this.writeInFile) {   
-            msg += '\r\n';
-            this.writeToFile(msg); 
+            this.writeToFile(`${time} ${level.prefix}: ${msg += '\r\n'}`); 
         }
     }
 
-    writeToFile(msg: string): void {
+    private writeToFile(msg: string): void {
         try {
             const fileExists: boolean = this.doFileExist();
 
@@ -96,7 +94,7 @@ class logger {
         }
     }
 
-    doFileExist(): boolean {
+    private doFileExist(): boolean {
         try {
             fs.accessSync(this.logFileName);
             return true;

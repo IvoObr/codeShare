@@ -51,10 +51,10 @@
             "error",
             "never"
         ],
-        "computed-property-spacing": [
-            "error",
-            "always"
-        ],
+        // "computed-property-spacing": [
+        //     "error",
+        //     "always"
+        // ],
         "no-debugger": 0,
         "prefer-const": "error",
         "@typescript-eslint/no-unused-vars": "error",

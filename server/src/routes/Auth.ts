@@ -10,7 +10,6 @@ const router = Router();
 const jwtService = new JwtService();
 const { BAD_REQUEST, OK, UNAUTHORIZED } = StatusCodes;
 
-
 /* POST /api/auth/login */
 
 router.post('/login', async (req: IRequest, res: Response) => {
@@ -27,20 +26,20 @@ router.post('/login', async (req: IRequest, res: Response) => {
 
     if (!user) {
         return res.status(UNAUTHORIZED).json({
-            error: Consts.ERR_LOGIN_FAILED,
+            error: Consts.ERR_LOGIN_FAILED
         });
     }
     /* Check password */
     const pwdPassed = await bcrypt.compare(password, user.password);
     if (!pwdPassed) {
         return res.status(UNAUTHORIZED).json({
-            error: Consts.ERR_LOGIN_FAILED,
+            error: Consts.ERR_LOGIN_FAILED
         });
     }
     /* Setup Admin JWT */
     const jwt = await jwtService.createJWT({
         id: user.id,
-        role: user.role,
+        role: user.role
     });
 
     res.header(Consts.xAuth, jwt).send({ user });

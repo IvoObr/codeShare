@@ -19,9 +19,9 @@ export default class Mongo {
             logger.success("Connected to codeShare DB");
             Mongo.db = db;
 
-        } catch(error) {
+        } catch (error) {
             await client.close();
-            throw(error);
+            throw (error);
         }
     }
 }

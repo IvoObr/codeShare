@@ -11,12 +11,10 @@ const router = Router();
 
 const { BAD_REQUEST, CREATED, OK } = StatusCodes;
 
-
 // TODO create class UserRouter
 // class UserRouter extends Router {
 
 // }
-
 
 /* GET /api/user/all */
 router.get('/all', async (req: Request, res: Response) => {
@@ -31,7 +29,7 @@ router.post('/add', async (req: IRequest, res: Response) => {
         const { user } = req.body;
         if (!user) {
             return res.status(BAD_REQUEST).json({
-                error: Consts.ERR_MISSING_PARAMETER,
+                error: Consts.ERR_MISSING_PARAMETER
             });
         }
 
@@ -44,10 +42,8 @@ router.post('/add', async (req: IRequest, res: Response) => {
             user?.id,
             user?.name
         ).validate();
-
     
         // = await Mongo.db.collection(Consts.USER).insertOne(newUser);
-
 
         return res.status(CREATED).end();
     } catch (error) {
@@ -61,7 +57,7 @@ router.put('/update', async (req: IRequest, res: Response) => {
     const { user } = req.body;
     if (!user) {
         return res.status(BAD_REQUEST).json({
-            error: Consts.ERR_MISSING_PARAMETER,
+            error: Consts.ERR_MISSING_PARAMETER
         });
     }
     user.id = Number(user.id);

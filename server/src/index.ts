@@ -32,12 +32,12 @@ class Main {
             name: 'env',
             alias: 'e',
             defaultValue: 'development',
-            type: String,
+            type: String
         }]);
 
         /* Set the env file  */
         const result2: dotenv.DotenvConfigOutput = dotenv.config({
-            path: `./env/${options.env as string}.env`,
+            path: `./env/${options.env as string}.env`
         });
 
         if (result2.error) {
@@ -48,16 +48,14 @@ class Main {
     }
 } 
 
-
 try {
     throw new UserError(ErrorType.INVALID_EMAIL);
 } catch (error) {
 
-    logger.debug('Debug message');
+    logger.inspect('inspect message');
     logger.info('info message');
     logger.warn('warn message');
     logger.success('success message');
-
     logger.error(error);
 }
 

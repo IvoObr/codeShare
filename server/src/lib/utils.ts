@@ -1,6 +1,5 @@
 import logger from './Logger';
 
-
 export const pErr = (err: Error): void => err && logger.error(err);
 
 export const getRandomInt = (): number => {
