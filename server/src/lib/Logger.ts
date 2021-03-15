@@ -1,40 +1,29 @@
-// import Logger from 'jet-logger';
-// import colors from 'colors';
-
-// class logger extends Logger {
-
-//     success(msg: string): void {
-//         Logger.Info(msg.yellow);
-//     }
-
-//     info(msg: string): void {
-//         Logger.Info(msg);
-//     }
-
-//     warn(msg: string): void {
-//         Logger.Warn(msg);
-//     }
-
-//     debug(msg: string): void {
-//         Logger.Imp(msg.grey);
-//     }
-
-//     error(msg: string | Error): void {
-//         Logger.Err(msg, true);
-//     }
-// }
-
-// export default new logger();
-
 import colors from 'colors';
 import fs from 'fs';
 
+export type colorT = "red" | "green" | "yellow" | "magenta";
+
+export interface ILogLevel {
+    [key: string]: ILogLevelDetails
+}
+
+export interface ILogLevelDetails {
+    color: colorT,
+    prefix: string;
+}
+
+/*
+hard code colour
+write file option in the constructor
+file name
+*/
+
 class logger {
 
-    private readonly DEFAULT_LOG_FILE_NAME: string = 'jet-logger.log';
+    private logFileName: string = 'jet-logger.log';
+    private writeInFile: boolean = true;
 
-
-    private readonly Levels: any = {
+    private readonly Levels: ILogLevel = {
         info: {
             color: 'green',
             prefix: 'INFO'
@@ -53,63 +42,71 @@ class logger {
         }
     }
 
-    debug(content: any) {
-        this.printLogHelper(content, this.Levels.info);
+    debug(msg: string): void {
+        this.printLogHelper(msg, this.Levels.info);
     }
 
-    info(content: any) {
-        this.printLogHelper(content, this.Levels.info);
+    info(msg: string): void {
+        this.printLogHelper(msg, this.Levels.info);
     }
 
-    success(content:any) {
-        this.printLogHelper(content, this.Levels.imp);
+    success(msg: string): void {
+        this.printLogHelper(msg, this.Levels.imp);
     }
 
-    warn(content:any) {
-        this.printLogHelper(content, this.Levels.warn);
+    warn(msg: string): void {
+        this.printLogHelper(msg, this.Levels.warn);
     }
 
-    error(content:any) {
-        this.printLogHelper(content, this.Levels.err);
+    error(msg: string): void {
+        this.printLogHelper(msg, this.Levels.err);
     }
 
-    printLogHelper(content:any, level:any) {
-        this.PrintLog(content, level,);
+    printLogHelper(msg: string, level: ILogLevelDetails): void {
+        this.printLog(msg, level);
     }
 
-    PrintLog(content:any, level:any) {
-     
-        content = level.prefix + ': ' + content; // todo CONTENT LINE
-        const time: string = '[' + new Date().toISOString() + '] ';
-        content = time + content;
-        const colorFn: any = colors[ level.color ];
-        console.log(colorFn(content));
+    printLog(msg: any, level: ILogLevelDetails): void {
 
-        content + '\n';
-        this.WriteToFile(content, this.DEFAULT_LOG_FILE_NAME); 
- 
-    }
-    WriteToFile(content: any, filePath: any) {
-        try {
-            const fileExists = this.CheckExists(filePath);
-            if (fileExists) {
-                fs.appendFileSync(filePath, content);
-            } else {
-                fs.writeFileSync(filePath, content);
-            }
-        } catch (err) {
-            console.error(err);
+        msg = level.prefix + ': ' + msg;
+        const time: string = '[' + new Date().toISOString().replace('T', ' ').substring(0, 19) + '] ';
+        msg = time + msg;
+        const colorFn: colors.Color = colors[ level.color ];
+        console.log(colorFn(msg));
+
+        if (this.writeInFile) {   
+            msg += '\r\n';
+            this.writeToFile(msg); 
         }
     }
-    CheckExists(filePath: any) {
+
+    writeToFile(msg: string): void {
         try {
-            fs.accessSync(filePath);
+            const fileExists: boolean = this.doFileExist();
+
+            if (fileExists) {
+                fs.appendFileSync(this.logFileName, msg);
+
+            } else {
+                fs.writeFileSync(this.logFileName, msg);
+            }
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    doFileExist(): boolean {
+        try {
+            fs.accessSync(this.logFileName);
             return true;
-        } catch (e) {
+
+        } catch (error) {
             return false;
         }
     }
 
 }
+
 export default new logger();
   
