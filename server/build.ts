@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import Logger from 'jet-logger';
+import logger from 'logger-mogger-js';
 
 try {
     // Remove current build
@@ -11,5 +11,5 @@ try {
     fs.copySync('./env', './dist/env');
 
 } catch (err) {
-    Logger.Err(err);
+    logger.error(err);
 }

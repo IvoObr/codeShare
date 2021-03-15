@@ -28,7 +28,7 @@ export default class Middleware {
             }
         } catch (err) {
             return res.status(UNAUTHORIZED).json({
-                error: err.message,
+                error: err.message
             });
         }
     }

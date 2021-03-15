@@ -1,4 +1,4 @@
-import logger from '@logger';''
+import logger from 'logger-mogger-js';
 import * as Consts from '@constants';
 import { MongoClient, Db } from 'mongodb';
 
@@ -10,7 +10,7 @@ export default class Mongo {
     static db: Db;
     
     public async connect(): Promise<void> {
-        const client = new MongoClient(this.uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        const client: MongoClient = new MongoClient(this.uri, { useNewUrlParser: true, useUnifiedTopology: true });
         try {
             await client.connect();
             const db: Db = client.db("codeShare");
@@ -19,9 +19,9 @@ export default class Mongo {
             logger.success("Connected to codeShare DB");
             Mongo.db = db;
 
-        } catch(error) {
+        } catch (error) {
             await client.close();
-            throw(error)
+            throw (error);
         }
     }
 }

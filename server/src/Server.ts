@@ -2,7 +2,7 @@ import cors from 'cors';
 import path from 'path';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import logger from '@logger';
+import logger from 'logger-mogger-js';
 import 'express-async-errors';
 import BaseRouter from './routes';
 import * as Consts from '@constants';
@@ -50,7 +50,7 @@ class Server {
     private printErrors() : Server {
         /* Print API errors */
         this.app.use((error: Error, req: Request, res: Response) => {
-            logger.err(error);
+            logger.error(error);
             return res.status(StatusCodes.BAD_REQUEST)
                 .json({ error: error.message });
         });

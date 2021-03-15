@@ -4,17 +4,21 @@ import StatusCodes from 'http-status-codes';
 import { Request, Response, Router } from 'express';
 import * as Consts from '@constants';
 import User from "@entities/User";
-import  logger from '@logger';
+import logger from 'logger-mogger-js';
 
 const router = Router();
 //  instance of user dal
 
 const { BAD_REQUEST, CREATED, OK } = StatusCodes;
 
+// TODO create class UserRouter
+// class UserRouter extends Router {
+
+// }
 
 /* GET /api/user/all */
 router.get('/all', async (req: Request, res: Response) => {
-    const users = await Mongo.db.collection(Consts.USER).find().toArray();
+    const users = await Mongo.db.collection(Consts.USERS).find().toArray();
 
     return res.status(OK).send(users);
 });
@@ -25,7 +29,7 @@ router.post('/add', async (req: IRequest, res: Response) => {
         const { user } = req.body;
         if (!user) {
             return res.status(BAD_REQUEST).json({
-                error: Consts.ERR_MISSING_PARAMETER,
+                error: Consts.ERR_MISSING_PARAMETER
             });
         }
 
@@ -38,14 +42,12 @@ router.post('/add', async (req: IRequest, res: Response) => {
             user?.id,
             user?.name
         ).validate();
-
     
-            // = await Mongo.db.collection(Consts.USER).insertOne(newUser);
-
+        // = await Mongo.db.collection(Consts.USER).insertOne(newUser);
 
         return res.status(CREATED).end();
     } catch (error) {
-        logger.err(error);
+        logger.error(error);
         return res.status(BAD_REQUEST).end();
     }
 });
@@ -55,7 +57,7 @@ router.put('/update', async (req: IRequest, res: Response) => {
     const { user } = req.body;
     if (!user) {
         return res.status(BAD_REQUEST).json({
-            error: Consts.ERR_MISSING_PARAMETER,
+            error: Consts.ERR_MISSING_PARAMETER
         });
     }
     user.id = Number(user.id);
