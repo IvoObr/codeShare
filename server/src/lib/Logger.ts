@@ -26,104 +26,90 @@
 
 // export default new logger();
 
-
 import colors from 'colors';
 import fs from 'fs';
 
-const Levels: any = {
-    info: {
-        color: 'green',
-        prefix: 'INFO',
-    },
-    imp: {
-        color: 'magenta',
-        prefix: 'IMPORTANT',
-    },
-    warn: {
-        color: 'yellow',
-        prefix: 'WARNING',
-    },
-    err: {
-        color: 'red',
-        prefix: 'ERROR',
-    }
-};
-
 class logger {
 
-    Info (content:any) {
-        this.PrintLogHelper(content, Levels.info);
-    }
-    Imp (content:any) {
-        this.PrintLogHelper(content, Levels.imp);
-    }
-    Warn(content:any) {
-        this.PrintLogHelper(content, Levels.warn);
+    private readonly DEFAULT_LOG_FILE_NAME: string = 'jet-logger.log';
+
+
+    private readonly Levels: any = {
+        info: {
+            color: 'green',
+            prefix: 'INFO'
+        },
+        imp: {
+            color: 'magenta',
+            prefix: 'IMPORTANT'
+        },
+        warn: {
+            color: 'yellow',
+            prefix: 'WARNING'
+        },
+        err: {
+            color: 'red',
+            prefix: 'ERROR'
+        }
     }
 
-    Err (content:any) {
-        this.PrintLogHelper(content, Levels.err);
+    debug(content: any) {
+        this.printLogHelper(content, this.Levels.info);
     }
 
-    PrintLogHelper (content:any, level:any) {
-        this.PrintLog(content, level);
+    info(content: any) {
+        this.printLogHelper(content, this.Levels.info);
     }
 
-    info (content: any) {
-        this.printLogHelper(content, Levels.info);
+    success(content:any) {
+        this.printLogHelper(content, this.Levels.imp);
     }
 
-    imp (content:any) {
-        this.printLogHelper(content, Levels.imp);
+    warn(content:any) {
+        this.printLogHelper(content, this.Levels.warn);
     }
 
-    warn (content:any) {
-        this.printLogHelper(content, Levels.warn);
+    error(content:any) {
+        this.printLogHelper(content, this.Levels.err);
     }
 
-    err (content:any) {
-        this.printLogHelper(content, Levels.err);
-    }
-
-    printLogHelper (content:any, level:any) {
+    printLogHelper(content:any, level:any) {
         this.PrintLog(content, level,);
     }
 
-    PrintLog (content:any, level:any) {
+    PrintLog(content:any, level:any) {
      
         content = level.prefix + ': ' + content; // todo CONTENT LINE
         const time: string = '[' + new Date().toISOString() + '] ';
         content = time + content;
         const colorFn: any = colors[ level.color ];
         console.log(colorFn(content));
+
+        content + '\n';
+        this.WriteToFile(content, this.DEFAULT_LOG_FILE_NAME); 
  
     }
-    WriteToFile (content: any, filePath: any) {
+    WriteToFile(content: any, filePath: any) {
         try {
             const fileExists = this.CheckExists(filePath);
             if (fileExists) {
                 fs.appendFileSync(filePath, content);
-            }
-            else {
+            } else {
                 fs.writeFileSync(filePath, content);
             }
-        }
-        catch (err) {
+        } catch (err) {
             console.error(err);
         }
     }
-    CheckExists (filePath: any) {
+    CheckExists(filePath: any) {
         try {
             fs.accessSync(filePath);
             return true;
-        }
-        catch (e) {
+        } catch (e) {
             return false;
         }
     }
 
-    DEFAULT_LOG_FILE_NAME = 'jet-logger.log';
 }
 export default new logger();
-
   

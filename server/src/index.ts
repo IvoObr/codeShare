@@ -56,7 +56,7 @@ try {
     logger.debug('Debug message');
     logger.info('info message');
     logger.warn('warn message');
-    logger.success('succes message');
+    logger.success('success message');
 
     logger.error(error);
 }
