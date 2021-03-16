@@ -1,4 +1,4 @@
-import logger from 'logger-mogger-js';
+import logger from '@7dev-works/logger-mogger-js';
 
 export const pErr = (err: Error): void => err && logger.error(err);
 

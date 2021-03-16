@@ -1,7 +1,7 @@
 import { Mongo } from '@db';
 import dotenv from 'dotenv';
 import Server from '@server';
-import logger from 'logger-mogger-js';
+import logger from '@7dev-works/logger-mogger-js';
 import 'module-alias/register';
 import commandLineArgs from 'command-line-args';
 import * as core from "express-serve-static-core";
@@ -47,7 +47,7 @@ class Main {
 
         return this;
     }
-} 
+}
 
 try {
     throw new UserError(ErrorType.INVALID_EMAIL);
