@@ -15,6 +15,11 @@ export interface IRequest extends Request {
   }
 } 
 
+export interface IClientData {
+  id: number;
+  role: number;
+}
+
 export interface IUser {
   id: number;
   name: string;
@@ -22,4 +27,12 @@ export interface IUser {
   password: string;
   role: UserRolesType;
   tokens: string[]
+}
+
+export interface IUserDal {
+  getOne: (email: string) => Promise<IUser | null>;
+  getAll: () => Promise<IUser[]>;
+  add: (user: IUser) => Promise<void>;
+  update: (user: IUser) => Promise<void>;
+  delete: (id: number) => Promise<void>;
 }

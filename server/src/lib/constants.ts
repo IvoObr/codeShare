@@ -8,4 +8,3 @@ export const saltRounds: number = 12;
 export const dbName: string = 'codeShare';
 export const SNIPPETS: string = "snippets";
 export const USERS: string = "users";
-

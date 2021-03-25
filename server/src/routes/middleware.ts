@@ -1,14 +1,13 @@
-import StatusCodes from 'http-status-codes';
 import { Request, Response, NextFunction } from 'express';
-import { UserRolesType } from '@enums';
+import { UserRolesType, StatusCodes } from '@enums';
 import { JwtService } from '../lib/JwtService';
-import { UserRequest, IRequest } from '@interfaces';
+import { UserRequest, IRequest, IClientData } from '@interfaces';
 import * as Consts from '@constants';
 
-const jwtService = new JwtService();
-const { UNAUTHORIZED } = StatusCodes;
-
 export default class Middleware {
+
+    private static jwtService = new JwtService();
+
     /* Middleware to verify if user is an admin */
     public static adminMW = async (req: Request, res: Response, next: NextFunction) => {
         try {
@@ -19,7 +18,7 @@ export default class Middleware {
                 throw Error('JWT not present in request.');
             }
             /* Make sure user role is an admin */
-            const clientData = await jwtService.decodeJwt(jwt);
+            const clientData: IClientData = await Middleware.jwtService.decodeJwt(jwt);
             if (clientData.role === UserRolesType.Admin) {
                 res.locals.userId = clientData.id;
                 next();
@@ -27,7 +26,7 @@ export default class Middleware {
                 throw Error('JWT not present in request.');
             }
         } catch (err) {
-            return res.status(UNAUTHORIZED).json({
+            return res.status(StatusCodes.UNAUTHORIZED).json({
                 error: err.message
             });
         }

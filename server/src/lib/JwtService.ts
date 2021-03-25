@@ -1,10 +1,6 @@
 import randomString from 'randomstring';
 import jsonwebtoken, { VerifyErrors } from 'jsonwebtoken';
-
-interface IClientData {
-    id: number;
-    role: number;
-}
+import { IClientData } from '@interfaces';
 
 export class JwtService {
 

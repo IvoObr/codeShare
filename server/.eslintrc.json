@@ -57,7 +57,7 @@
         // ],
         "no-debugger": 0,
         "prefer-const": "error",
-        "@typescript-eslint/no-unused-vars": "error",
+        "@typescript-eslint/no-unused-vars": "warn",
         "@typescript-eslint/ban-ts-comment": "warn",
         // "no-unsafe-any": "error",
         "@typescript-eslint/no-unsafe-return": 0,

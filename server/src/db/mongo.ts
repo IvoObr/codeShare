@@ -1,4 +1,4 @@
-import logger from '@7dev-works/logger-mogger-js';
+import logger from '@logger';
 import * as Consts from '@constants';
 import { MongoClient, Db } from 'mongodb';
 

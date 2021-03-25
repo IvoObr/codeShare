@@ -1,15 +1,13 @@
 import { Mongo } from '@db';
 import { UserRequest, IRequest } from '@interfaces';
-import StatusCodes from 'http-status-codes';
+import { StatusCodes } from '@enums';
 import { Request, Response, Router } from 'express';
 import * as Consts from '@constants';
 import User from "@entities/User";
-import logger from '@7dev-works/logger-mogger-js';
+import logger from '@logger';
 
 const router = Router();
 //  instance of user dal
-
-const { BAD_REQUEST, CREATED, OK } = StatusCodes;
 
 // TODO create class UserRouter
 // class UserRouter extends Router {
@@ -20,7 +18,7 @@ const { BAD_REQUEST, CREATED, OK } = StatusCodes;
 router.get('/all', async (req: Request, res: Response) => {
     const users = await Mongo.db.collection(Consts.USERS).find().toArray();
 
-    return res.status(OK).send(users);
+    return res.status(StatusCodes.OK).send(users);
 });
 
 /* POST /api/user/add */
@@ -28,7 +26,7 @@ router.post('/add', async (req: IRequest, res: Response) => {
     try {
         const { user } = req.body;
         if (!user) {
-            return res.status(BAD_REQUEST).json({
+            return res.status(StatusCodes.BAD_REQUEST).json({
                 error: Consts.ERR_MISSING_PARAMETER
             });
         }
@@ -45,10 +43,10 @@ router.post('/add', async (req: IRequest, res: Response) => {
 
         // = await Mongo.db.collection(Consts.USER).insertOne(newUser);
 
-        return res.status(CREATED).end();
+        return res.status(StatusCodes.CREATED).end();
     } catch (error) {
         logger.error(error);
-        return res.status(BAD_REQUEST).end();
+        return res.status(StatusCodes.BAD_REQUEST).end();
     }
 });
 
@@ -56,20 +54,20 @@ router.post('/add', async (req: IRequest, res: Response) => {
 router.put('/update', async (req: IRequest, res: Response) => {
     const { user } = req.body;
     if (!user) {
-        return res.status(BAD_REQUEST).json({
+        return res.status(StatusCodes.BAD_REQUEST).json({
             error: Consts.ERR_MISSING_PARAMETER
         });
     }
     user.id = Number(user.id);
     // TODO user user
-    return res.status(OK).end();
+    return res.status(StatusCodes.OK).end();
 });
 
 /* DELETE /api/user/delete/:id */
 router.delete('/delete/:id', async (req: IRequest, res: Response) => {
     const { id } = req.params;
     // TODO delete user by id
-    return res.status(OK).end();
+    return res.status(StatusCodes.OK).end();
 });
 
 export default router;

@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import logger from '@7dev-works/logger-mogger-js';
+import  logger from './src/lib/logger';
 
 try {
     // Remove current build

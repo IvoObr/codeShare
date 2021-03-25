@@ -1,12 +1,4 @@
-import { IUser } from '@interfaces';
-
-export interface IUserDal {
-    getOne: (email: string) => Promise<IUser | null>;
-    getAll: () => Promise<IUser[]>;
-    add: (user: IUser) => Promise<void>;
-    update: (user: IUser) => Promise<void>;
-    delete: (id: number) => Promise<void>;
-}
+import { IUser, IUserDal } from '@interfaces';
 
 class UserDal implements IUserDal {
 

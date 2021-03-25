@@ -1,6 +1,5 @@
-import { IUser } from '@entities/User';
+import { IUser, IUserDal } from '@interfaces';
 import { getRandomInt } from 'src/lib/utils';
-import { IUserDal } from './UserDal';
 import MockDaoMock from '../MockDb/MockDal.mock';
 
 class UserDal extends MockDaoMock implements IUserDal {

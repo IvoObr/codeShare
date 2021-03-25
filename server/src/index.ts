@@ -1,14 +1,20 @@
+import http from 'http';
 import { Mongo } from '@db';
 import dotenv from 'dotenv';
 import Server from '@server';
-import logger from '@7dev-works/logger-mogger-js';
+import logger from '@logger';
+import colors from 'colors';
 import 'module-alias/register';
 import commandLineArgs from 'command-line-args';
 import * as core from "express-serve-static-core";
 import { UserError } from "@errors";
 import { ErrorType } from "@enums";
 
+colors.enable();
+
 class Main {
+
+    // private server: http.Server;
 
     public async startServer(): Promise<void> {
         try {
@@ -16,8 +22,10 @@ class Main {
             const port: number = Number(process.env.PORT || 3000);
 
             const app: core.Express = new Server().start();
-            app.listen(port, (): void => logger.success(
-                'Express server started on port: ' + port.toString().rainbow));
+            const server: http.Server = app.listen(port, (): void => logger.success(
+                'Express server started on port: '.yellow + port.toString().rainbow));
+                
+            this.gracefulShutDownOnError(server);
 
         } catch (error) {
             logger.error(error);
@@ -47,17 +55,15 @@ class Main {
 
         return this;
     }
-}
-
-try {
-    throw new UserError(ErrorType.INVALID_EMAIL);
-} catch (error) {
-
-    logger.inspect('inspect message');
-    logger.info('info message');
-    logger.warn('warn message');
-    logger.success('success message');
-    logger.error(error);
+    
+    private gracefulShutDownOnError(server: http.Server): void {
+        
+        process.on('SIGTERM', (): void => {
+            server.close((): void => {
+                logger.warn('SIGTERM: REST Server gracefully terminated.');
+            });
+        });
+    }
 }
 
 new Main().setEnv().startServer();

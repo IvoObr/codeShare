@@ -2,12 +2,12 @@ import cors from 'cors';
 import path from 'path';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import logger from '@7dev-works/logger-mogger-js';
+import logger from '@logger';
 import 'express-async-errors';
 import BaseRouter from './routes';
 import * as Consts from '@constants';
 import bodyParser from 'body-parser';
-import StatusCodes from 'http-status-codes';
+import { StatusCodes } from '@enums';
 import * as core from "express-serve-static-core";
 import express, { Request, Response } from 'express';
 

@@ -1,12 +1,10 @@
 import * as Consts from '@constants';
-import StatusCodes from 'http-status-codes';
+import { StatusCodes } from '@enums';
 import { Request, Response, Router } from 'express';
 import { UserRequest, IRequest } from '@interfaces';
 
 const router = Router();
 // todo instance of user dal
-
-const { BAD_REQUEST, CREATED, OK } = StatusCodes;
 
 /* GET /api/snippet/all */
 
@@ -15,7 +13,7 @@ router.get('/all', async (req: Request, res: Response) => {
     //@ts-ignore: todo put interface
     const snippets: any = null; // todo get all snippet
 
-    return res.status(OK).json({ snippets });
+    return res.status(StatusCodes.OK).json({ snippets });
 });
 
 /* POST /api/snippet/add */
@@ -29,7 +27,7 @@ router.post('/add', async (req: IRequest, res: Response) => {
     // }
 
     // todo add snippet
-    return res.status(CREATED).end();
+    return res.status(StatusCodes.CREATED).end();
 });
 
 /* PUT /api/snippet/update */
@@ -37,13 +35,13 @@ router.post('/add', async (req: IRequest, res: Response) => {
 router.put('/update', async (req: IRequest, res: Response) => {
     const { user } = req.body;
     if (!user) {
-        return res.status(BAD_REQUEST).json({
+        return res.status(StatusCodes.BAD_REQUEST).json({
             error: Consts.ERR_MISSING_PARAMETER
         });
     }
     user.id = Number(user.id);
     // todo snippet user
-    return res.status(OK).end();
+    return res.status(StatusCodes.OK).end();
 });
 
 /* DELETE /api/snippet/delete/:id */
@@ -51,7 +49,7 @@ router.put('/update', async (req: IRequest, res: Response) => {
 router.delete('/delete/:id', async (req: IRequest, res: Response) => {
     const { id } = req.params;
     // todo delete snippet by id
-    return res.status(OK).end();
+    return res.status(StatusCodes.OK).end();
 });
 
 export default router;
