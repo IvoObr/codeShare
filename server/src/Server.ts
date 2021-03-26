@@ -4,12 +4,12 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import logger from '@logger';
 import 'express-async-errors';
-import BaseRouter from './routes';
-import * as Consts from '@constants';
+import { AuthRouter, SnippetRouter, UserRouter } from '@routes';
+import * as Const from '@constants';
 import bodyParser from 'body-parser';
 import { StatusCodes } from '@enums';
 import * as core from "express-serve-static-core";
-import express, { Request, Response } from 'express';
+import express, { Request, Response, Router } from 'express';
 
 class Server {
 
@@ -21,17 +21,17 @@ class Server {
         this.app = express();
     }
 
-    private useLibs(): Server {
+    private useLibs(): this {
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
         this.app.use(bodyParser.json());
         this.app.use(express.static(this.staticDir));
-        this.app.use(cors({ origin: `http://localhost`, exposedHeaders: [Consts.xAuth] }));
+        this.app.use(cors({ origin: `http://localhost`, exposedHeaders: [Const.xAuth]}));
 
         return this;
     }
 
-    private prepareEnv(): Server {
+    private prepareEnv(): this {
         /* Show routes called in console during development */
         process.env.NODE_ENV === 'development' && this.app.use(morgan('dev'));
         /* Security */
@@ -40,15 +40,22 @@ class Server {
         return this;
     }
 
-    private useAPIs(): Server {
-        /* Add APIs */
-        this.app.use('/api', BaseRouter);
+    private useAPIs(): this {
+    /* Add APIs */
+        const router: Router = Router(); 
 
+        router.use('/snippet', AuthRouter);
+        router.use('/snippet', SnippetRouter);
+        router.use('/user', UserRouter);
+        
+        this.app.use('/api', router);
         return this;
     }
 
-    private printErrors(): Server {
+    private printErrors(): this {
         /* Print API errors */
+
+        // todo fix
         this.app.use((error: Error, req: Request, res: Response) => {
             logger.error(error);
             return res.status(StatusCodes.BAD_REQUEST)

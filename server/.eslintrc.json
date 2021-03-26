@@ -46,6 +46,7 @@
                 "arraysInObjects": false
             }
         ],
+         "@typescript-eslint/unbound-method": "off",
         "no-multi-spaces": "error",
         "array-bracket-spacing": [
             "error",

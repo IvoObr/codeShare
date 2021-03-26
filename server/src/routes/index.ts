@@ -1,13 +1,9 @@
-import { Router } from 'express';
-import SnippetRouter from './Snippets';
+import SnippetRouter from './SnippetsRoute';
 import UserRouter from './UsersRoute';
-import AuthRouter from './Auth';
+import AuthRouter from './AuthRoute';
 
-const router = Router();
-
-router.use('/snippet', SnippetRouter);
-// router.use('/tag', TagRouter); todo
-router.use('/user', UserRouter);
-router.use('/auth', AuthRouter);
-
-export default router;
+export {
+    AuthRouter,
+    UserRouter,
+    SnippetRouter
+};

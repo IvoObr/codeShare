@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import validator from 'validator';
 import { IUser } from "@interfaces";
-import * as Consts from '@constants';
+import * as Const from '@constants';
 import { UserError } from '../lib/Errors';
 import { UserRolesType, ErrorType } from '@enums';
 
@@ -40,7 +40,7 @@ export default class User implements IUser {
             throw new UserError(ErrorType.INVALID_NAME);
         }
 
-        const salt: string = await bcrypt.genSalt(Consts.saltRounds);
+        const salt: string = await bcrypt.genSalt(Const.saltRounds);
         this.password = await bcrypt.hash(this.password, salt);
 
         this.email = this.email || '';

@@ -28,6 +28,7 @@
         "@lib": "dist/lib",
         "@dals": "dist/dals",
         "@server": "dist/Server",
+        "@routes": "dist/routes",
         "@enums": "dist/lib/enums",
         "@logger": "dist/lib/logger",
         "@errors": "dist/lib/Errors",
@@ -43,7 +44,7 @@
         "node_modules/"
     ],
     "dependencies": {
-        "@7dev-works/logger": "^2.0.1",
+        "@7dev-works/logger": "^2.0.2",
         "@types/axios": "^0.14.0",
         "@types/cors": "^2.8.8",
         "@types/jest": "^26.0.15",

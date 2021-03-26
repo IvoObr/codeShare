@@ -10,14 +10,13 @@ import * as core from "express-serve-static-core";
 import { UserError } from "@errors";
 import { ErrorType } from "@enums";
 
-colors.enable();
-
 class Main {
 
     // private server: http.Server;
 
     public async startServer(): Promise<void> {
         try {
+            colors.enable();
             await new Mongo().connect();
             const port: number = Number(process.env.PORT || 3000);
 
@@ -26,6 +25,7 @@ class Main {
                 'Express server started on port: '.yellow + port.toString().rainbow));
                 
             this.gracefulShutDownOnError(server);
+            logger.info('process id:', process.pid.toString().yellow);
 
         } catch (error) {
             logger.error(error);
@@ -34,7 +34,6 @@ class Main {
     }
 
     public setEnv(): this {
-
         /* Setup command line options */
         const options: commandLineArgs.CommandLineOptions =
             commandLineArgs([{
@@ -45,12 +44,12 @@ class Main {
             }]);
 
         /* Set the env file  */
-        const result2: dotenv.DotenvConfigOutput = dotenv.config({
+        const result: dotenv.DotenvConfigOutput = dotenv.config({
             path: `./env/${options.env as string}.env`
         });
 
-        if (result2.error) {
-            throw result2.error;
+        if (result.error) {
+            throw result.error;
         }
 
         return this;
@@ -60,7 +59,7 @@ class Main {
         
         process.on('SIGTERM', (): void => {
             server.close((): void => {
-                logger.warn('SIGTERM: REST Server gracefully terminated.');
+                logger.success('SIGTERM:'.yellow, 'REST Server gracefully terminated.');
             });
         });
     }
