@@ -41,10 +41,9 @@ class Server {
     }
 
     private useAPIs(): this {
-    /* Add APIs */
         const router: Router = Router(); 
 
-        router.use('/snippet', AuthRouter);
+        router.use('/auth', AuthRouter);
         router.use('/snippet', SnippetRouter);
         router.use('/user', UserRouter);
         

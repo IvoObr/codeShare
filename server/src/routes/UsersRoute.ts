@@ -21,21 +21,18 @@ class UserRouter extends ApiRouter {
     }
 
     public getRouter(): Router {
-        
         this.router.use('/user', this.router);
         return this.router;
     }
 
     protected initRoutes(): void {
-        /* GET /api/user/all */
-        this.router.get('/all', async (req: Request, res: Response) => {
+        this.router.get('/all', async (req: Request, res: Response): Promise<Response> => {
             const users = await Mongo.db.collection(Const.USERS).find().toArray(); // todo goes to UserDal
 
             return res.status(StatusCodes.OK).send(users);
         });
 
-        /* POST /api/user/add */
-        this.router.post('/add', async (req: IRequest, res: Response) => {
+        this.router.post('/add', async (req: IRequest, res: Response): Promise<Response | void> => {
             try {
                 const { user } = req.body;
                 if (!user) {
@@ -63,8 +60,7 @@ class UserRouter extends ApiRouter {
             }
         });
 
-        /* PUT /api/user/update */
-        this.router.put('/update', async (req: IRequest, res: Response) => {
+        this.router.put('/update', async (req: IRequest, res: Response): Promise<Response | void> => {
             const { user } = req.body;
             if (!user) {
                 return res.status(StatusCodes.BAD_REQUEST).json({
@@ -76,8 +72,7 @@ class UserRouter extends ApiRouter {
             return res.status(StatusCodes.OK).end();
         });
 
-        /* DELETE /api/user/delete/:id */
-        this.router.delete('/delete/:id', async (req: IRequest, res: Response) => {
+        this.router.delete('/delete/:id', async (req: IRequest, res: Response): Promise<void> => {
             const { id } = req.params;
             // TODO delete user by id
             return res.status(StatusCodes.OK).end();
