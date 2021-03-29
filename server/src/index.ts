@@ -3,34 +3,50 @@ import { Mongo } from '@db';
 import dotenv from 'dotenv';
 import Server from '@server';
 import logger from '@logger';
-import colors from 'colors';
 import 'module-alias/register';
 import commandLineArgs from 'command-line-args';
 import * as core from "express-serve-static-core";
 import { UserError } from "@errors";
 import { ErrorType } from "@enums";
+import colors from 'colors';
+colors.enable();
+
 
 class Main {
 
-    // private server: http.Server;
-
     public async startServer(): Promise<void> {
         try {
-            colors.enable();
             await new Mongo().connect();
-            const port: number = Number(process.env.PORT || 3000);
+            const port: string = process.env.PORT || '3000';
 
             const app: core.Express = new Server().start();
-            const server: http.Server = app.listen(port, (): void => logger.success(
-                'Express server started on port: '.yellow + port.toString().rainbow));
-                
-            this.gracefulShutDownOnError(server);
+            const server: http.Server = app.listen(Number(port), (): void => {
+                logger.success(('Express server started on port: '.yellow + port.rainbow).bold);
+            });
+           
+            this.listenForError(server);
+            this.listenForSIGTERM(server);
             logger.info('process id:', process.pid.toString().yellow);
 
-        } catch (error) {
+        } catch (error: any) {
             logger.error(error);
-            process.exit(1);
+            process.exit(1); // app crashed
         }
+    }
+
+    private listenForError(server: http.Server): void {
+        server.on('error', (error: Error): void => {
+            logger.error('Server unable to start'.red.bold, error);
+            process.exit(0); // clean exit
+        });
+    }
+
+    private listenForSIGTERM(server: http.Server): void {
+        process.on('SIGTERM', (): void => {
+            server.close((): void => {
+                logger.success('SIGTERM:'.yellow, 'REST Server gracefully terminated.');
+            });
+        });
     }
 
     public setEnv(): this {
@@ -53,15 +69,6 @@ class Main {
         }
 
         return this;
-    }
-    
-    private gracefulShutDownOnError(server: http.Server): void {
-        
-        process.on('SIGTERM', (): void => {
-            server.close((): void => {
-                logger.success('SIGTERM:'.yellow, 'REST Server gracefully terminated.');
-            });
-        });
     }
 }
 

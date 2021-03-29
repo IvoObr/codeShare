@@ -21,7 +21,7 @@ class Server {
         this.app = express();
     }
 
-    private useLibs(): this {
+    private useMiddleware(): this {
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
         this.app.use(bodyParser.json());
@@ -65,7 +65,7 @@ class Server {
     }
 
     public start(): core.Express {
-        return this.useLibs().prepareEnv().useAPIs().printErrors().app;
+        return this.useMiddleware().prepareEnv().useAPIs().printErrors().app;
     }
 }
 

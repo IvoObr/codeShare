@@ -2,7 +2,7 @@ import { Mongo } from '@db';
 import { UserRequest, IRequest, IUser } from '@interfaces';
 import { StatusCodes } from '@enums';
 import ApiRouter from './ApiRouter';
-import { Request, Response, Router } from 'express';
+import { Request, Response, Router, NextFunction } from 'express';
 import * as Const from '@constants';
 import User from "@entities/User";
 import logger from '@logger';
@@ -17,12 +17,21 @@ class UserRouter extends ApiRouter {
     constructor() {
         super();
         this.router = Router();
+        this.useMiddleware();
         this.initRoutes();
     }
 
     public getRouter(): Router {
         this.router.use('/user', this.router);
         return this.router;
+    }
+
+    protected useMiddleware(): void {
+        this.router.use((req: IRequest, res: Response, next: NextFunction): void => {
+            // todo something
+            logger.info('User middleware');
+            next();
+        }); 
     }
 
     protected initRoutes(): void {

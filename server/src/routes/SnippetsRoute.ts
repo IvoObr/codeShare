@@ -1,8 +1,9 @@
 import * as Const from '@constants';
 import { StatusCodes } from '@enums';
 import ApiRouter from './ApiRouter';
-import { Request, Response, Router } from 'express';
+import { Request, Response, Router, NextFunction } from 'express';
 import { UserRequest, IRequest } from '@interfaces';
+import logger from '@logger';
 
 class SnippetRouter extends ApiRouter {
 
@@ -11,12 +12,21 @@ class SnippetRouter extends ApiRouter {
     constructor() {
         super();
         this.router = Router();
+        this.useMiddleware();
         this.initRoutes();
     }
 
     public getRouter(): Router {
         this.router.use('/snippet', this.router);
         return this.router;
+    }
+
+    protected useMiddleware(): void {
+        this.router.use((req: IRequest, res: Response, next: NextFunction): void => {
+            // todo something
+            logger.info('Snippet middleware');
+            next();
+        });
     }
 
     protected initRoutes(): void {

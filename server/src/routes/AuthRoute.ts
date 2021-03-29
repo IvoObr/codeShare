@@ -1,10 +1,11 @@
 import bcrypt from 'bcrypt';
-import { Request, Response, Router } from 'express';
+import { Request, Response, Router, NextFunction } from 'express';
 import { StatusCodes } from '@enums';
 import ApiRouter from './ApiRouter';
 import { JwtService } from '../lib/JwtService';
 import { UserRequest, IRequest } from '@interfaces';
 import * as Const from '@constants';
+import logger from '@logger';
 
 // const userDal = new UserDal();
 
@@ -17,12 +18,21 @@ class AuthRouter extends ApiRouter {
         super();
         this.router = Router();
         this.jwtService = new JwtService();
+        this.useMiddleware();
         this.initRoutes();
     }
 
     public getRouter(): Router {
         this.router.use('/auth', this.router);
         return this.router;
+    }
+
+    protected useMiddleware(): void {
+        this.router.use((req: IRequest, res: Response, next: NextFunction): void => {
+            // todo something
+            logger.info('Auth middleware');
+            next();
+        });
     }
 
     protected initRoutes(): void {
