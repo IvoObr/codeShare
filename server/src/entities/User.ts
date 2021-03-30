@@ -3,7 +3,8 @@ import validator from 'validator';
 import { IUser, IUserReq } from "@interfaces";
 import * as Const from '@constants';
 import { UserRolesType, Errors } from '@enums';
-import { Mongo } from '@db';
+import UserDal from '@dals/UserDal';
+import logger from '@logger';
 
 export default class User implements IUser {
 
@@ -49,13 +50,9 @@ export default class User implements IUser {
     }
 
     private async validateEmail(): Promise<void> {
-        const doUserExist: boolean =
-            !!(await Mongo.db
-                .collection(Const.USERS)
-                .find({ email: this.email })
-                .toArray()).length;
-
-        if (doUserExist) {
+        const user: IUser = await UserDal.getUserByEmail(this.email);
+        
+        if (user) {
             throw new Error(Errors.ERROR_USER_EXISTS);
         }
 

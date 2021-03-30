@@ -3,6 +3,8 @@ import { InsertOneWriteOpResult } from 'mongodb';
 import { UserRequest, IRequest, IUser, IUserReq } from '@interfaces';
 import { StatusCodes, Errors, UserRolesType } from '@enums';
 import ApiRouter from './ApiRouter';
+import UserDal from '@dals/UserDal';
+
 import { Request, Response, Router, NextFunction } from 'express';
 import * as Const from '@constants';
 import User from "@entities/User";
@@ -39,8 +41,7 @@ class UserRouter extends ApiRouter {
         // todo login
 
         this.router.get('/all', async (req: Request, res: Response): Promise<Response> => {
-            const users = await Mongo.db.collection(Const.USERS).find().toArray(); // todo goes to UserDal
-
+            const users: IUser[] = await UserDal.getAllUsers();
             return res.status(StatusCodes.OK).send(users);
         });
 
