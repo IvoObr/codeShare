@@ -56,14 +56,14 @@ class SnippetRouter extends ApiRouter {
 
         /* PUT /api/snippet/update */
 
-        this.router.put('/update', async (req: IRequest, res: Response) => {
+        this.router.put('/update', async (req: Request, res: Response) => {
             const { user } = req.body;
             if (!user) {
                 return res.status(StatusCodes.BAD_REQUEST).json({
                     error: Errors.ERROR_MISSING_PARAMETER
                 });
             }
-            user.id = Number(user.id);
+            user._id = Number(user._id);
             // todo snippet user
             return res.status(StatusCodes.OK).end();
         });

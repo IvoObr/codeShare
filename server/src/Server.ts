@@ -41,13 +41,13 @@ class Server {
     }
 
     private useAPIs(): this {
-        const router: Router = Router(); 
+        // const router: Router = Router(); 
 
-        router.use('/auth', AuthRouter);
-        router.use('/snippet', SnippetRouter);
-        router.use('/user', UserRouter);
+        this.app.use('/auth', AuthRouter);
+        this.app.use('/snippet', SnippetRouter);
+        this.app.use('/user', UserRouter);
         
-        this.app.use('/api', router);
+        // this.app.use('/api', router);
         return this;
     }
 

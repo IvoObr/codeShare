@@ -1,4 +1,5 @@
 import { Mongo } from '@db';
+import { InsertOneWriteOpResult } from 'mongodb';
 import { UserRequest, IRequest, IUser, IUserReq } from '@interfaces';
 import { StatusCodes, Errors, UserRolesType } from '@enums';
 import ApiRouter from './ApiRouter';
@@ -34,23 +35,26 @@ class UserRouter extends ApiRouter {
     }
 
     protected initRoutes(): void {
+
+        // todo login
+
         this.router.get('/all', async (req: Request, res: Response): Promise<Response> => {
             const users = await Mongo.db.collection(Const.USERS).find().toArray(); // todo goes to UserDal
 
             return res.status(StatusCodes.OK).send(users);
         });
 
-        this.router.post('/add', async (req: Request, res: Response): Promise<Response | void> => {
+        this.router.post('/register', async (req: Request, res: Response): Promise<Response | void> => {
             try {
                 const newUser: User = await new User(req.body).validate();
 
-                const result =
+                const result: InsertOneWriteOpResult<any> =
                     await Mongo.db
                         .collection(Const.USERS)
                         .insertOne(newUser); // todo goes to UserDal
                 
-                logger.info(result);
-                newUser.id = result.insertedCount;
+                logger.info(result.ops);
+                // newUser._id = result.insertedCount;
                 logger.info(newUser);
 
                 return res.status(StatusCodes.CREATED).end();
@@ -60,14 +64,14 @@ class UserRouter extends ApiRouter {
             }
         });
 
-        this.router.put('/update', async (req: IRequest, res: Response): Promise<Response | void> => {
+        this.router.put('/update', async (req: Request, res: Response): Promise<Response | void> => {
             const { user } = req.body;
             if (!user) {
                 return res.status(StatusCodes.BAD_REQUEST).json({
                     error: Errors.ERROR_MISSING_PARAMETER
                 });
             }
-            user.id = Number(user.id);
+            user._id = Number(user._id);
             // TODO user user
             return res.status(StatusCodes.OK).end();
         });

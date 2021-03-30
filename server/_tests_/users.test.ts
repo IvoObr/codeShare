@@ -8,8 +8,8 @@ describe('users api tests', (): void => {
     it('GET /api/user/all returns all users', async (): Promise<void> => {
         try { 
             const port: number = 3000;
-            const response: AxiosResponse<any> = await axios.get(`http://localhost:${port}/api/user/all`);
-            logger.success('GET /api/user/all response:', response.data);
+            const response: AxiosResponse<any> = await axios.get(`http://localhost:${port}/user/all`);
+            logger.success('GET /user/all response:', response.data);
       
             expect(typeof response.data.length).toBe('number');
             
@@ -19,17 +19,17 @@ describe('users api tests', (): void => {
         }
     });
 
-    it('POST /api/user/add insert user in DB', async (): Promise<void> => {
+    it('POST /user/register insert user in DB', async (): Promise<void> => {
         try {
             const port: number = 3000;
             const data: IUserReq = {
                 name: 'ivoObr',
-                email: 'ivo@yopmail.com', 
+                email: 'ivo2@yopmail.com', 
                 role: UserRolesType.Admin,
                 password: 'Password123'
             };
 
-            const response: AxiosResponse<any> = await axios.post(`http://localhost:${port}/api/user/add`, data);
+            const response: AxiosResponse<any> = await axios.post(`http://localhost:${port}/user/register`, data);
             logger.success('POST /api/user/add response:', response.data);
 
             expect(typeof response.data.length).toBe('number');

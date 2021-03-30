@@ -28,7 +28,7 @@ export interface IUserReq {
 }
 
 export interface IUser extends IUserReq {
-  id: number;
+  _id?: string;
   tokens: string[]
 }
 
