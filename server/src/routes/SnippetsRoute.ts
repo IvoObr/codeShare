@@ -1,5 +1,5 @@
 import * as Const from '@constants';
-import { StatusCodes } from '@enums';
+import { StatusCodes, Errors } from '@enums';
 import ApiRouter from './ApiRouter';
 import { Request, Response, Router, NextFunction } from 'express';
 import { UserRequest, IRequest } from '@interfaces';
@@ -60,7 +60,7 @@ class SnippetRouter extends ApiRouter {
             const { user } = req.body;
             if (!user) {
                 return res.status(StatusCodes.BAD_REQUEST).json({
-                    error: Const.ERR_MISSING_PARAMETER
+                    error: Errors.ERROR_MISSING_PARAMETER
                 });
             }
             user.id = Number(user.id);

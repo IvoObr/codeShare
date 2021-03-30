@@ -6,8 +6,6 @@ import logger from '@logger';
 import 'module-alias/register';
 import commandLineArgs from 'command-line-args';
 import * as core from "express-serve-static-core";
-import { UserError } from "@errors";
-import { ErrorType } from "@enums";
 import colors from 'colors';
 colors.enable();
 

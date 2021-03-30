@@ -31,7 +31,6 @@
         "@routes": "dist/routes",
         "@enums": "dist/lib/enums",
         "@logger": "dist/lib/logger",
-        "@errors": "dist/lib/Errors",
         "@entities": "dist/entities",
         "@interfaces": "dist/lib/interfaces",
         "@constants": "dist/lib/constants",

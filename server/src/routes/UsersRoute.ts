@@ -1,12 +1,11 @@
 import { Mongo } from '@db';
-import { UserRequest, IRequest, IUser } from '@interfaces';
-import { StatusCodes } from '@enums';
+import { UserRequest, IRequest, IUser, IUserReq } from '@interfaces';
+import { StatusCodes, Errors, UserRolesType } from '@enums';
 import ApiRouter from './ApiRouter';
 import { Request, Response, Router, NextFunction } from 'express';
 import * as Const from '@constants';
 import User from "@entities/User";
 import logger from '@logger';
-import { UserError } from '../lib/Errors';
 
 // todo instance of user dal
 
@@ -27,11 +26,11 @@ class UserRouter extends ApiRouter {
     }
 
     protected useMiddleware(): void {
-        this.router.use((req: IRequest, res: Response, next: NextFunction): void => {
-            // todo something
-            logger.info('User middleware');
-            next();
-        }); 
+        // this.router.use((req: IRequest, res: Response, next: NextFunction): void => {
+        //     // todo something
+        //     logger.info('User middleware', req.body);
+        //     next();
+        // }); 
     }
 
     protected initRoutes(): void {
@@ -41,31 +40,23 @@ class UserRouter extends ApiRouter {
             return res.status(StatusCodes.OK).send(users);
         });
 
-        this.router.post('/add', async (req: IRequest, res: Response): Promise<Response | void> => {
+        this.router.post('/add', async (req: Request, res: Response): Promise<Response | void> => {
             try {
-                const { user } = req.body;
-                if (!user) {
-                    return res.status(StatusCodes.BAD_REQUEST).json({
-                        error: Const.ERR_MISSING_PARAMETER
-                    });
-                }
+                const newUser: User = await new User(req.body).validate();
 
-                // TODO add user
-
-                const newUser: User = await new User(
-                    user?.email,
-                    user?.role,
-                    user?.password,
-                    user?.id,
-                    user?.name
-                ).validate();
-
-                // = await Mongo.db.collection(Consts.USER).insertOne(newUser); // todo goes to UserDal
+                const result =
+                    await Mongo.db
+                        .collection(Const.USERS)
+                        .insertOne(newUser); // todo goes to UserDal
+                
+                logger.info(result);
+                newUser.id = result.insertedCount;
+                logger.info(newUser);
 
                 return res.status(StatusCodes.CREATED).end();
+        
             } catch (error) {
-                logger.error(error);
-                return res.status(StatusCodes.BAD_REQUEST).end();
+                this.handleError(error, res);
             }
         });
 
@@ -73,7 +64,7 @@ class UserRouter extends ApiRouter {
             const { user } = req.body;
             if (!user) {
                 return res.status(StatusCodes.BAD_REQUEST).json({
-                    error: Const.ERR_MISSING_PARAMETER
+                    error: Errors.ERROR_MISSING_PARAMETER
                 });
             }
             user.id = Number(user.id);

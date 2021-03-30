@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import { Request, Response, Router, NextFunction } from 'express';
-import { StatusCodes } from '@enums';
+import { StatusCodes, Errors } from '@enums';
 import ApiRouter from './ApiRouter';
 import { JwtService } from '../lib/JwtService';
 import { UserRequest, IRequest } from '@interfaces';
@@ -44,7 +44,7 @@ class AuthRouter extends ApiRouter {
             const password: string = req.body.password;
 
             if (!(email && password)) {
-                return res.status(StatusCodes.BAD_REQUEST).json({ error: Const.ERR_MISSING_PARAMETER });
+                return res.status(StatusCodes.BAD_REQUEST).json({ error: Errors.ERROR_MISSING_PARAMETER });
             }
             /* Fetch user */
 
@@ -53,14 +53,14 @@ class AuthRouter extends ApiRouter {
 
             if (!user) {
                 return res.status(StatusCodes.UNAUTHORIZED).json({
-                    error: Const.ERR_LOGIN_FAILED
+                    error: Errors.ERROR_LOGIN_FAILED
                 });
             }
             /* Check password */
             const pwdPassed = await bcrypt.compare(password, user.password);
             if (!pwdPassed) {
                 return res.status(StatusCodes.UNAUTHORIZED).json({
-                    error: Const.ERR_LOGIN_FAILED
+                    error: Errors.ERROR_LOGIN_FAILED
                 });
             }
             /* Setup Admin JWT */

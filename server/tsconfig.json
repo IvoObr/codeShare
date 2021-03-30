@@ -18,7 +18,6 @@
     "@server": ["src/Server"],
     "@enums": ["src/lib/enums"],
     "@logger": ["src/lib/logger"],     
-    "@errors": ["src/lib/Errors"],
     "@entities/*": ["src/entities/*"],
     "@constants": ["src/lib/constants"],
     "@functions": ["src/lib/functions"],
