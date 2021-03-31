@@ -1,5 +1,6 @@
 import logger from '@logger';
 import { Mongo } from '@db';
+import { InsertOneWriteOpResult } from 'mongodb';
 import { IUser, IUserDal } from '@interfaces';
 import * as Const from '@constants';
 
@@ -21,9 +22,12 @@ class UserDal {
             .toArray();
     }
 
-    public async add(user: IUser): Promise<void> {
-        // TODO
-        return Promise.resolve(undefined);
+    public async addUser(user: IUser): Promise<IUser> {
+        const result: InsertOneWriteOpResult<any> = await Mongo.db
+            .collection(Const.USERS)
+            .insertOne(user); 
+        
+        return result.ops[0] as IUser;
     }
 
     public async update(user: IUser): Promise<void> {

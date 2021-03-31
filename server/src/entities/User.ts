@@ -4,7 +4,7 @@ import { IUser, IUserReq } from "@interfaces";
 import * as Const from '@constants';
 import { UserRolesType, Errors } from '@enums';
 import UserDal from '@dals/UserDal';
-import logger from '@logger';
+
 
 export default class User implements IUser {
 
@@ -25,11 +25,11 @@ export default class User implements IUser {
         this.validateName();
         this.validatePassword();
         await this.validateEmail();
-        await this.generatePassword();
+        await this.hashPassword();
         return this;
     }
 
-    private async generatePassword(): Promise<void> {
+    private async hashPassword(): Promise<void> {
         const salt: string = await bcrypt.genSalt(Const.saltRounds);
         this.password = await bcrypt.hash(this.password, salt);
     }

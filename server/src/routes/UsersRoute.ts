@@ -1,5 +1,4 @@
 import { Mongo } from '@db';
-import { InsertOneWriteOpResult } from 'mongodb';
 import { UserRequest, IRequest, IUser, IUserReq } from '@interfaces';
 import { StatusCodes, Errors, UserRolesType } from '@enums';
 import ApiRouter from './ApiRouter';
@@ -40,26 +39,26 @@ class UserRouter extends ApiRouter {
 
         // todo login
 
-        this.router.get('/all', async (req: Request, res: Response): Promise<Response> => {
-            const users: IUser[] = await UserDal.getAllUsers();
-            return res.status(StatusCodes.OK).send(users);
+        this.router.get('/all', async (req: Request, res: Response): Promise<Response | void> => {
+            try {
+                const users: IUser[] = await UserDal.getAllUsers();
+
+                return res.status(StatusCodes.OK).send(users);
+
+            } catch (error) {
+                this.handleError(error, res);
+            }
         });
 
         this.router.post('/register', async (req: Request, res: Response): Promise<Response | void> => {
             try {
                 const newUser: User = await new User(req.body).validate();
+                const user: IUser = await UserDal.addUser(newUser);
 
-                const result: InsertOneWriteOpResult<any> =
-                    await Mongo.db
-                        .collection(Const.USERS)
-                        .insertOne(newUser); // todo goes to UserDal
-                
-                logger.info(result.ops);
-                // newUser._id = result.insertedCount;
-                logger.info(newUser);
+                // todo login!!!
 
-                return res.status(StatusCodes.CREATED).end();
-        
+                return res.status(StatusCodes.CREATED).send(user);
+
             } catch (error) {
                 this.handleError(error, res);
             }
