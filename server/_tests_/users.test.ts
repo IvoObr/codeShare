@@ -35,7 +35,7 @@ describe('users api tests', (): void => {
             if (response.data?._id) {
                 userId = response.data._id;
             }
-
+  
             expect(response.data.name).toBe(name);
             expect(response.data.role).toBe(role);
             expect(response.data.email).toBe(email);
@@ -46,12 +46,12 @@ describe('users api tests', (): void => {
         }
     });
 
-    it('DELETE /user/delete/:id user in DB', async (): Promise<void> => {
+    it.only('DELETE /user/delete/:id user in DB', async (): Promise<void> => {
         try {
             const response: AxiosResponse<IUser> = await axios.delete(`http://localhost:${port}/user/delete/?id=${userId}`);
             
-            logger.success('DELETE /user/delete/:id response:', response.data);
-            // expect(typeof response.data.password).toBe('string');
+            logger.success('DELETE /user/delete/:id response.status:', response.status);
+            expect(response.status).toBe(200);
 
         } catch (error: any) {
             handleError(error);

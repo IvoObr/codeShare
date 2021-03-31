@@ -6,11 +6,8 @@ import logger from '@logger';
 import 'express-async-errors';
 import express from 'express';
 import * as Const from '@constants';
-import bodyParser from 'body-parser';
-import { StatusCodes } from '@enums';
 import * as core from "express-serve-static-core";
 import { AuthRouter, SnippetRouter, UserRouter } from '@routes';
-
 
 class Server {
 
@@ -25,7 +22,6 @@ class Server {
     private useMiddleware(): this {
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
-        this.app.use(bodyParser.json());
         this.app.use(express.static(this.staticDir));
         this.app.use(cors({ origin: `http://localhost`, exposedHeaders: [Const.xAuth]}));
 

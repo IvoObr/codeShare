@@ -5,14 +5,14 @@
         "build": "ts-node build.ts && tsc --build tsconfig.prod.json",
         "eslint-fix": "eslint . --ext .ts --fix",
         "start": "node -r module-alias/register ./dist --env=production",
-        "dev": "nodemon",
-        "test": "nodemon --config ./_tests_/nodemon.json"
+        "dev": "nodemon --delay 1",
+        "test": "nodemon --delay 1 --config ./_tests_/nodemon.json"
     },
     "nodemonConfig": {
         "watch": [
             "src"
         ],
-        "ext": "ts, html",
+        "ext": "ts",
         "ignore": [
             "src/public"
         ],
@@ -64,6 +64,7 @@
         "mongodb": "^3.6.3",
         "mongoose": "^5.10.15",
         "morgan": "^1.10.0",
+        "nodemon": "^2.0.7",
         "randomstring": "^1.1.5",
         "ts-jest": "^26.4.4",
         "validator": "^13.5.2"
@@ -87,7 +88,6 @@
         "eslint": "^7.13.0",
         "find": "^0.3.0",
         "fs-extra": "^9.0.1",
-        "nodemon": "^2.0.6",
         "supertest": "^6.0.1",
         "ts-node": "^9.0.0",
         "tsconfig-paths": "^3.9.0",

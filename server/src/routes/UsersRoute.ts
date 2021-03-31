@@ -1,13 +1,11 @@
 import { Mongo } from '@db';
-import { UserRequest, IRequest, IUser, IUserReq } from '@interfaces';
-import { StatusCodes, Errors, UserRolesType } from '@enums';
+import logger from '@logger';
+import User from "@entities/User";
 import ApiRouter from './ApiRouter';
 import UserDal from '@dals/UserDal';
-
+import { StatusCodes, Errors, UserRolesType } from '@enums';
 import { Request, Response, Router, NextFunction } from 'express';
-import * as Const from '@constants';
-import User from "@entities/User";
-import logger from '@logger';
+import { UserRequest, IRequest, IUser, IUserReq } from '@interfaces';
 
 class UserRouter extends ApiRouter {
 
@@ -74,21 +72,21 @@ class UserRouter extends ApiRouter {
             return res.status(StatusCodes.OK).end();
         });
 
-        this.router.delete('/delete/:id', async (req: Request, res: Response): Promise<void> => {
+        this.router.delete('/delete', async (req: Request, res: Response): Promise<void> => {
             try {
+                const id: string = req.query?.id as string;
+                
+                if (!id) {
+                    throw new Error(Errors.ERROR_MISSING_PARAMETER);
+                }
 
-                logger.info('###########################', req);
+                const deletedCount: number = await UserDal.deleteUser(id);
 
-                const id: any = req.params.id;
+                if (deletedCount < 1) {
+                    throw new Error(Errors.ERROR_COULD_NOT_DELETE_USER_BY_ID);
+                }
 
-              
-
-                const result: boolean = await UserDal.deleteUser(id);
-
-                // logger.success('result: ', result);
-
-                return res.end();
-                // return res.status(StatusCodes.OK).end();
+                return res.status(StatusCodes.OK).end();
 
             } catch (error) {
                 this.handleError(error, res);

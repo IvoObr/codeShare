@@ -1,5 +1,6 @@
 import logger from '@logger';
 import { Mongo } from '@db';
+import mongodb from 'mongodb';
 import { InsertOneWriteOpResult } from 'mongodb';
 import { IUser, IUserDal } from '@interfaces';
 import * as Const from '@constants';
@@ -35,10 +36,12 @@ class UserDal {
         return Promise.resolve(undefined);
     }
 
-    public async deleteUser(id: string): Promise<any> {
-        return await Mongo.db
+    public async deleteUser(id: string): Promise<number> {
+        const result: mongodb.DeleteWriteOpResultObject = await Mongo.db
             .collection(Const.USERS)
-            .deleteOne({ id });
+            .deleteOne({ _id: new mongodb.ObjectID(id) });
+        
+        return result.deletedCount || 0;
     }
 }
 
