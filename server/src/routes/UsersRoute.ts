@@ -9,8 +9,6 @@ import * as Const from '@constants';
 import User from "@entities/User";
 import logger from '@logger';
 
-// todo instance of user dal
-
 class UserRouter extends ApiRouter {
 
     protected router: Router;
@@ -28,7 +26,7 @@ class UserRouter extends ApiRouter {
     }
 
     protected useMiddleware(): void {
-        // this.router.use((req: IRequest, res: Response, next: NextFunction): void => {
+        // this.router.use((req: Request, res: Response, next: NextFunction): void => {
         //     // todo something
         //     logger.info('User middleware', req.body);
         //     next();
@@ -76,10 +74,25 @@ class UserRouter extends ApiRouter {
             return res.status(StatusCodes.OK).end();
         });
 
-        this.router.delete('/delete/:id', async (req: IRequest, res: Response): Promise<void> => {
-            const { id } = req.params;
-            // TODO delete user by id
-            return res.status(StatusCodes.OK).end();
+        this.router.delete('/delete/:id', async (req: Request, res: Response): Promise<void> => {
+            try {
+
+                logger.info('###########################', req);
+
+                const id: any = req.params.id;
+
+              
+
+                const result: boolean = await UserDal.deleteUser(id);
+
+                // logger.success('result: ', result);
+
+                return res.end();
+                // return res.status(StatusCodes.OK).end();
+
+            } catch (error) {
+                this.handleError(error, res);
+            }
         });
     }
 }

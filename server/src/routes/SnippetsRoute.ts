@@ -22,7 +22,7 @@ class SnippetRouter extends ApiRouter {
     }
 
     protected useMiddleware(): void {
-        this.router.use((req: IRequest, res: Response, next: NextFunction): void => {
+        this.router.use((req: Request, res: Response, next: NextFunction): void => {
             // todo something
             logger.info('Snippet middleware');
             next();
@@ -42,7 +42,7 @@ class SnippetRouter extends ApiRouter {
 
         /* POST /api/snippet/add */
 
-        this.router.post('/add', async (req: IRequest, res: Response) => {
+        this.router.post('/add', async (req: Request, res: Response) => {
             // const { snippet } = req.body;
             // if (!snippet) {
             //     return res.status(BAD_REQUEST).json({
@@ -70,7 +70,7 @@ class SnippetRouter extends ApiRouter {
 
         /* DELETE /api/snippet/delete/:id */
 
-        this.router.delete('/delete/:id', async (req: IRequest, res: Response) => {
+        this.router.delete('/delete/:id', async (req: Request, res: Response) => {
             const { id } = req.params;
             // todo delete snippet by id
             return res.status(StatusCodes.OK).end();

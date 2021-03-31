@@ -35,9 +35,10 @@ class UserDal {
         return Promise.resolve(undefined);
     }
 
-    public async delete(id: number): Promise<void> {
-        // TODO
-        return Promise.resolve(undefined);
+    public async deleteUser(id: string): Promise<any> {
+        return await Mongo.db
+            .collection(Const.USERS)
+            .deleteOne({ id });
     }
 }
 

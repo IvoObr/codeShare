@@ -28,7 +28,7 @@ class AuthRouter extends ApiRouter {
     }
 
     protected useMiddleware(): void {
-        this.router.use((req: IRequest, res: Response, next: NextFunction): void => {
+        this.router.use((req: Request, res: Response, next: NextFunction): void => {
             // todo something
             logger.info('Auth middleware');
             next();
@@ -39,7 +39,7 @@ class AuthRouter extends ApiRouter {
 
         /* POST /api/auth/login */
 
-        this.router.post('/login', async (req: IRequest, res: Response) => {
+        this.router.post('/login', async (req: Request, res: Response) => {
             const email: string = req.body.email;
             const password: string = req.body.password;
 

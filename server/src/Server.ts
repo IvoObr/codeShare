@@ -4,12 +4,13 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import logger from '@logger';
 import 'express-async-errors';
-import { AuthRouter, SnippetRouter, UserRouter } from '@routes';
+import express from 'express';
 import * as Const from '@constants';
 import bodyParser from 'body-parser';
 import { StatusCodes } from '@enums';
 import * as core from "express-serve-static-core";
-import express, { Request, Response, Router } from 'express';
+import { AuthRouter, SnippetRouter, UserRouter } from '@routes';
+
 
 class Server {
 
@@ -42,30 +43,17 @@ class Server {
 
     private useAPIs(): this {
         // const router: Router = Router(); 
-
         this.app.use('/auth', AuthRouter);
         this.app.use('/snippet', SnippetRouter);
         this.app.use('/user', UserRouter);
-        
-        // this.app.use('/api', router);
-        return this;
-    }
 
-    private printErrors(): this {
-        /* Print API errors */
-
-        // todo fix
-        this.app.use((error: Error, req: Request, res: Response) => {
-            logger.error(error);
-            return res.status(StatusCodes.BAD_REQUEST)
-                .json({ error: error.message });
-        });
+        // this.app.use('/codeShare', router);
 
         return this;
     }
 
     public start(): core.Express {
-        return this.useMiddleware().prepareEnv().useAPIs().printErrors().app;
+        return this.useMiddleware().prepareEnv().useAPIs().app;
     }
 }
 
