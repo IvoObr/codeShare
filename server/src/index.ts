@@ -9,7 +9,6 @@ import * as core from "express-serve-static-core";
 import colors from 'colors';
 colors.enable();
 
-
 class Main {
 
     public async startServer(): Promise<void> {
