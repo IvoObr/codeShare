@@ -70,3 +70,6 @@ class Main {
 }
 
 new Main().setEnv().startServer();
+
+logger.success({ "test": [{ 'inner': [{ 'InnerInner': 123123 }, { 'test2': 'test2' }]}]});
+
