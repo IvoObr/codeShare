@@ -3,13 +3,14 @@ import logger from '../src/lib/logger';
 import { IUser, IUserReq } from '../src/lib/interfaces';
 import { UserRolesType } from '../src/lib/enums';
 import { handleError } from './testUtils';
+import { genBase36Key } from '../src/lib/helpers';
 
 describe('users api tests', (): void => {
     const port: number = 3000;
     let userId: string = '-1';
 
     it('GET /api/user/all returns all users', async (): Promise<void> => {
-        try { 
+        try {             
             const response: AxiosResponse<IUser[]> = await axios.get(`http://localhost:${port}/user/all`);
             logger.success('GET /user/all response:', response.data);
       
@@ -24,7 +25,7 @@ describe('users api tests', (): void => {
         try {        
             const name: string = 'ivoObr';
             const password: string = 'Password123';
-            const email: string = 'ivo15@yopmail.com';
+            const email: string = `${genBase36Key(8)}@yopmail.com`;
             const role: UserRolesType = UserRolesType.Admin;
 
             const data: IUserReq = { name, email, role, password };
@@ -46,7 +47,7 @@ describe('users api tests', (): void => {
         }
     });
 
-    it.only('DELETE /user/delete/:id user in DB', async (): Promise<void> => {
+    it('DELETE /user/delete/:id user in DB', async (): Promise<void> => {
         try {
             const response: AxiosResponse<IUser> = await axios.delete(`http://localhost:${port}/user/delete/?id=${userId}`);
             

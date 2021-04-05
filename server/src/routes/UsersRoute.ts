@@ -35,25 +35,25 @@ class UserRouter extends ApiRouter {
 
         // todo login
 
-        this.router.get('/all', async (req: Request, res: Response): Promise<Response | void> => {
+        this.router.get('/all', async (req: Request, res: Response): Promise<void> => {
             try {
                 const users: IUser[] = await UserDal.getAllUsers();
 
-                return res.status(StatusCodes.OK).send(users);
+                res.status(StatusCodes.OK).send(users);
 
             } catch (error) {
                 this.handleError(error, res);
             }
         });
 
-        this.router.post('/register', async (req: Request, res: Response): Promise<Response | void> => {
+        this.router.post('/register', async (req: Request, res: Response): Promise<void> => {
             try {
                 const newUser: User = await new User(req.body).validate();
                 const user: IUser = await UserDal.addUser(newUser);
 
                 // todo login!!!
 
-                return res.status(StatusCodes.CREATED).send(user);
+                res.status(StatusCodes.CREATED).send(user);
 
             } catch (error) {
                 this.handleError(error, res);
@@ -86,9 +86,10 @@ class UserRouter extends ApiRouter {
                     throw new Error(Errors.ERROR_COULD_NOT_DELETE_USER_BY_ID);
                 }
 
-                return res.status(StatusCodes.OK).end();
+                res.status(StatusCodes.OK).end();
 
             } catch (error) {
+                console.error(error)
                 this.handleError(error, res);
             }
         });

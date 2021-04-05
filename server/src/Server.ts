@@ -2,8 +2,6 @@ import cors from 'cors';
 import path from 'path';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import logger from '@logger';
-import 'express-async-errors';
 import express from 'express';
 import * as Const from '@constants';
 import * as core from "express-serve-static-core";
@@ -42,9 +40,7 @@ class Server {
         this.app.use('/auth', AuthRouter);
         this.app.use('/snippet', SnippetRouter);
         this.app.use('/user', UserRouter);
-
         // this.app.use('/codeShare', router);
-
         return this;
     }
 

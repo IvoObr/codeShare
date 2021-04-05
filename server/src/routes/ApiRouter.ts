@@ -1,5 +1,5 @@
 import logger from '@logger';
-import { Router, Response } from "express";
+import { Router, Response, NextFunction } from "express";
 import { Errors, StatusCodes } from '@enums';
 
 export default abstract class ApiRouter {
@@ -12,15 +12,15 @@ export default abstract class ApiRouter {
 
     protected abstract initRoutes(): void;
 
-    protected handleError(error: Error, response: Response): Response<any> {
-        logger.error(error);
+    protected handleError(error: Error, response: Response): void {
+        logger.error(error.message);
 
         if (error.message in Errors) {
-            return response
+            response
                 .status(StatusCodes.BAD_REQUEST)
                 .json({ error: error.message });
         } else {
-            return response
+            response
                 .status(StatusCodes.INTERNAL_SERVER_ERROR)
                 .json({ error: StatusCodes[500] });
         }

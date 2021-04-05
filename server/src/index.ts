@@ -1,5 +1,6 @@
 import http from 'http';
 import { Mongo } from '@db';
+import { ProcessSignals, SystemErrors } from '@enums';
 import dotenv from 'dotenv';
 import Server from '@server';
 import logger from '@logger';
@@ -11,14 +12,14 @@ colors.enable();
 
 class Main {
 
+    private port: string = process.env.PORT || '3000';
+
     public async startServer(): Promise<void> {
         try {
             await new Mongo().connect();
-            const port: string = process.env.PORT || '3000';
-
             const app: core.Express = new Server().start();
-            const server: http.Server = app.listen(Number(port), (): void => {
-                logger.success(('Express server started on port: '.yellow + port.rainbow).bold);
+            const server: http.Server = app.listen(Number(this.port), (): void => {
+                logger.success(('Express server started on port: '.yellow + this.port.rainbow).bold);
             });
            
             this.listenForError(server);
@@ -32,16 +33,20 @@ class Main {
     }
 
     private listenForError(server: http.Server): void {
-        server.on('error', (error: Error): void => {
-            logger.error('Server unable to start'.red.bold, error);
+        server.on('error', (error: any): void => {
+            if (error.code === SystemErrors.EADDRINUSE) {
+                logger.warn(`Port: ${this.port.yellow} already in use!`);
+            }
+
+            logger.error('Server unable to start'.red, error);
             process.exit(0); // clean exit
         });
     }
 
     private listenForSIGTERM(server: http.Server): void {
-        process.on('SIGTERM', (): void => {
+        process.on(ProcessSignals.SIGTERM, (): void => {
             server.close((): void => {
-                logger.success('SIGTERM:'.yellow, 'REST Server gracefully terminated.');
+                logger.success((ProcessSignals.SIGTERM.yellow), 'REST Server gracefully terminated.');
             });
         });
     }
@@ -70,6 +75,3 @@ class Main {
 }
 
 new Main().setEnv().startServer();
-
-logger.success({ "test": [{ 'inner': [{ 'InnerInner': 123123 }, { 'test2': 'test2' }]}]});
-

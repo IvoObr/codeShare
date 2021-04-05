@@ -1,5 +1,11 @@
-import Logger from '@7dev-works/logger';
+import { Logger, ILogOptions } from '@7dev-works/logger';
 
-const logger: Logger = new Logger(true, 'rest-server.log');
+const options: ILogOptions = {
+    useColor: true,
+    logInFile: true,
+    fileName: 'rest-server.log'
+};
+
+const logger: Logger = new Logger(options);
 
 export default logger;

@@ -3,6 +3,14 @@ export enum UserRolesType {
   Admin,
 }
 
+export enum ProcessSignals {
+  SIGTERM = 'SIGTERM'
+}
+
+export enum SystemErrors {
+  EADDRINUSE = 'EADDRINUSE'
+}
+
 export enum Errors {
 /* User Errors */
 ERROR_COULD_NOT_DELETE_USER_BY_ID = "ERROR_COULD_NOT_DELETE_USER_BY_ID",
