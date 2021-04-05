@@ -1,11 +1,10 @@
-import { Mongo } from '@db';
 import logger from '@logger';
 import User from "@entities/User";
 import ApiRouter from './ApiRouter';
 import UserDal from '@dals/UserDal';
-import { StatusCodes, Errors, UserRolesType } from '@enums';
-import { Request, Response, Router, NextFunction } from 'express';
-import { UserRequest, IRequest, IUser, IUserReq } from '@interfaces';
+import { StatusCodes, Errors } from '@enums';
+import { Request, Response, Router } from 'express';
+import { IUser } from '@interfaces';
 
 class UserRouter extends ApiRouter {
 
@@ -89,7 +88,6 @@ class UserRouter extends ApiRouter {
                 res.status(StatusCodes.OK).end();
 
             } catch (error) {
-                console.error(error)
                 this.handleError(error, res);
             }
         });

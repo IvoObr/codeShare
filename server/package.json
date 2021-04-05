@@ -7,7 +7,7 @@
         "build": "npm run clean && npm run copy && tsc --build tsconfig.prod.json",
         "eslint-fix": "eslint . --ext .ts --fix",
         "start": "node -r module-alias/register ./dist --env=production",
-        "dev": "nodemon --delay 1",
+        "dev": "nodemon --delay 4",
         "test": "nodemon --delay 1 --config ./_tests_/nodemon.json"
     },
     "nodemonConfig": {
@@ -45,7 +45,7 @@
         "node_modules/"
     ],
     "dependencies": {
-        "@7dev-works/logger": "^2.1.1",
+        "@7dev-works/logger": "^2.1.3",
         "@types/axios": "^0.14.0",
         "@types/cors": "^2.8.8",
         "@types/jest": "^26.0.15",

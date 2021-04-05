@@ -1,5 +1,5 @@
 import logger from '@logger';
-import { Router, Response, NextFunction } from "express";
+import { Router, Response } from "express";
 import { Errors, StatusCodes } from '@enums';
 
 export default abstract class ApiRouter {
@@ -13,8 +13,8 @@ export default abstract class ApiRouter {
     protected abstract initRoutes(): void;
 
     protected handleError(error: Error, response: Response): void {
-        logger.error(error.message);
-
+        logger.error(error);
+    
         if (error.message in Errors) {
             response
                 .status(StatusCodes.BAD_REQUEST)

@@ -1,8 +1,8 @@
 import logger from '@logger';
 import { Mongo } from '@db';
-import mongodb from 'mongodb';
-import { InsertOneWriteOpResult } from 'mongodb';
-import { IUser, IUserDal } from '@interfaces';
+import mongodb, { InsertOneWriteOpResult } from 'mongodb';
+import { IUser } from '@interfaces';
+import { Errors } from '@enums';
 import * as Const from '@constants';
 
 class UserDal {
@@ -37,6 +37,10 @@ class UserDal {
     }
 
     public async deleteUser(id: string): Promise<number> {
+        if (!mongodb.ObjectID.isValid(id)) {
+            throw new Error(Errors.ERROR_COULD_NOT_DELETE_USER_BY_ID);
+        }
+    
         const result: mongodb.DeleteWriteOpResultObject = await Mongo.db
             .collection(Const.USERS)
             .deleteOne({ _id: new mongodb.ObjectID(id) });

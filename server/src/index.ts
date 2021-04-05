@@ -34,10 +34,6 @@ class Main {
 
     private listenForError(server: http.Server): void {
         server.on('error', (error: any): void => {
-            if (error.code === SystemErrors.EADDRINUSE) {
-                logger.warn(`Port: ${this.port.yellow} already in use!`);
-            }
-
             logger.error('Server unable to start'.red, error);
             process.exit(0); // clean exit
         });
