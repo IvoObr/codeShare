@@ -1,18 +1,23 @@
 import axios, { AxiosResponse } from 'axios';
 import logger from '../src/lib/logger';
+import dotenv from 'dotenv';
 import { IUser, IUserReq } from '../src/lib/interfaces';
 import { UserRolesType } from '../src/lib/enums';
 import { handleError } from './testUtils';
 import { genBase36Key } from '../src/lib/helpers';
 
 describe('users api tests', (): void => {
-    const port: number = 3000;
+    
+    dotenv.config();
+    const port: number = Number(process.env.PORT);
+
+    console.log(process.env.NODE_ENV);
     let userId: string = '-1';
 
     it('GET /api/user/all returns all users', async (): Promise<void> => {
         try {             
             const response: AxiosResponse<IUser[]> = await axios.get(`http://localhost:${port}/user/all`);
-            logger.success('GET /user/all response:', response.data);
+            logger.success('GET /user/all response:', response.data.length);
       
             expect(typeof response.data.length).toBe('number');
             

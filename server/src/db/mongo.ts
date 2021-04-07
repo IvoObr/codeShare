@@ -16,7 +16,7 @@ export default class Mongo {
             const db: Db = client.db(process.env.DB_NAME);
             await db.command({ ping: 1 });
 
-            logger.success(`Connected to ${process.env.DB_NAME?.toString().yellow} DB`);
+            logger.success(`Connected to ${process.env.DB_NAME?.toString().yellow.bold} DB`);
             Mongo.db = db;
 
         } catch (error) {

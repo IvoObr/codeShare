@@ -12,7 +12,8 @@ export default class Middleware {
     public static adminMW = async (req: Request, res: Response, next: NextFunction) => {
         try {
             /* Get json-web-token */
-            const jwt = req.header(Const.xAuth);
+            const authHeader: string = req.header(Const.xAuth) as string;
+            const [type, jwt]: string[] = authHeader.split(' ');
 
             if (!jwt) {
                 throw Error('JWT not present in request.');
@@ -34,8 +35,8 @@ export default class Middleware {
 
     // TODO use this middleware!!!
     public static authenticate = (req: UserRequest, res: Response, next: NextFunction) => {
-        const token = req.header(Const.xAuth) as string;
-
+        const authHeader: string = req.header(Const.xAuth) as string;
+        const [type, token]: string[] = authHeader.split(' ');
         //@ts-ignore: TODO put interface
         const user: any; // TODO get user by token
 
