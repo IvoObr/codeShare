@@ -1,12 +1,11 @@
 import bcrypt from 'bcrypt';
 import validator from 'validator';
-import { IUser, IUserReq } from "@interfaces";
 import * as Const from '@constants';
-import { UserRolesType, Errors } from '@enums';
 import UserDal from '@dals/UserDal';
+import { IUser, IUserReq } from "@interfaces";
+import { UserRolesType, Errors } from '@enums';
 
-
-export default class User implements IUser {
+export default class UserModel implements IUser {
 
     public tokens: string[] = [];
     public email: string;
@@ -21,7 +20,7 @@ export default class User implements IUser {
         this.name = name || '';
     }
     
-    public async validate(): Promise<User> {
+    public async validate(): Promise<UserModel> {
         this.validateName();
         this.validatePassword();
         await this.validateEmail();

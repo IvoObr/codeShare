@@ -17,10 +17,12 @@ class UserDal {
     }
 
     public async getAllUsers(): Promise<IUser[]> {
-        return await Mongo.db
+        const result: IUser[] = await Mongo.db
             .collection(Const.USERS)
             .find()
             .toArray();
+        
+        return result;
     }
 
     public async addUser(user: IUser): Promise<IUser> {

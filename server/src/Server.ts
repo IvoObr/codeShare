@@ -10,7 +10,6 @@ import { AuthRouter, SnippetRouter, UserRouter } from '@routes';
 class Server {
 
     private readonly app: core.Express;
-
     private readonly staticDir: string = path.join(__dirname, 'public');
 
     constructor() {
@@ -22,25 +21,19 @@ class Server {
         this.app.use(express.urlencoded({ extended: true }));
         this.app.use(express.static(this.staticDir));
         this.app.use(cors({ origin: `http://localhost`, exposedHeaders: [Const.xAuth]}));
-
         return this;
     }
 
     private prepareEnv(): this {
-        /* Show routes called in console during development */
-        process.env.NODE_ENV === 'development' && this.app.use(morgan('dev'));
-        /* Security */
-        process.env.NODE_ENV === 'production' && this.app.use(helmet());
-
+        (process.env.NODE_ENV === 'development') && this.app.use(morgan('dev'));
+        (process.env.NODE_ENV === 'production') && this.app.use(helmet());
         return this;
     }
 
     private useAPIs(): this {
-        // const router: Router = Router(); 
         this.app.use('/auth', AuthRouter);
         this.app.use('/snippet', SnippetRouter);
         this.app.use('/user', UserRouter);
-        // this.app.use('/codeShare', router);
         return this;
     }
 

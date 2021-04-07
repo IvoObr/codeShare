@@ -1,4 +1,4 @@
-import { genBase36Key } from '@helpers';
+import Helpers from '@helpers';
 import jsonwebtoken, { VerifyErrors } from 'jsonwebtoken';
 import { IClientData } from '@interfaces';
 
@@ -8,7 +8,7 @@ export class JwtService {
     private readonly VALIDATION_ERROR: string = 'JSON-web-token validation failed.';
 
     constructor() {
-        this.secret = (process.env.JWT_SECRET || genBase36Key(50));
+        this.secret = (process.env.JWT_SECRET || Helpers.genBase36Key(50));
     }
 
     public createJWT(data: IClientData): Promise<string> {

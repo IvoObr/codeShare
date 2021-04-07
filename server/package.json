@@ -7,7 +7,7 @@
         "build": "npm run clean && npm run copy && tsc --build tsconfig.prod.json",
         "eslint-fix": "eslint . --ext .ts --fix",
         "start": "NODE_ENV=production node -r module-alias/register ./dist ",
-        "dev": "NODE_ENV=development nodemon --delay 5",
+        "dev": "NODE_ENV=development nodemon --delay 1",
         "test": "nodemon --delay 5 --config ./_tests_/nodemon.json"
     },
     "nodemonConfig": {
@@ -31,6 +31,8 @@
         "@server": "dist/Server",
         "@routes": "dist/routes",
         "@enums": "dist/lib/enums",
+        "@types": "dist/lib/types",
+        "@services": "dist/services",
         "@logger": "dist/lib/logger",
         "@entities": "dist/entities",
         "@helpers": "dist/lib/helpers",

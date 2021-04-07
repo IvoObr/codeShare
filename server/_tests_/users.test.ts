@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import { IUser, IUserReq } from '../src/lib/interfaces';
 import { UserRolesType } from '../src/lib/enums';
 import { handleError } from './testUtils';
-import { genBase36Key } from '../src/lib/helpers';
+import Helpers from '../src/lib/helpers';
 
 describe('users api tests', (): void => {
     
@@ -30,7 +30,7 @@ describe('users api tests', (): void => {
         try {        
             const name: string = 'ivoObr';
             const password: string = 'Password123';
-            const email: string = `${genBase36Key(8)}@yopmail.com`;
+            const email: string = `${Helpers.genBase36Key(8)}@yopmail.com`;
             const role: UserRolesType = UserRolesType.Admin;
 
             const data: IUserReq = { name, email, role, password };

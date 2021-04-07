@@ -1,28 +1,21 @@
-import logger from '@logger';
-import { Router, Response } from "express";
-import { Errors, StatusCodes } from '@enums';
+import { RouteHandler } from '@types';
+import { Router, Request, Response, NextFunction } from "express";
 
 export default abstract class ApiRouter {
 
     protected abstract router: Router;
-
     public abstract getRouter(): Router; 
-
-    protected abstract useMiddleware(): void;
-
     protected abstract initRoutes(): void;
 
-    protected handleError(error: Error, response: Response): void {
-        logger.error(error);
-    
-        if (error.message in Errors) {
-            response
-                .status(StatusCodes.BAD_REQUEST)
-                .json({ error: error.message });
-        } else {
-            response
-                .status(StatusCodes.INTERNAL_SERVER_ERROR)
-                .json({ error: StatusCodes[500] });
-        }
+    /** Enables Express route handlers to use async/await
+     * @param - route handler function
+     * @returns - Promise wrapping function
+     **/
+    protected asyncWrap = (handler: any): RouteHandler => {
+        return (request: Request, response: Response, next: NextFunction): void => {
+            Promise
+                .resolve(handler(request, response, next))
+                .catch((error): void => next(error));
+        };
     }
 }
