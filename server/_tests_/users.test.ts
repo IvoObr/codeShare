@@ -1,10 +1,10 @@
-import axios, { AxiosResponse } from 'axios';
-import logger from '../src/lib/logger';
 import dotenv from 'dotenv';
-import { IUser, IUserReq } from '../src/lib/interfaces';
-import { UserRolesType } from '../src/lib/enums';
-import { handleError } from './testUtils';
+import logger from '../src/lib/logger';
 import Helpers from '../src/lib/Helpers';
+import { handleError } from './testUtils';
+import axios, { AxiosResponse } from 'axios';
+import { UserRolesType } from '../src/lib/enums';
+import { IUser, IUserReq } from '../src/lib/interfaces';
 
 describe('users api tests', (): void => {
     
