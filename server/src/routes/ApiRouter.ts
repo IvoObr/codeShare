@@ -1,4 +1,4 @@
-import { RouteHandler } from '@types';
+import { RouteHandler } from '@lib';
 import { Router, Request, Response, NextFunction } from "express";
 
 export default abstract class ApiRouter {

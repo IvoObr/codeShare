@@ -3,7 +3,6 @@ import path from 'path';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import express from 'express';
-import * as Const from '@constants';
 import * as core from "express-serve-static-core";
 import { AuthRouter, SnippetRouter, UserRouter } from '@routes';
 
@@ -20,7 +19,7 @@ class Server {
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
         this.app.use(express.static(this.staticDir));
-        this.app.use(cors({ origin: `http://localhost`, exposedHeaders: [Const.xAuth]}));
+        this.app.use(cors({ origin: `http://localhost` })); //, exposedHeaders: [Const.xAuth]}));
         return this;
     }
 

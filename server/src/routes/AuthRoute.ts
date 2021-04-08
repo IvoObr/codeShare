@@ -1,18 +1,15 @@
 import bcrypt from 'bcrypt';
-import { Request, Response, Router, NextFunction } from 'express';
-import { StatusCodes, Errors } from '@enums';
 import ApiRouter from './ApiRouter';
 import { JwtService } from '../lib/JwtService';
-import { UserRequest, IRequest } from '@interfaces';
-import * as Const from '@constants';
-import logger from '@logger';
+import { StatusCodes, Errors, Headers, logger } from '@lib';
+import { Request, Response, Router, NextFunction } from 'express';
 
 // const userDal = new UserDal();
 
 class AuthRouter extends ApiRouter {
 
     protected router: Router;
-    protected jwtService: JwtService;
+    private jwtService: JwtService;
 
     constructor() {
         super();
@@ -69,7 +66,7 @@ class AuthRouter extends ApiRouter {
                 role: user.role
             });
 
-            res.header(Const.xAuth, jwt).send({ user });
+            res.header(Headers.Authorization, jwt).send({ user });
             return res.status(StatusCodes.OK).end();
         });
 

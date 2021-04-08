@@ -1,9 +1,8 @@
-import UserModel from "@entities/UserModel";
-import UserDal from '@dals/UserDal';
-import { IUser } from '@interfaces';
+import { UserDal } from '@db';
+import { UserModel } from "@entities";
 import { Request, Response } from 'express';
-import { StatusCodes, Errors } from '@enums';
 import ServiceHandler from './ServiceHandler';
+import { StatusCodes, Errors, IUser } from '@lib';
 
 class UserService extends ServiceHandler {
 

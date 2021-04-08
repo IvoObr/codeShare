@@ -1,15 +1,12 @@
-import logger from '@logger';
 import { Mongo } from '@db';
+import { IUser, logger, Errors, Collections } from '@lib';
 import mongodb, { InsertOneWriteOpResult } from 'mongodb';
-import { IUser } from '@interfaces';
-import { Errors } from '@enums';
-import * as Const from '@constants';
 
 class UserDal {
 
     public async getUserByEmail(email: string): Promise<IUser> {
         const result: IUser[] = await Mongo.db
-            .collection(Const.USERS)
+            .collection(Collections.USERS)
             .find({ email })
             .toArray();
         
@@ -18,7 +15,7 @@ class UserDal {
 
     public async getAllUsers(): Promise<IUser[]> {
         const result: IUser[] = await Mongo.db
-            .collection(Const.USERS)
+            .collection(Collections.USERS)
             .find()
             .toArray();
         
@@ -27,7 +24,7 @@ class UserDal {
 
     public async addUser(user: IUser): Promise<IUser> {
         const result: InsertOneWriteOpResult<any> = await Mongo.db
-            .collection(Const.USERS)
+            .collection(Collections.USERS)
             .insertOne(user); 
         
         return result.ops[0] as IUser;
@@ -44,7 +41,7 @@ class UserDal {
         }
     
         const result: mongodb.DeleteWriteOpResultObject = await Mongo.db
-            .collection(Const.USERS)
+            .collection(Collections.USERS)
             .deleteOne({ _id: new mongodb.ObjectID(id) });
         
         return result.deletedCount || 0;

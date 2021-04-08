@@ -1,10 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import { UserRolesType, StatusCodes } from '@enums';
+import { UserRolesType, StatusCodes, IUserRequest, IClientData, Headers } from '@lib';
 import { JwtService } from '../lib/JwtService';
-import { UserRequest, IRequest, IClientData } from '@interfaces';
-import * as Const from '@constants';
 
-export default class Middleware {
+export default class AdminMiddleware {
 
     private static jwtService = new JwtService(); // todo test
 
@@ -12,14 +10,14 @@ export default class Middleware {
     public static adminMW = async (req: Request, res: Response, next: NextFunction) => {
         try {
             /* Get json-web-token */
-            const authHeader: string = req.header(Const.xAuth) as string;
+            const authHeader: string = req.header(Headers.Authorization) as string;
             const [type, jwt]: string[] = authHeader.split(' ');
 
             if (!jwt) {
                 throw Error('JWT not present in request.');
             }
             /* Make sure user role is an admin */
-            const clientData: IClientData = await Middleware.jwtService.decodeJwt(jwt);
+            const clientData: IClientData = await AdminMiddleware.jwtService.decodeJwt(jwt);
             if (clientData.role === UserRolesType.Admin) {
                 res.locals.userId = clientData.id;
                 next();
@@ -34,8 +32,8 @@ export default class Middleware {
     }
 
     // TODO use this middleware!!!
-    public static authenticate = (req: UserRequest, res: Response, next: NextFunction) => {
-        const authHeader: string = req.header(Const.xAuth) as string;
+    public static authenticate = (req: IUserRequest, res: Response, next: NextFunction) => {
+        const authHeader: string = req.header(Headers.Authorization) as string;
         const [type, token]: string[] = authHeader.split(' ');
         //@ts-ignore: TODO put interface
         const user: any; // TODO get user by token

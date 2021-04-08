@@ -1,6 +1,5 @@
-import logger from '@logger';
 import { Response } from "express";
-import { Errors, StatusCodes } from '@enums';
+import { Errors, StatusCodes, logger } from '@lib';
 
 export default abstract class ServiceHandler {
 

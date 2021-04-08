@@ -1,6 +1,5 @@
-import Helpers from '@helpers';
+import { IClientData, Helpers } from '@lib';
 import jsonwebtoken, { VerifyErrors } from 'jsonwebtoken';
-import { IClientData } from '@interfaces';
 
 export class JwtService {
 

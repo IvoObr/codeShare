@@ -1,4 +1,4 @@
-import logger from '@logger';
+import { logger } from '@lib';
 import { MongoClient, Db } from 'mongodb';
 
 export default class Mongo {

@@ -1,6 +1,6 @@
+import { Router } from 'express';
 import ApiRouter from './ApiRouter';
 import { UserService } from '@services';
-import { Router } from 'express';
 
 class UserRouter extends ApiRouter {
 

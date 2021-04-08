@@ -11,21 +11,14 @@
   "skipLibCheck": true,
   "forceConsistentCasingInFileNames": true,
   "paths": {
-    "@db": ["src/db"],
-    "@dals/*": ["src/dals/*"],
-    "@routes": ["src/routes"],
+    "@db": ["src/db/"],
+    "@lib": ["src/lib/"],
     "@server": ["src/Server"],
-    "@enums": ["src/lib/enums"],
-    "@types": ["src/lib/types"],
-    "@services": ["src/services"],
-    "@logger": ["src/lib/logger"],     
-    "@helpers": ["src/lib/helpers"],      
-    "@entities/*": ["src/entities/*"],
-    "@constants": ["src/lib/constants"],
-    "@functions": ["src/lib/functions"],
-    "@interfaces": ["src/lib/interfaces"]
+    "@routes": ["src/routes/"],
+    "@services": ["src/services/"],      
+    "@entities": ["src/entities/"],
     },
   },
-  "include": ["src/**/*.ts","_tests_/**/*.ts", "_tests_/users.test.ts"],
+  "include": ["src/**/*.ts","_tests_/**/*.ts"],
   "exclude": ["src/public/", "dist/"]
 }

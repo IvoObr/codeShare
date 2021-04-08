@@ -1,9 +1,6 @@
-import * as Const from '@constants';
-import { StatusCodes, Errors } from '@enums';
 import ApiRouter from './ApiRouter';
+import { StatusCodes, Errors, logger } from '@lib';
 import { Request, Response, Router, NextFunction } from 'express';
-import { UserRequest, IRequest } from '@interfaces';
-import logger from '@logger';
 
 class SnippetRouter extends ApiRouter {
 

@@ -3,12 +3,13 @@ export enum UserRolesType {
   Admin,
 }
 
-export enum ProcessSignals {
-  SIGTERM = 'SIGTERM'
+export enum Collections {
+  SNIPPETS = "snippets",
+  USERS = "users",
 }
 
-export enum SystemErrors {
-  EADDRINUSE = 'EADDRINUSE'
+export enum Headers {
+  Authorization = 'authorization'
 }
 
 export enum Errors {
@@ -18,10 +19,10 @@ ERROR_PASSWORD_CRITERIA_NOT_MET = "ERROR_PASSWORD_CRITERIA_NOT_MET",
 ERROR_INVALID_PASSWORD = "ERROR_INVALID_PASSWORD",
 ERROR_INVALID_EMAIL = "ERROR_INVALID_EMAIL",
 ERROR_INVALID_NAME = "ERROR_INVALID_NAME",
+ERROR_LOGIN_FAILED = "ERROR_LOGIN_FAILED",
 ERROR_USER_EXISTS = "ERROR_USER_EXISTS",
-  /* -- */ 
-  ERROR_MISSING_PARAMETER = "ERROR_MISSING_PARAMETER",
-  ERROR_LOGIN_FAILED = "ERROR_LOGIN_FAILED",
+  /* General Errors */
+ERROR_MISSING_PARAMETER = "ERROR_MISSING_PARAMETER",
 }
 
 export enum StatusCodes {

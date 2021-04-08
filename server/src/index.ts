@@ -2,9 +2,8 @@ import http from 'http';
 import colors from 'colors';
 import { Mongo } from '@db';
 import Server from '@server';
-import logger from '@logger';
+import { logger } from '@lib';
 import 'module-alias/register';
-import { ProcessSignals } from '@enums';
 import * as core from "express-serve-static-core";
 import dotenv, { DotenvConfigOutput } from 'dotenv';
 colors.enable();
@@ -40,9 +39,9 @@ class Main {
     }
 
     private listenForSIGTERM(server: http.Server): void {
-        process.on(ProcessSignals.SIGTERM, (): void => {
+        process.on('SIGTERM', (): void => {
             server.close((): void => {
-                logger.success((ProcessSignals.SIGTERM.yellow),
+                logger.success(('SIGTERM'.yellow),
                     'REST Server gracefully terminated.');
             });
         });

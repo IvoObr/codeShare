@@ -1,7 +1,7 @@
 import { Request } from 'express';
-import { UserRolesType } from '@enums';
+import { UserRolesType } from '@lib';
 
-export interface UserRequest extends Request {
+export interface IUserRequest extends Request {
   user: IUser
   token: string;
 }
@@ -30,12 +30,4 @@ export interface IUserReq {
 export interface IUser extends IUserReq {
   _id?: string;
   tokens: string[]
-}
-
-export interface IUserDal {
-  getOne: (email: string) => Promise<IUser | null>;
-  getAll: () => Promise<IUser[]>;
-  add: (user: IUser) => Promise<void>;
-  update: (user: IUser) => Promise<void>;
-  delete: (id: number) => Promise<void>;
 }

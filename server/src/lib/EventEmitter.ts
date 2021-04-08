@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
 
-export const Event = new EventEmitter();
+export const Event: EventEmitter = new EventEmitter();
 
 // todo use
