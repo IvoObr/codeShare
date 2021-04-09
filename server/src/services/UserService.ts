@@ -1,14 +1,12 @@
 import { UserDal } from '@db';
 import { UserModel } from "@entities";
 import { Request, Response } from 'express';
-import ServiceHandler from './ServiceHandler';
+import { MiddlewareHandler } from '@middlewares';
 import { StatusCodes, Errors, IUser } from '@lib';
 
-class UserService extends ServiceHandler {
+class UserService {
 
-    constructor() {
-        super(); 
-    }
+    private handleError = MiddlewareHandler.handleError;
 
     public getAll = async (request: Request, response: Response): Promise<void> => {
         try {
@@ -38,6 +36,8 @@ class UserService extends ServiceHandler {
         try {
             const id: string = request.query?.id as string;
 
+            // todo authenticated admin users only can delete !!!!
+            
             if (!id) {
                 throw new Error(Errors.ERROR_MISSING_PARAMETER);
             }
@@ -57,6 +57,10 @@ class UserService extends ServiceHandler {
 
     public update = async (request: Request, response: Response): Promise<Response | void> => {
         
+        // name: string;
+        // email: string;
+        // password: string;
+        // role: UserRolesType;
         // TODO.....
         
         const { user } = request.body;

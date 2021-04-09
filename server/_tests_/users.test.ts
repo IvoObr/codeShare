@@ -14,12 +14,20 @@ describe('users api tests', (): void => {
     console.log(process.env.NODE_ENV);
     let userId: string = '-1';
 
+    const headers: any = {
+        headers: {
+            Authorization: 'Bearer TOKEN!@#'
+        }
+    };
+
     it('GET /api/user/all returns all users', async (): Promise<void> => {
-        try {             
-            const response: AxiosResponse<IUser[]> = await axios.get(`http://localhost:${port}/user/all`);
+        try {
+            const url: string = `http://localhost:${port}/user/all`;
+            
+            const response: AxiosResponse<IUser[]> = await axios.get(url, headers);
             logger.success('GET /user/all response:', response.data.length);
-      
-            expect(typeof response.data.length).toBe('number');
+           
+            expect(typeof response.data.length).toBe('number');  
             
         } catch (error: any) {
             handleError(error);
@@ -32,10 +40,10 @@ describe('users api tests', (): void => {
             const password: string = 'Password123@';
             const email: string = `${Helpers.genBase36Key(8)}@yopmail.com`;
             const role: UserRolesType = UserRolesType.Admin;
-
             const data: IUserReq = { name, email, role, password };
-            const response: AxiosResponse<IUser> = await axios.post(`http://localhost:${port}/user/register`, data);
-            
+            const url: string = `http://localhost:${port}/user/register`;
+
+            const response: AxiosResponse<IUser> = await axios.post(url, data);   
             logger.success('POST /user/add response:', response.data);
            
             if (response.data?._id) {
@@ -54,9 +62,11 @@ describe('users api tests', (): void => {
 
     it('DELETE /user/delete/:id user in DB', async (): Promise<void> => {
         try {
-            const response: AxiosResponse<IUser> = await axios.delete(`http://localhost:${port}/user/delete/?id=${userId}`);
+            const url: string = `http://localhost:${port}/user/delete/?id=${userId}`;
             
+            const response: AxiosResponse<IUser> = await axios.delete(url, headers);
             logger.success('DELETE /user/delete/:id response.status:', response.status);
+            
             expect(response.status).toBe(200);
 
         } catch (error: any) {

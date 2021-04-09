@@ -18,10 +18,10 @@ class UserRouter extends ApiRouter {
     }
 
     protected initRoutes(): void {
-        this.router.get('/all', this.asyncWrap(UserService.getAll));
-        this.router.post('/register', this.asyncWrap(UserService.register));
-        this.router.delete('/delete', this.asyncWrap(UserService.delete));
-        this.router.put('/update', this.asyncWrap(UserService.update));
+        this.router.get('/all', this.authenticate, this.asyncWrap(UserService.getAll));
+        this.router.post('/register', this.asyncWrap(UserService.register));      
+        this.router.delete('/delete', this.authenticate, this.asyncWrap(UserService.delete));       
+        this.router.put('/update', this.authenticate, this.asyncWrap(UserService.update));
     }
 }
 

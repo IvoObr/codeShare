@@ -17,6 +17,7 @@
     "@routes": ["src/routes/"],
     "@services": ["src/services/"],      
     "@entities": ["src/entities/"],
+    "@middlewares": ["src/middlewares/"]
     },
   },
   "include": ["src/**/*.ts","_tests_/**/*.ts"],
