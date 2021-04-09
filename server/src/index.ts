@@ -2,8 +2,8 @@ import http from 'http';
 import colors from 'colors';
 import { Mongo } from '@db';
 import Server from '@server';
-import { logger } from '@lib';
 import 'module-alias/register';
+import { logger, Env } from '@lib';
 import * as core from "express-serve-static-core";
 import dotenv, { DotenvConfigOutput } from 'dotenv';
 colors.enable();
@@ -48,6 +48,10 @@ class Main {
     }
 
     public setEnv(): this {
+        if (process.argv[2] === Env.development) {
+            process.env.NODE_ENV = Env.development;
+        }
+        
         const result: DotenvConfigOutput = dotenv.config();
         
         if (result.error) {

@@ -1,5 +1,6 @@
 import cors from 'cors';
 import path from 'path';
+import { Env } from '@lib';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import express from 'express';
@@ -24,8 +25,8 @@ class Server {
     }
 
     private prepareEnv(): this {
-        (process.env.NODE_ENV === 'development') && this.app.use(morgan('dev'));
-        (process.env.NODE_ENV === 'production') && this.app.use(helmet());
+        (process.env.NODE_ENV === Env.development) && this.app.use(morgan('dev'));
+        (process.env.NODE_ENV === Env.production) && this.app.use(helmet());
         return this;
     }
 

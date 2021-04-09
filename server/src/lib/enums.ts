@@ -8,6 +8,11 @@ export enum Collections {
   USERS = "users",
 }
 
+export enum Env {
+  development = 'development',
+  production = 'production'
+}
+
 export enum Headers {
   Authorization = 'authorization'
 }

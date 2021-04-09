@@ -2,12 +2,12 @@
     "name": "server",
     "version": "1.0.0",
     "scripts": {
-        "clean": "rm -rf ./dist/; mkdir dist",
-        "copy": "cp -r ./src/public ./dist/public;  cp -r ./src/views ./dist/views; cp -r ./.env ./dist/.env",
+        "clean": "rm -rf ./dist/ && mkdir dist",
+        "copy": "cp -r ./src/public ./dist/public &&  cp -r ./src/views ./dist/views && cp ./.env ./dist/",
         "build": "npm run clean && npm run copy && tsc --build tsconfig.prod.json",
         "eslint-fix": "eslint . --ext .ts --fix",
-        "start": "NODE_ENV=production node -r module-alias/register ./dist ",
-        "dev": "NODE_ENV=development nodemon --delay 1",
+        "start": "node -r module-alias/register ./dist ",
+        "dev": "nodemon development --delay 1",
         "test": "nodemon --delay 5 --config ./_tests_/nodemon.json"
     },
     "nodemonConfig": {
