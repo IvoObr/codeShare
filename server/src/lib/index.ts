@@ -3,7 +3,7 @@ import Helpers from './Helpers';
 import { RouteHandler } from './types';
 import { Event } from './EventEmitter';
 import { JwtService } from './JwtService';
-import { UserRolesType, Errors, StatusCodes, Collections, Headers, Env } from './enums';
+import { UserRole, Errors, StatusCodes, Collections, Headers, Env } from './enums';
 import { IUserRequest, IRequest, IClientData, IUser, IUserReq } from './interfaces';
 
 export {
@@ -13,5 +13,5 @@ export {
     JwtService,
     RouteHandler,
     IUserRequest, IRequest, IClientData, IUser, IUserReq,
-    UserRolesType, Errors, StatusCodes, Collections, Headers, Env
+    UserRole, Errors, StatusCodes, Collections, Headers, Env
 };

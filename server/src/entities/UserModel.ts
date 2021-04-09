@@ -1,18 +1,18 @@
 import bcrypt from 'bcrypt';
 import { UserDal } from '@db';
-import { UserRolesType, Errors, IUser, IUserReq, Helpers } from '@lib';
+import { UserRole, Errors, IUser, IUserReq, Helpers } from '@lib';
 
 export default class UserModel implements IUser {
 
     public tokens: string[] = [];
     public email: string;
-    public role: UserRolesType;
+    public role: UserRole;
     public password: string;
     public name: string;
 
     constructor({ name, email, password, role }: IUserReq) { 
         this.email = email || '';
-        this.role = role || UserRolesType.Member;
+        this.role = role || UserRole.Member;
         this.password = password || '';
         this.name = name || '';
     }

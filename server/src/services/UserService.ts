@@ -60,7 +60,7 @@ class UserService {
         // name: string;
         // email: string;
         // password: string;
-        // role: UserRolesType;
+        // role: UserRole;
         // TODO.....
         
         const { user } = request.body;

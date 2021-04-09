@@ -1,11 +1,11 @@
 import { JwtService } from '../lib/JwtService';
 import MiddlewareHandler from './MiddlewareHandler';
 import { Request, Response, NextFunction } from 'express';
-import { UserRolesType, StatusCodes, IClientData, Headers, logger, Errors } from '@lib';
+import { UserRole, StatusCodes, IClientData, Headers, logger, Errors } from '@lib';
 
 class AuthMiddleware {
     
-    private jwtService = new JwtService(); // todo test
+    private jwtService = new JwtService();
     private handleError = MiddlewareHandler.handleError;
     
     public authenticate = (request: Request<any>, response: Response, next: NextFunction): void => {
@@ -48,7 +48,7 @@ class AuthMiddleware {
             }
             /* Make sure user role is an admin */
             const clientData: IClientData = await this.jwtService.decodeJwt(jwt);
-            if (clientData.role === UserRolesType.Admin) {
+            if (clientData.role === UserRole.Admin) {
                 res.locals.userId = clientData.id;
                 next();
             } else {

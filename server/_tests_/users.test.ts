@@ -3,7 +3,7 @@ import logger from '../src/lib/logger';
 import Helpers from '../src/lib/Helpers';
 import { handleError } from './testUtils';
 import axios, { AxiosResponse } from 'axios';
-import { UserRolesType } from '../src/lib/enums';
+import { UserRole } from '../src/lib/enums';
 import { IUser, IUserReq } from '../src/lib/interfaces';
 
 describe('users api tests', (): void => {
@@ -39,7 +39,7 @@ describe('users api tests', (): void => {
             const name: string = 'ivoObr';
             const password: string = 'Password123@';
             const email: string = `${Helpers.genBase36Key(8)}@yopmail.com`;
-            const role: UserRolesType = UserRolesType.Admin;
+            const role: UserRole = UserRole.Admin;
             const data: IUserReq = { name, email, role, password };
             const url: string = `http://localhost:${port}/user/register`;
 

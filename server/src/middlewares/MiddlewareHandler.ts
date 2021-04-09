@@ -25,7 +25,13 @@ class MiddlewareHandler {
                         .status(StatusCodes.UNAUTHORIZED)
                         .json({ error: error.message });
                     break;
-
+                
+                case Errors.ERROR_LOGIN_FAILED:
+                    response
+                        .status(StatusCodes.UNAUTHORIZED)
+                        .json({ error: error.message });
+                    break;
+                
                 default:
                     response
                         .status(StatusCodes.BAD_REQUEST)

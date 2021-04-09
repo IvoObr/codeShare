@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { UserRolesType } from '@lib';
+import { UserRole } from '@lib';
 
 export interface IUserRequest extends Request {
   user: IUser
@@ -16,15 +16,15 @@ export interface IRequest extends Request {
 } 
 
 export interface IClientData {
-  id: number;
-  role: number;
+  id: string;
+  role: string;
 }
 
 export interface IUserReq {
   name: string;
   email: string;
   password: string;
-  role: UserRolesType;
+  role: UserRole;
 }
 
 export interface IUser extends IUserReq {

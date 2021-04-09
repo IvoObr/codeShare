@@ -10,20 +10,16 @@ export class JwtService {
         this.secret = (process.env.JWT_SECRET || Helpers.genBase36Key(50));
     }
 
-    public createJWT(data: IClientData): Promise<string> {
-        return new Promise((resolve, reject) => {
-
-            jsonwebtoken.sign(data, this.secret, { expiresIn: '1 day' }, (err, token) => {
-                err ? reject(err) : resolve(token as string);
-            });
-        });
+    public createJWT(data: IClientData): string {
+        return jsonwebtoken.sign(data, this.secret, { expiresIn: '1 day' });
     }
 
-    public decodeJwt(jwt: string): Promise<IClientData> {
-        return new Promise((res, rej) => {
-            jsonwebtoken.verify(jwt, this.secret, (err: VerifyErrors | null, decoded?: any) => {
-                return err ? rej(this.VALIDATION_ERROR) : res(decoded as IClientData);
-            });
+    public async decodeJwt(jwt: string): Promise<IClientData> {
+        return await jsonwebtoken.verify(jwt, this.secret);
+        
+        (err: VerifyErrors | null, decoded?: any) => {
+            return err ? this.VALIDATION_ERROR : decoded);
         });
+     
     }
 }
