@@ -17,23 +17,9 @@ describe('users api tests', (): void => {
 
     const headers: any = {
         headers: {
-            Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Imp5cHQ2ZHVydDdvNHZjdzUxempkNHM2ZjZ1aHhlbSIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTYxODM5NzIxMn0.P9bqgAdRHtCMJbL-Zzck2vyGxuFaSqC_pCv7DMDp7_k'
+            Authorization: 'Bearer '
         }
     };
-
-    it.only('GET /api/user/all returns all users', async (): Promise<void> => {
-        try {
-            const url: string = `http://localhost:${port}/user/all`;
-            
-            const response: AxiosResponse<IUser[]> = await axios.get(url, headers);
-            logger.success('GET /user/all response:', response.data.length);
-           
-            expect(typeof response.data.length).toBe('number');  
-            
-        } catch (error: any) {
-            handleError(error);
-        }
-    });
 
     it('POST /user/register user in DB', async (): Promise<void> => {
         try {        
@@ -72,10 +58,42 @@ describe('users api tests', (): void => {
             const response: AxiosResponse<IUser> = await axios.post(url, data);
             logger.success('POST /auth/login response:', response.data);
 
+            if (response.data?.tokens.length) {
+                headers.headers.Authorization = `Bearer ${response.data?.tokens[0]}`;
+            }
+
             expect(response.data.email).toBe(userEmail);
             expect(typeof response.data.name).toBe('string');
             expect(typeof response.data.role).toBe('string');
             expect(typeof response.data.password).toBe('string');
+
+        } catch (error: any) {
+            handleError(error);
+        }
+    });
+
+    it('GET /api/user/all returns all users', async (): Promise<void> => {
+        try {
+            const url: string = `http://localhost:${port}/user/all`;
+
+            const response: AxiosResponse<IUser[]> = await axios.get(url, headers);
+            logger.success('GET /user/all response:', response.data.length);
+
+            expect(typeof response.data.length).toBe('number');
+
+        } catch (error: any) {
+            handleError(error);
+        }
+    });
+
+    it.skip('GET /auth/logout user in DB', async (): Promise<void> => {
+        try {
+            const url: string = `http://localhost:${port}/auth/logout`;
+
+            const response: AxiosResponse<IUser> = await axios.get(url, headers);
+            logger.success('GET /auth/logout:', response.status);
+
+            expect(response.status).toBe(200);
 
         } catch (error: any) {
             handleError(error);

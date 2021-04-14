@@ -2,11 +2,11 @@ import { UserDal } from '@db';
 import { UserModel } from "@entities";
 import { ErrorHandler } from '@lib';
 import { Request, Response } from 'express';
-import { StatusCodes, IUser, Errors } from '@utils';
+import { StatusCodes, IUser, Errors, UserRole } from '@utils';
 
 class UserService {
 
-    private handleError = ErrorHandler.handle;
+    private handleError = ErrorHandler;
 
     public getAll = async (request: Request, response: Response): Promise<void> => {
         try {
@@ -35,9 +35,12 @@ class UserService {
     public delete = async (request: Request, response: Response): Promise<void> => {
         try {
             const id: string = request.query?.id as string;
+            const userRole: UserRole = request.body.userRole;
 
-            // todo authenticated admin users only can delete !!!!
-            
+            if (userRole !== UserRole.Admin) {
+                throw new Error(Errors.FORBIDDEN);
+            }
+                        
             if (!id) {
                 throw new Error(Errors.MISSING_PARAMETER);
             }

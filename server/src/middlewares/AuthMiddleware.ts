@@ -1,10 +1,11 @@
+import { UserDal } from '@db';
 import { Jwt, ErrorHandler } from '@lib';
-import { IClientData, Errors } from '@utils';
+import { IClientData, Errors, logger, IUser } from '@utils';
 import { Request, Response, NextFunction } from 'express';
 
 class AuthMiddleware {
 
-    private handlerError = ErrorHandler.handle;
+    private handleError = ErrorHandler;
     
     public authenticate = (request: Request, response: Response, next: NextFunction): void => {
         try {
@@ -16,13 +17,22 @@ class AuthMiddleware {
        
             const clientData: IClientData = Jwt.verify(token);
 
-            request.body.userId = clientData.id;
-            request.body.userRole = clientData.role;
+            UserDal.getUserByToken(token)
+                .then((user: IUser) => {
+                    if (!user) {
+                        throw new Error(Errors.UNAUTHORIZED);
+                    }
 
-            next();
+                    request.body.userId = clientData.id;
+                    request.body.userRole = clientData.role;
+
+                    next();
+                }).catch(error => {
+                    this.handleError(new Error(Errors.UNAUTHORIZED), response); 
+                });
 
         } catch (error) {
-            this.handlerError(new Error(Errors.UNAUTHORIZED), response);
+            this.handleError(new Error(Errors.UNAUTHORIZED), response);
         }
     }
 }

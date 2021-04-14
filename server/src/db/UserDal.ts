@@ -1,7 +1,7 @@
 import { Mongo } from '@db';
 import { UserModel } from "@entities";
+import { IUser, logger, Collections } from '@utils';
 import mongodb, { InsertOneWriteOpResult } from 'mongodb';
-import { IUser, logger, Errors, Collections } from '@utils';
 
 class UserDal {
 
@@ -9,6 +9,15 @@ class UserDal {
         const result: IUser[] = await Mongo.db
             .collection(Collections.USERS)
             .find({ email })
+            .toArray();
+        
+        return result[0] || null;
+    }
+
+    public async getUserByToken(token: string): Promise<IUser> {
+        const result: IUser[] = await Mongo.db
+            .collection(Collections.USERS)
+            .find({ tokens: token })
             .toArray();
         
         return result[0] || null;
@@ -37,10 +46,6 @@ class UserDal {
     }
 
     public async setToken(token: string, userId: string): Promise<boolean> {
-        if (!userId) {
-            throw new Error(Errors.MISSING_PARAMETER);
-        }
-
         const query: any = { id: userId };
         const updateToken: any = { $push: { 'tokens': token } };
 
@@ -51,11 +56,18 @@ class UserDal {
         return result?.result?.nModified === 1;
     }
 
-    public async deleteUser(id: string): Promise<number> {
-        if (!id) {
-            throw new Error(Errors.MISSING_PARAMETER);
-        }
-    
+    public async removeTokens(userId: string): Promise<boolean> {
+        const query: any = { id: userId };
+        const updateToken: any = { $set: { 'tokens': []} };
+
+        const result: mongodb.UpdateWriteOpResult = await Mongo.db
+            .collection(Collections.USERS)
+            .updateOne(query, updateToken);
+        
+        return result?.result?.nModified === 1;
+    }
+
+    public async deleteUser(id: string): Promise<number> {   
         const result: mongodb.DeleteWriteOpResultObject = await Mongo.db
             .collection(Collections.USERS)
             .deleteOne({ id });

@@ -6,7 +6,7 @@ import { StatusCodes, IUser, Errors, Headers, logger } from '@utils';
 
 class AuthService {
 
-    private handleError = ErrorHandler.handle;
+    private handleError = ErrorHandler;
 
     public login = async (request: Request, response: Response): Promise<void> => {
         try {
@@ -31,10 +31,10 @@ class AuthService {
 
             const token: string = Jwt.sign({ id: user.id, role: user.role });
 
-            const didSetToken: boolean = await UserDal.setToken(token, user.id);
+            const isTokenSet: boolean = await UserDal.setToken(token, user.id);
 
-            if (!didSetToken) {
-                throw new Error(Errors.COULD_NOT_INSERT_TOKEN_IN_DB);
+            if (!isTokenSet) {
+                throw new Error(Errors.COULD_NOT_LOGIN);
             }
 
             user.tokens.push(token);
@@ -49,12 +49,11 @@ class AuthService {
 
     public logout = async (request: Request, response: Response): Promise<void> => {
         try {
-            // const { key, options } = cookieProps;
-            // todo delete token
-            // res.clearCookie(key, options);
+            const areTokensRemoved: boolean = await UserDal.removeTokens(request.body.userId);
 
-            // req.user.removeToken(req.token).then(() => {
-            //     res.status(200).send();
+            if (!areTokensRemoved) {
+                throw new Error(Errors.COULD_NOT_LOGOUT);
+            }
 
             response.status(StatusCodes.OK).end();
 
