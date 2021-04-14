@@ -2,7 +2,7 @@ import { UserDal } from '@db';
 import { UserModel } from "@entities";
 import { Request, Response } from 'express';
 import { MiddlewareHandler } from '@middlewares';
-import { StatusCodes, Errors, IUser } from '@lib';
+import { StatusCodes, Errors, IUser, logger } from '@lib';
 
 class UserService {
 
@@ -39,13 +39,13 @@ class UserService {
             // todo authenticated admin users only can delete !!!!
             
             if (!id) {
-                throw new Error(Errors.ERROR_MISSING_PARAMETER);
+                throw new Error(Errors.MISSING_PARAMETER);
             }
 
             const deletedCount: number = await UserDal.deleteUser(id);
 
             if (deletedCount < 1) {
-                throw new Error(Errors.ERROR_COULD_NOT_DELETE_USER_BY_ID);
+                throw new Error(Errors.COULD_NOT_DELETE_USER_BY_ID);
             }
 
             response.status(StatusCodes.OK).end();
@@ -66,10 +66,10 @@ class UserService {
         const { user } = request.body;
         if (!user) {
             return response.status(StatusCodes.BAD_REQUEST).json({
-                error: Errors.ERROR_MISSING_PARAMETER
+                error: Errors.MISSING_PARAMETER
             });
         }
-        user._id = Number(user._id);
+        user.id = Number(user.id);
         // TODO user user
         return response.status(StatusCodes.OK).end();
     }

@@ -1,6 +1,6 @@
 class Helpers {
     
-    /** Generates 30 characters long, base36 encoded
+    /** Generates n characters long, base36 encoded
     * @param - desired hash length
     * @returns - base36 encoded string
     */

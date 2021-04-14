@@ -20,13 +20,19 @@ class MiddlewareHandler {
        
         if (error.message in Errors) {
             switch (error.message) {
-                case Errors.ERROR_UNAUTHORIZED:
+                case Errors.UNAUTHORIZED:
                     response
                         .status(StatusCodes.UNAUTHORIZED)
                         .json({ error: error.message });
                     break;
-                
-                case Errors.ERROR_LOGIN_FAILED:
+              
+                case Errors.FORBIDDEN:
+                    response
+                        .status(StatusCodes.FORBIDDEN)
+                        .json({ error: error.message });
+                    break;
+                   
+                case Errors.LOGIN_FAILED:
                     response
                         .status(StatusCodes.UNAUTHORIZED)
                         .json({ error: error.message });

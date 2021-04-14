@@ -1,4 +1,5 @@
 import { Mongo } from '@db';
+import { UserModel } from "@entities";
 import { IUser, logger, Errors, Collections } from '@lib';
 import mongodb, { InsertOneWriteOpResult } from 'mongodb';
 
@@ -22,7 +23,7 @@ class UserDal {
         return result;
     }
 
-    public async addUser(user: IUser): Promise<IUser> {
+    public async addUser(user: UserModel): Promise<IUser> {
         const result: InsertOneWriteOpResult<any> = await Mongo.db
             .collection(Collections.USERS)
             .insertOne(user); 
@@ -35,14 +36,29 @@ class UserDal {
         return Promise.resolve(undefined);
     }
 
+    public async setToken(token: string, userId: string): Promise<boolean> {
+        if (!userId) {
+            throw new Error(Errors.MISSING_PARAMETER);
+        }
+
+        const query: any = { id: userId };
+        const updateToken: any = { $push: { 'tokens': token } };
+
+        const result: mongodb.UpdateWriteOpResult = await Mongo.db
+            .collection(Collections.USERS)
+            .updateOne(query, updateToken);
+                
+        return result?.result?.nModified === 1;
+    }
+
     public async deleteUser(id: string): Promise<number> {
-        if (!mongodb.ObjectID.isValid(id)) {
-            throw new Error(Errors.ERROR_COULD_NOT_DELETE_USER_BY_ID);
+        if (!id) {
+            throw new Error(Errors.MISSING_PARAMETER);
         }
     
         const result: mongodb.DeleteWriteOpResultObject = await Mongo.db
             .collection(Collections.USERS)
-            .deleteOne({ _id: new mongodb.ObjectID(id) });
+            .deleteOne({ id });
         
         return result.deletedCount || 0;
     }

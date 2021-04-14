@@ -57,10 +57,10 @@ class SnippetRouter extends ApiRouter {
             const { user } = req.body;
             if (!user) {
                 return res.status(StatusCodes.BAD_REQUEST).json({
-                    error: Errors.ERROR_MISSING_PARAMETER
+                    error: Errors.MISSING_PARAMETER
                 });
             }
-            user._id = Number(user._id);
+            user.id = Number(user.id);
             // todo snippet user
             return res.status(StatusCodes.OK).end();
         });

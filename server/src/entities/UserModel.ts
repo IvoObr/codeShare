@@ -9,14 +9,16 @@ export default class UserModel implements IUser {
     public role: UserRole;
     public password: string;
     public name: string;
+    public id: string;
 
     constructor({ name, email, password, role }: IUserReq) { 
         this.email = email || '';
         this.role = role || UserRole.Member;
         this.password = password || '';
         this.name = name || '';
+        this.id = Helpers.genBase36Key();
     }
-    
+
     public async validate(): Promise<UserModel> {
         this.validateName();
         this.validatePassword();
@@ -32,7 +34,7 @@ export default class UserModel implements IUser {
 
     private validateName(): void {
         if (typeof this.name !== 'string' || this.name.length < 1) {
-            throw new Error(Errors.ERROR_INVALID_NAME);
+            throw new Error(Errors.INVALID_NAME);
         }
     }
 
@@ -40,7 +42,7 @@ export default class UserModel implements IUser {
         const isValidPassword: boolean = Helpers.isPasswordStrong(this.password);
 
         if (!isValidPassword) {
-            throw new Error(Errors.ERROR_PASSWORD_CRITERIA_NOT_MET);
+            throw new Error(Errors.PASSWORD_CRITERIA_NOT_MET);
         }
     }
 
@@ -48,13 +50,13 @@ export default class UserModel implements IUser {
         const user: IUser = await UserDal.getUserByEmail(this.email);
         
         if (user) {
-            throw new Error(Errors.ERROR_USER_EXISTS);
+            throw new Error(Errors.USER_EXISTS);
         }
 
         const isValidEmail: boolean = Helpers.isEmailValid(this.email);
 
         if (!isValidEmail) {
-            throw new Error(Errors.ERROR_INVALID_EMAIL);
+            throw new Error(Errors.INVALID_EMAIL);
         }
     }
 }

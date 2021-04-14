@@ -20,14 +20,17 @@ export interface IClientData {
   role: string;
 }
 
-export interface IUserReq {
+export interface IUserReq extends IUserLogin {
   name: string;
-  email: string;
-  password: string;
   role: UserRole;
 }
 
+export interface IUserLogin {
+  email: string;
+  password: string;
+}
+
 export interface IUser extends IUserReq {
-  _id?: string;
+  id: string;
   tokens: string[]
 }

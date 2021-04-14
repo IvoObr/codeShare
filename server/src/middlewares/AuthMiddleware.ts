@@ -1,25 +1,23 @@
-import { JwtService } from '../lib/JwtService';
 import MiddlewareHandler from './MiddlewareHandler';
 import { Request, Response, NextFunction } from 'express';
-import { UserRole, StatusCodes, IClientData, Headers, logger, Errors } from '@lib';
+import { UserRole, StatusCodes, IClientData, Jwt, logger, Errors } from '@lib';
 
 class AuthMiddleware {
     
-    private jwtService = new JwtService();
     private handleError = MiddlewareHandler.handleError;
     
     public authenticate = (request: Request<any>, response: Response, next: NextFunction): void => {
         try {
 
-            const [type, token]: string[] = request.headers.authorization?.split(' ') as string[];
+            const token: string = request.headers.authorization?.split(' ')[1] || '';
 
-            logger.info(type);
-            logger.info(token);
-
-            if (!type || !token) {
-                throw new Error(Errors.ERROR_UNAUTHORIZED);
+            if (!token) {
+                throw new Error(Errors.UNAUTHORIZED);
             }
+       
+            const clientData: IClientData = Jwt.verify(token);
 
+            logger.debug('IClientData:', clientData);
             // const [type, token]: string[] = authHeader.split(' ');
             // //@ts-ignore: TODO put interface
             // const user: any; // TODO get user by token
@@ -32,22 +30,21 @@ class AuthMiddleware {
             //     res.status(401).send();
             // });
         } catch (error) {
-            this.handleError(new Error(Errors.ERROR_UNAUTHORIZED), response);
+            this.handleError(new Error(Errors.UNAUTHORIZED), response);
         }
     }
 
     /* Middleware to verify if user is an admin */
     public adminMW = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            /* Get json-web-token */
-            const authHeader: string = req.header(Headers.Authorization) as string;
-            const [type, jwt]: string[] = authHeader.split(' ');
+            const token: string = req.headers.authorization?.split(' ')[1] || '';
 
-            if (!jwt) {
+            if (!token) {
                 throw Error('JWT not present in request.');
             }
             /* Make sure user role is an admin */
-            const clientData: IClientData = await this.jwtService.decodeJwt(jwt);
+            const clientData: any = Jwt.verify(token);
+            
             if (clientData.role === UserRole.Admin) {
                 res.locals.userId = clientData.id;
                 next();
