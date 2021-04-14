@@ -1,10 +1,10 @@
 import dotenv from 'dotenv';
-import logger from '../src/lib/logger';
+import logger from '../src/utils/logger';
 import Helpers from '../src/lib/Helpers';
 import { handleError } from './testUtils';
 import axios, { AxiosResponse } from 'axios';
-import { UserRole } from '../src/lib/enums';
-import { IUser, IUserReq, IUserLogin } from '../src/lib/interfaces';
+import { UserRole } from '../src/utils/enums';
+import { IUser, IUserReq, IUserLogin } from '../src/utils/interfaces';
 
 describe('users api tests', (): void => {
     
@@ -17,11 +17,11 @@ describe('users api tests', (): void => {
 
     const headers: any = {
         headers: {
-            Authorization: 'Bearer TOKEN!@#'
+            Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Imp5cHQ2ZHVydDdvNHZjdzUxempkNHM2ZjZ1aHhlbSIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTYxODM5NzIxMn0.P9bqgAdRHtCMJbL-Zzck2vyGxuFaSqC_pCv7DMDp7_k'
         }
     };
 
-    it.skip('GET /api/user/all returns all users', async (): Promise<void> => {
+    it.only('GET /api/user/all returns all users', async (): Promise<void> => {
         try {
             const url: string = `http://localhost:${port}/user/all`;
             
@@ -82,7 +82,7 @@ describe('users api tests', (): void => {
         }
     });
 
-    it.skip('DELETE /user/delete/:id user in DB', async (): Promise<void> => {
+    it('DELETE /user/delete/:id user in DB', async (): Promise<void> => {
         try {
             const url: string = `http://localhost:${port}/user/delete/?id=${userId}`;
             

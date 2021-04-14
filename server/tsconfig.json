@@ -13,6 +13,7 @@
   "paths": {
     "@db": ["src/db/"],
     "@lib": ["src/lib/"],
+    "@utils": ["src/utils/"],
     "@server": ["src/Server"],
     "@routes": ["src/routes/"],
     "@services": ["src/services/"],      

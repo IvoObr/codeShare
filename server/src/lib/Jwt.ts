@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
-import { Errors, Helpers, IClientData, logger } from '.';
+import Helpers from './Helpers';
+import { Errors, IClientData, logger } from '@utils';
 
 class Jwt {
 
@@ -12,6 +13,7 @@ class Jwt {
     public verify(token: string): IClientData {
         try {
             return jwt.verify(token, this.secret) as IClientData;
+
         } catch (error) {
             logger.error(error);
             throw new Error(Errors.FORBIDDEN);

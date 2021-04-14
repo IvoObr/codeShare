@@ -1,12 +1,12 @@
 import bcrypt from 'bcrypt';
 import { UserDal } from '@db';
+import { Jwt, ErrorHandler } from '@lib';
 import { Request, Response } from 'express';
-import { MiddlewareHandler } from '@middlewares';
-import { StatusCodes, IUser, Errors, Headers, logger, Jwt } from '@lib';
+import { StatusCodes, IUser, Errors, Headers, logger } from '@utils';
 
 class AuthService {
 
-    private handleError = MiddlewareHandler.handleError;
+    private handleError = ErrorHandler.handle;
 
     public login = async (request: Request, response: Response): Promise<void> => {
         try {

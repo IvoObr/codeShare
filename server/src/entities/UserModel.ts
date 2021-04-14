@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import { UserDal } from '@db';
-import { UserRole, Errors, IUser, IUserReq, Helpers } from '@lib';
+import { Helpers } from '@lib';
+import { UserRole, Errors, IUser, IUserReq } from '@utils';
 
 export default class UserModel implements IUser {
 
@@ -39,7 +40,7 @@ export default class UserModel implements IUser {
     }
 
     private validatePassword(): void {
-        const isValidPassword: boolean = Helpers.isPasswordStrong(this.password);
+        const isValidPassword: boolean = this.isPasswordStrong(this.password);
 
         if (!isValidPassword) {
             throw new Error(Errors.PASSWORD_CRITERIA_NOT_MET);
@@ -53,10 +54,25 @@ export default class UserModel implements IUser {
             throw new Error(Errors.USER_EXISTS);
         }
 
-        const isValidEmail: boolean = Helpers.isEmailValid(this.email);
+        const isValidEmail: boolean = this.isEmailValid(this.email);
 
         if (!isValidEmail) {
             throw new Error(Errors.INVALID_EMAIL);
         }
+    }
+
+    private isPasswordStrong(password: string): boolean {
+        const minLength: boolean = password.length > 8;
+        const oneUppercase: boolean = new RegExp(/[A-Z]/).test(password);
+        const oneLowercase: boolean = new RegExp(/[a-z]/).test(password);
+        const oneNumber: boolean = new RegExp(/[0-9]/).test(password);
+        const oneSymbol: boolean = new RegExp(/[-#!$@%^&*()_+|~=`{}\[\]:";'<>?,.\/]/).test(password);
+
+        return minLength && oneUppercase && oneLowercase && oneNumber && oneSymbol;
+    }
+
+    private isEmailValid(email: string): boolean {
+        const regex: RegExp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return regex.test(String(email).toLowerCase());
     }
 }

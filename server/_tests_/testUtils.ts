@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import logger from '../src/lib/logger';
+import logger from '../src/utils/logger';
 
 export function handleError(error: AxiosError): void {
     

@@ -1,25 +1,20 @@
 import { Router } from 'express';
-import ApiRouter from './ApiRouter';
+import { AsyncWrapper } from '@lib';
 import { AuthService } from '@services';
 
-class AuthRouter extends ApiRouter {
+class AuthRouter {
 
-    protected router: Router;
-
-    constructor() {
-        super();
-        this.router = Router();
-        this.initRoutes();
-    }
-
+    private router: Router = Router()
+    private asyncWrap = AsyncWrapper.wrap;
+    
     public getRouter(): Router {
+        /* sub route */
         this.router.use('/auth', this.router);
-        return this.router;
-    }
-
-    protected initRoutes(): void {
+        /* specific routes */
         this.router.post('/login', this.asyncWrap(AuthService.login));
         this.router.get('/logout', this.asyncWrap(AuthService.logout));
+       
+        return this.router;
     }
 }
 

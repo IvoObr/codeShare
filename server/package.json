@@ -28,6 +28,7 @@
     "_moduleAliases": {
         "@db": "dist/db/",
         "@lib": "dist/lib/",
+        "@utils": "dist/utils/",
         "@server": "dist/Server",
         "@routes": "dist/routes/",
         "@services": "dist/services/",

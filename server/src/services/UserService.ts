@@ -1,12 +1,12 @@
 import { UserDal } from '@db';
 import { UserModel } from "@entities";
+import { ErrorHandler } from '@lib';
 import { Request, Response } from 'express';
-import { MiddlewareHandler } from '@middlewares';
-import { StatusCodes, Errors, IUser, logger } from '@lib';
+import { StatusCodes, IUser, Errors } from '@utils';
 
 class UserService {
 
-    private handleError = MiddlewareHandler.handleError;
+    private handleError = ErrorHandler.handle;
 
     public getAll = async (request: Request, response: Response): Promise<void> => {
         try {

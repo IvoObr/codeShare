@@ -1,11 +1,11 @@
 import cors from 'cors';
 import path from 'path';
-import { Env } from '@lib';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import { Env } from '@utils';
 import express from 'express';
 import * as core from "express-serve-static-core";
-import { AuthRouter, SnippetRouter, UserRouter } from '@routes';
+import { AuthRouter, UserRouter } from '@routes';
 
 class Server {
 
@@ -32,7 +32,6 @@ class Server {
 
     private useAPIs(): this {
         this.app.use('/auth', AuthRouter);
-        this.app.use('/snippet', SnippetRouter);
         this.app.use('/user', UserRouter);
         return this;
     }

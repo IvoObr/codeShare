@@ -1,23 +1,16 @@
-import { Request, Response, NextFunction } from "express";
-import { Errors, logger, RouteHandler, StatusCodes } from '@lib';
+import { Response } from "express";
+import { Errors, logger, StatusCodes } from '@utils';
 
-class MiddlewareHandler {
+class ErrorHandler {
 
-    /** Enables Express route handlers to use async/await
-     * @param - route handler function
-     * @returns - Promise wrapping function
-     **/
-    public asyncWrap = (handler: any): RouteHandler => {
-        return (request: Request, response: Response, next: NextFunction): void => {
-            Promise
-                .resolve(handler(request, response, next))
-                .catch((error): void => next(error));
-        };
-    }
-
-    public handleError(error: Error, response: Response): void {
+    /** Handles all api errors and sends response
+    * @param Error
+    * @param Response
+    * @returns void
+    **/
+    public handle(error: Error, response: Response): void {
         logger.error(error);
-       
+
         if (error.message in Errors) {
             switch (error.message) {
                 case Errors.UNAUTHORIZED:
@@ -25,25 +18,25 @@ class MiddlewareHandler {
                         .status(StatusCodes.UNAUTHORIZED)
                         .json({ error: error.message });
                     break;
-              
+
                 case Errors.FORBIDDEN:
                     response
                         .status(StatusCodes.FORBIDDEN)
                         .json({ error: error.message });
                     break;
-                   
+
                 case Errors.LOGIN_FAILED:
                     response
                         .status(StatusCodes.UNAUTHORIZED)
                         .json({ error: error.message });
                     break;
-                
+
                 default:
                     response
                         .status(StatusCodes.BAD_REQUEST)
                         .json({ error: error.message });
                     break;
-            } 
+            }
         } else {
             response
                 .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -52,4 +45,4 @@ class MiddlewareHandler {
     }
 }
 
-export default new MiddlewareHandler();
+export default new ErrorHandler();

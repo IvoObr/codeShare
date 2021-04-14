@@ -1,7 +1,7 @@
 import { Mongo } from '@db';
 import { UserModel } from "@entities";
-import { IUser, logger, Errors, Collections } from '@lib';
 import mongodb, { InsertOneWriteOpResult } from 'mongodb';
+import { IUser, logger, Errors, Collections } from '@utils';
 
 class UserDal {
 

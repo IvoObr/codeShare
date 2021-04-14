@@ -3,7 +3,7 @@ import colors from 'colors';
 import { Mongo } from '@db';
 import Server from '@server';
 import 'module-alias/register';
-import { logger, Env } from '@lib';
+import { logger, Env } from '@utils';
 import * as core from "express-serve-static-core";
 import dotenv, { DotenvConfigOutput } from 'dotenv';
 colors.enable();
