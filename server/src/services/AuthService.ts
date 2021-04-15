@@ -28,12 +28,12 @@ class AuthService {
                 throw loginFailed;
             }
 
-            const token: string = Jwt.sign({ id: user.id, role: user.role });
-
-            const isTokenSet: boolean = await UserDal.setToken(token, user.id);
+            const token: string = Jwt.sign({ _id: user._id, role: user.role });
+            
+            const isTokenSet: boolean = await UserDal.setToken(token, user._id);
 
             if (!isTokenSet) {
-                logger.debug(`Could not set token in DB. UserID: ${user.id.bold}`);
+                logger.debug(`Could not set token in DB. UserID: ${user._id.bold}`);
                 throw loginFailed;
             }
 

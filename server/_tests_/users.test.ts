@@ -34,8 +34,8 @@ describe('users api tests', (): void => {
             const response: AxiosResponse<IUser> = await axios.post(url, data);   
             logger.success(path, response.data);
            
-            if (response.data?.id) {
-                userId = response.data.id;
+            if (response.data?._id) {
+                userId = response.data._id;
             }
   
             userEmail = response.data.email;

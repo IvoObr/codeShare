@@ -1,7 +1,7 @@
 import { Mongo } from '@db';
 import { UserModel } from "@entities";
 import { IUser, Collections, IStrings } from '@utils';
-import mongodb, { InsertOneWriteOpResult, FilterQuery, UpdateQuery } from 'mongodb';
+import mongodb, { ObjectId, InsertOneWriteOpResult, UpdateQuery } from 'mongodb';
 
 class UserDal {
 
@@ -46,31 +46,33 @@ class UserDal {
     }
 
     public async setToken(token: string, userId: string): Promise<boolean> {
-        const query: FilterQuery<IStrings> = { id: userId };
+        const _id: mongodb.ObjectID = new ObjectId(userId);
         const updateToken: UpdateQuery<{ $push: IStrings}> = { $push: { 'tokens': token } };
 
         const result: mongodb.UpdateWriteOpResult = await Mongo.db
             .collection(Collections.USERS)
-            .updateOne(query, updateToken);
+            .updateOne({ _id }, updateToken);
                 
         return result?.result?.nModified === 1;
     }
 
     public async removeTokens(userId: string): Promise<boolean> {
-        const query: FilterQuery<IStrings> = { id: userId };
+        const _id: mongodb.ObjectID = new ObjectId(userId);
         const updateToken: UpdateQuery<{ $set: IStrings }> = { $set: { 'tokens': []} };
 
         const result: mongodb.UpdateWriteOpResult = await Mongo.db
             .collection(Collections.USERS)
-            .updateOne(query, updateToken);
+            .updateOne({ _id }, updateToken);
         
         return result?.result?.nModified === 1;
     }
 
-    public async deleteUser(id: string): Promise<number> {   
+    public async deleteUser(userId: string): Promise<number> {
+        const _id: mongodb.ObjectID = new ObjectId(userId);
+
         const result: mongodb.DeleteWriteOpResultObject = await Mongo.db
             .collection(Collections.USERS)
-            .deleteOne({ id });
+            .deleteOne({ _id });
         
         return result.deletedCount || 0;
     }

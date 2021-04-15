@@ -1,23 +1,21 @@
 import bcrypt from 'bcrypt';
 import { UserDal } from '@db';
-import { genBase36Key, ServerError } from '@lib';
+import { ServerError } from '@lib';
 import { UserRole, Errors, IUser, IUserReq } from '@utils';
 
-export default class UserModel implements IUser {
+export default class UserModel {
 
     public tokens: string[] = [];
     public email: string;
     public role: UserRole;
     public password: string;
     public name: string;
-    public id: string;
 
     constructor({ name, email, password, role }: IUserReq) { 
         this.email = email || '';
         this.role = role || UserRole.Member;
         this.password = password || '';
         this.name = name || '';
-        this.id = genBase36Key();
     }
 
     public async validate(): Promise<UserModel> {

@@ -19,7 +19,7 @@ export default async function authenticate(request: Request, response: Response,
             throw tokenError;
         }
 
-        request.body.userId = clientData.id;
+        request.body.userId = clientData._id;
         request.body.userRole = clientData.role;
 
         next();

@@ -6,7 +6,7 @@ export interface IRouteWrapper {
 }
 
 export interface IClientData {
-  id: string;
+  _id: string;
   role: UserRole;
 }
 
@@ -21,7 +21,7 @@ export interface IUserLogin {
 }
 
 export interface IUser extends IUserReq {
-  id: string;
+  _id: string;
   tokens: string[]
 }
 

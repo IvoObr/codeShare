@@ -75,7 +75,7 @@ class UserService {
                 error: Errors.MISSING_PARAMETER
             });
         }
-        user.id = Number(user.id);
+        user._id = Number(user._id);
         // TODO user user
         return response.status(StatusCodes.OK).end();
     }
