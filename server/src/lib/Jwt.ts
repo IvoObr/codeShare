@@ -1,10 +1,11 @@
 import jwt from 'jsonwebtoken';
-import Helpers from './Helpers';
+import { ServerError } from '@lib';
+import genBase36Key from './genBase36Key';
 import { Errors, IClientData, logger } from '@utils';
 
 class Jwt {
 
-    private readonly secret: string = process.env.JWT_SECRET || Helpers.genBase36Key();
+    private readonly secret: string = process.env.JWT_SECRET || genBase36Key();
 
     public sign(payload: IClientData): string {
         return jwt.sign(payload, this.secret);
@@ -15,8 +16,7 @@ class Jwt {
             return jwt.verify(token, this.secret) as IClientData;
 
         } catch (error) {
-            logger.error(error);
-            throw new Error(Errors.FORBIDDEN);
+            throw new ServerError(Errors.FORBIDDEN, 'Token not valid.');
         }
     }
 }

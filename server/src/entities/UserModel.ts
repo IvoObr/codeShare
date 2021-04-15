@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { UserDal } from '@db';
-import { Helpers } from '@lib';
-import { UserRole, Errors, IUser, IUserReq } from '@utils';
+import { genBase36Key, ServerError } from '@lib';
+import { UserRole, Errors, IUser, IUserReq, logger } from '@utils';
 
 export default class UserModel implements IUser {
 
@@ -17,7 +17,7 @@ export default class UserModel implements IUser {
         this.role = role || UserRole.Member;
         this.password = password || '';
         this.name = name || '';
-        this.id = Helpers.genBase36Key();
+        this.id = genBase36Key();
     }
 
     public async validate(): Promise<UserModel> {
@@ -35,7 +35,7 @@ export default class UserModel implements IUser {
 
     private validateName(): void {
         if (typeof this.name !== 'string' || this.name.length < 1) {
-            throw new Error(Errors.INVALID_NAME);
+            throw new ServerError(Errors.INVALID_NAME, `Username ${this.name.bold} is invalid!`);
         }
     }
 
@@ -43,7 +43,7 @@ export default class UserModel implements IUser {
         const isValidPassword: boolean = this.isPasswordStrong(this.password);
 
         if (!isValidPassword) {
-            throw new Error(Errors.PASSWORD_CRITERIA_NOT_MET);
+            throw new ServerError(Errors.PASSWORD_CRITERIA_NOT_MET, `Password ${this.password.bold} is not secure enough!`);
         }
     }
 
@@ -51,13 +51,13 @@ export default class UserModel implements IUser {
         const user: IUser = await UserDal.getUserByEmail(this.email);
         
         if (user) {
-            throw new Error(Errors.USER_EXISTS);
+            throw new ServerError(Errors.USER_EXISTS, `User ${this.email} already exists!`);
         }
 
         const isValidEmail: boolean = this.isEmailValid(this.email);
 
         if (!isValidEmail) {
-            throw new Error(Errors.INVALID_EMAIL);
+            throw new ServerError(Errors.INVALID_EMAIL, `${this.email} is not a valid email!`);
         }
     }
 

@@ -1,32 +1,28 @@
 import bcrypt from 'bcrypt';
 import { UserDal } from '@db';
-import { Jwt, ErrorHandler } from '@lib';
+import { Jwt, ServerError } from '@lib';
 import { Request, Response } from 'express';
 import { StatusCodes, IUser, Errors, Headers, logger } from '@utils';
 
 class AuthService {
-
-    private handleError = ErrorHandler;
 
     public login = async (request: Request, response: Response): Promise<void> => {
         try {
             const { email, password }: any = request.body;
 
             if (!(email && password)) {
-                throw new Error(Errors.MISSING_PARAMETER);
+                throw new ServerError(Errors.MISSING_PARAMETER, `Missing email or password.`);
             }
 
             const user: IUser = await UserDal.getUserByEmail(email);
 
             if (!user) {
-                logger.debug(Errors.INVALID_EMAIL, email);
-                throw new Error(Errors.LOGIN_FAILED);
+                throw new ServerError(Errors.LOGIN_FAILED, `User not found.`);
             }
             const isPassValid: boolean = await bcrypt.compare(password, user.password);
            
             if (!isPassValid) {
-                logger.debug(Errors.INVALID_PASSWORD, password);
-                throw new Error(Errors.LOGIN_FAILED);
+                throw new ServerError(Errors.LOGIN_FAILED, `Invalid password.`);
             }
 
             const token: string = Jwt.sign({ id: user.id, role: user.role });
@@ -34,7 +30,7 @@ class AuthService {
             const isTokenSet: boolean = await UserDal.setToken(token, user.id);
 
             if (!isTokenSet) {
-                throw new Error(Errors.COULD_NOT_LOGIN);
+                throw new ServerError(Errors.COULD_NOT_LOGIN, `Could not set token in DB.`);
             }
 
             user.tokens.push(token);
@@ -43,7 +39,7 @@ class AuthService {
             response.status(StatusCodes.OK).end();
 
         } catch (error) {
-            this.handleError(error, response);
+            ServerError.handle(error, response);
         }
     }
 
@@ -52,13 +48,13 @@ class AuthService {
             const areTokensRemoved: boolean = await UserDal.removeTokens(request.body.userId);
 
             if (!areTokensRemoved) {
-                throw new Error(Errors.COULD_NOT_LOGOUT);
+                throw new ServerError(Errors.COULD_NOT_LOGOUT, `Could not logout.`);
             }
 
             response.status(StatusCodes.OK).end();
 
         } catch (error) {
-            this.handleError(error, response);
+            ServerError.handle(error, response);
         }
     }
 }

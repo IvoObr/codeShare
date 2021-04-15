@@ -1,10 +1,12 @@
 import dotenv from 'dotenv';
+import colors from 'colors';
 import logger from '../src/utils/logger';
-import Helpers from '../src/lib/Helpers';
 import { handleError } from './testUtils';
 import axios, { AxiosResponse } from 'axios';
 import { UserRole } from '../src/utils/enums';
+import genBase36Key from '../src/lib/genBase36Key';
 import { IUser, IUserReq, IUserLogin } from '../src/utils/interfaces';
+colors.enable();
 
 describe('users api tests', (): void => {
     
@@ -22,16 +24,17 @@ describe('users api tests', (): void => {
     };
 
     it('POST /user/register user in DB', async (): Promise<void> => {
+        const path: string = 'POST /user/register'.yellow;
         try {        
+            const url: string = `http://localhost:${port}/user/register`;
             const name: string = 'ivoObr';
             const password: string = 'Password123@';
-            const email: string = `${Helpers.genBase36Key(8)}@yopmail.com`;
+            const email: string = `${genBase36Key(8)}@yopmail.com`;
             const role: UserRole = UserRole.Admin;
             const data: IUserReq = { name, email, role, password };
-            const url: string = `http://localhost:${port}/user/register`;
 
             const response: AxiosResponse<IUser> = await axios.post(url, data);   
-            logger.success('POST /user/add response:', response.data);
+            logger.success(path, response.data);
            
             if (response.data?.id) {
                 userId = response.data.id;
@@ -45,18 +48,19 @@ describe('users api tests', (): void => {
             expect(typeof response.data.password).toBe('string');
 
         } catch (error: any) {
-            handleError(error);
+            handleError(path, error);
         }
     });
 
     it('POST /auth/login user in DB', async (): Promise<void> => {
+        const path: string = 'POST /auth/login'.yellow;
         try {
+            const url: string = `http://localhost:${port}/auth/login`;
             const password: string = 'Password123@';
             const data: IUserLogin = { email: userEmail, password };
-            const url: string = `http://localhost:${port}/auth/login`;
 
             const response: AxiosResponse<IUser> = await axios.post(url, data);
-            logger.success('POST /auth/login response:', response.data);
+            logger.success(path, response.data);
 
             if (response.data?.tokens.length) {
                 headers.headers.Authorization = `Bearer ${response.data?.tokens[0]}`;
@@ -68,49 +72,49 @@ describe('users api tests', (): void => {
             expect(typeof response.data.password).toBe('string');
 
         } catch (error: any) {
-            handleError(error);
+            handleError(path, error);
         }
     });
 
     it('GET /api/user/all returns all users', async (): Promise<void> => {
+        const path: string = 'GET /api/user/all'.yellow;
         try {
             const url: string = `http://localhost:${port}/user/all`;
-
             const response: AxiosResponse<IUser[]> = await axios.get(url, headers);
-            logger.success('GET /user/all response:', response.data.length);
+            logger.success(path, response.data.length);
 
             expect(typeof response.data.length).toBe('number');
 
         } catch (error: any) {
-            handleError(error);
+            handleError(path, error);
         }
     });
 
-    it.skip('GET /auth/logout user in DB', async (): Promise<void> => {
+    it('GET /auth/logout user in DB', async (): Promise<void> => {
+        const path: string = 'GET /auth/logout'.yellow;
         try {
             const url: string = `http://localhost:${port}/auth/logout`;
-
             const response: AxiosResponse<IUser> = await axios.get(url, headers);
-            logger.success('GET /auth/logout:', response.status);
+            logger.success(path, response.status);
 
             expect(response.status).toBe(200);
 
         } catch (error: any) {
-            handleError(error);
+            handleError(path, error);
         }
     });
 
-    it('DELETE /user/delete/:id user in DB', async (): Promise<void> => {
-        try {
+    it.skip('DELETE /user/delete/:id user in DB', async (): Promise<void> => {
+        const path: string = 'DELETE /user/delete/:id'.yellow;
+        try {  
             const url: string = `http://localhost:${port}/user/delete/?id=${userId}`;
-            
             const response: AxiosResponse<IUser> = await axios.delete(url, headers);
-            logger.success('DELETE /user/delete/:id response.status:', response.status);
+            logger.success(path, response.status);
             
             expect(response.status).toBe(200);
 
         } catch (error: any) {
-            handleError(error);
+            handleError(path, error);
         }
     });
 });

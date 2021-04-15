@@ -1,5 +1,5 @@
-import AuthMiddleware from './AuthMiddleware';
+import authenticate from './authenticate';
 
 export {
-    AuthMiddleware
+    authenticate
 };

@@ -1,22 +1,20 @@
 import { Router } from 'express';
-import { AsyncWrapper } from '@lib';
+import { async } from '@lib';
 import { UserService } from '@services';
-import { AuthMiddleware } from '@middlewares';
+import { authenticate } from '@middlewares';
 
 class UserRouter {
 
     private router: Router = Router()
-    private async = AsyncWrapper;
-    private authenticate = AuthMiddleware.authenticate;
 
     public getRouter(): Router {
         /* sub route */
         this.router.use('/user', this.router);
         /* specific routes */
-        this.router.post('/register', this.async(UserService.register));
-        this.router.get('/all', this.authenticate, this.async(UserService.getAll));
-        this.router.put('/update', this.authenticate, this.async(UserService.update));
-        this.router.delete('/delete', this.authenticate, this.async(UserService.delete));
+        this.router.post('/register', async(UserService.register));
+        this.router.get('/all', async(authenticate), async(UserService.getAll));
+        this.router.put('/update', async(authenticate), async(UserService.update));
+        this.router.delete('/delete', async(authenticate), async(UserService.delete));
        
         return this.router;
     }
