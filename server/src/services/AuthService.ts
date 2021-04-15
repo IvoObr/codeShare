@@ -18,13 +18,13 @@ class AuthService {
             const user: IUser = await UserDal.getUserByEmail(email);
 
             if (!user) {
-                logger.debug(`User not found.`);
+                logger.debug(`User ${email.bold} not found.`);
                 throw loginFailed;
             }
             const isPassValid: boolean = await bcrypt.compare(password, user.password);
            
             if (!isPassValid) {
-                logger.debug(`Invalid password.`);
+                logger.debug(`Invalid password ${user.password.bold}`);
                 throw loginFailed;
             }
 
@@ -33,7 +33,7 @@ class AuthService {
             const isTokenSet: boolean = await UserDal.setToken(token, user.id);
 
             if (!isTokenSet) {
-                logger.debug(`Could not set token in DB.`);
+                logger.debug(`Could not set token in DB. UserID: ${user.id.bold}`);
                 throw loginFailed;
             }
 

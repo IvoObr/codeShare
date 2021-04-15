@@ -16,7 +16,7 @@ export default class ServerError extends Error {
      */
     static handle(error: ServerError, response: Response): void {
         const errorMessage: string = `${error.type} - ${error.message}`;
-        logger.debug(errorMessage);
+        logger.debug(errorMessage.yellow);
 
         if (error.type in Errors) {
             switch (error.type) {
@@ -46,7 +46,6 @@ export default class ServerError extends Error {
             }
         } else {
             logger.error(error);
-
             response
                 .status(StatusCodes.INTERNAL_SERVER_ERROR)
                 .json({ error: StatusCodes[500] });

@@ -2,12 +2,22 @@ import { UserDal } from '@db';
 import { UserModel } from "@entities";
 import { ServerError } from '@lib';
 import { Request, Response } from 'express';
-import { StatusCodes, IUser, Errors, UserRole } from '@utils';
+import { StatusCodes, IUser, Errors, UserRole, logger } from '@utils';
 
 class UserService {
 
+    private validateIsAdmin(request: Request): void {
+
+        if (request.body.userRole !== UserRole.Admin) {
+            logger.debug(`UserID: ${request.body.userId} is not Admin.`);
+            throw new ServerError(Errors.FORBIDDEN, `User must be Admin.`);
+        }
+    }
+
     public getAll = async (request: Request, response: Response): Promise<void> => {
         try {
+            this.validateIsAdmin(request);
+
             const users: IUser[] = await UserDal.getAllUsers();
             response.status(StatusCodes.OK).send(users);
 
@@ -31,11 +41,8 @@ class UserService {
     public delete = async (request: Request, response: Response): Promise<void> => {
         try {
             const id: string = request.query?.id as string;
-            const userRole: UserRole = request.body.userRole;
-
-            if (userRole !== UserRole.Admin) {
-                throw new ServerError(Errors.FORBIDDEN, `User must be Admin.`);
-            }
+            
+            this.validateIsAdmin(request);
                         
             if (!id) {
                 throw new ServerError(Errors.MISSING_PARAMETER, 'Missing id in the request');

@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { ServerError } from '@lib';
 import genBase36Key from './genBase36Key';
-import { Errors, IClientData, logger } from '@utils';
+import { Errors, IClientData } from '@utils';
 
 class Jwt {
 

@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { UserDal } from '@db';
 import { genBase36Key, ServerError } from '@lib';
-import { UserRole, Errors, IUser, IUserReq, logger } from '@utils';
+import { UserRole, Errors, IUser, IUserReq } from '@utils';
 
 export default class UserModel implements IUser {
 
