@@ -9,6 +9,7 @@ class AuthService {
     public login = async (request: Request, response: Response): Promise<void> => {
         try {
             const { email, password }: any = request.body;
+            const loginFailed: ServerError = new ServerError(Errors.LOGIN_FAILED, 'Login failed.');
 
             if (!(email && password)) {
                 throw new ServerError(Errors.MISSING_PARAMETER, `Missing email or password.`);
@@ -17,12 +18,14 @@ class AuthService {
             const user: IUser = await UserDal.getUserByEmail(email);
 
             if (!user) {
-                throw new ServerError(Errors.LOGIN_FAILED, `User not found.`);
+                logger.debug(`User not found.`);
+                throw loginFailed;
             }
             const isPassValid: boolean = await bcrypt.compare(password, user.password);
            
             if (!isPassValid) {
-                throw new ServerError(Errors.LOGIN_FAILED, `Invalid password.`);
+                logger.debug(`Invalid password.`);
+                throw loginFailed;
             }
 
             const token: string = Jwt.sign({ id: user.id, role: user.role });
@@ -30,7 +33,8 @@ class AuthService {
             const isTokenSet: boolean = await UserDal.setToken(token, user.id);
 
             if (!isTokenSet) {
-                throw new ServerError(Errors.COULD_NOT_LOGIN, `Could not set token in DB.`);
+                logger.debug(`Could not set token in DB.`);
+                throw loginFailed;
             }
 
             user.tokens.push(token);
@@ -48,7 +52,7 @@ class AuthService {
             const areTokensRemoved: boolean = await UserDal.removeTokens(request.body.userId);
 
             if (!areTokensRemoved) {
-                throw new ServerError(Errors.COULD_NOT_LOGOUT, `Could not logout.`);
+                throw new ServerError(Errors.LOGOUT_FAILED, `Logout failed.`);
             }
 
             response.status(StatusCodes.OK).end();

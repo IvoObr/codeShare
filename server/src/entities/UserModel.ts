@@ -51,13 +51,13 @@ export default class UserModel implements IUser {
         const user: IUser = await UserDal.getUserByEmail(this.email);
         
         if (user) {
-            throw new ServerError(Errors.USER_EXISTS, `User ${this.email} already exists!`);
+            throw new ServerError(Errors.USER_EXISTS, `User ${this.email.bold} already exists!`);
         }
 
         const isValidEmail: boolean = this.isEmailValid(this.email);
 
         if (!isValidEmail) {
-            throw new ServerError(Errors.INVALID_EMAIL, `${this.email} is not a valid email!`);
+            throw new ServerError(Errors.INVALID_EMAIL, `${this.email.bold} is not a valid email!`);
         }
     }
 
