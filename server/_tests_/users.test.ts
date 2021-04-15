@@ -88,7 +88,7 @@ describe('users api tests', (): void => {
         }
     });
 
-    it('GET /auth/logout user in DB', async (): Promise<void> => {
+    it.skip('GET /auth/logout user in DB', async (): Promise<void> => {
         const path: string = 'GET /auth/logout'.yellow;
         try {
             const url: string = `http://localhost:${port}/auth/logout`;
@@ -102,7 +102,7 @@ describe('users api tests', (): void => {
         }
     });
 
-    it.skip('DELETE /user/delete/:id user in DB', async (): Promise<void> => {
+    it('DELETE /user/delete/:id user in DB', async (): Promise<void> => {
         const path: string = 'DELETE /user/delete/:id'.yellow;
         try {  
             const url: string = `http://localhost:${port}/user/delete/?id=${userId}`;

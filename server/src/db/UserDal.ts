@@ -1,6 +1,6 @@
 import { Mongo } from '@db';
 import { UserModel } from "@entities";
-import { IUser, Collections, IStrings } from '@utils';
+import { IUser, Collections, IStrings, IUserModel } from '@utils';
 import mongodb, { ObjectId, InsertOneWriteOpResult, UpdateQuery } from 'mongodb';
 
 class UserDal {
@@ -32,7 +32,7 @@ class UserDal {
         return result;
     }
 
-    public async addUser(user: UserModel): Promise<IUser> {
+    public async addUser(user: IUserModel): Promise<IUser> {
         const result: InsertOneWriteOpResult<any> = await Mongo.db
             .collection(Collections.USERS)
             .insertOne(user); 

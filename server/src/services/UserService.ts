@@ -2,7 +2,7 @@ import { UserDal } from '@db';
 import { UserModel } from "@entities";
 import { ServerError } from '@lib';
 import { Request, Response } from 'express';
-import { StatusCodes, IUser, Errors, UserRole, logger, IStrings } from '@utils';
+import { StatusCodes, IUser, Errors, UserRole, logger, IStrings, IUserModel } from '@utils';
 
 class UserService {
 
@@ -29,7 +29,7 @@ class UserService {
 
     public register = async (request: Request, response: Response): Promise<void> => {
         try {
-            const newUser: UserModel = await new UserModel(request.body).validate();
+            const newUser: IUserModel = await new UserModel(request.body).validate();
             const user: IUser = await UserDal.addUser(newUser);
 
             response.status(StatusCodes.CREATED).send(user);

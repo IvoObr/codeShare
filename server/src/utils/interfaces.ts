@@ -20,9 +20,12 @@ export interface IUserLogin {
   password: string;
 }
 
-export interface IUser extends IUserReq {
-  _id: string;
+export interface IUserModel extends IUserReq {
   tokens: string[]
+}
+
+export interface IUser extends IUserModel {
+  _id: string;
 }
 
 export interface IStrings {

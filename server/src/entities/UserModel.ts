@@ -1,11 +1,11 @@
 import bcrypt from 'bcrypt';
 import { UserDal } from '@db';
 import { ServerError } from '@lib';
-import { UserRole, Errors, IUser, IUserReq } from '@utils';
+import { UserRole, Errors, IUser, IUserReq, IUserModel } from '@utils';
 
-export default class UserModel {
+export default class UserModel implements IUserModel {
 
-    public tokens: string[] = [];
+    public tokens: string[];
     public email: string;
     public role: UserRole;
     public password: string;
@@ -16,6 +16,7 @@ export default class UserModel {
         this.role = role || UserRole.Member;
         this.password = password || '';
         this.name = name || '';
+        this.tokens = [];
     }
 
     public async validate(): Promise<UserModel> {
