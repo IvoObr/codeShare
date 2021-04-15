@@ -1,7 +1,7 @@
 import { Mongo } from '@db';
 import { UserModel } from "@entities";
-import { IUser, logger, Collections } from '@utils';
-import mongodb, { InsertOneWriteOpResult } from 'mongodb';
+import { IUser, Collections, IStrings } from '@utils';
+import mongodb, { InsertOneWriteOpResult, FilterQuery, UpdateQuery } from 'mongodb';
 
 class UserDal {
 
@@ -46,8 +46,8 @@ class UserDal {
     }
 
     public async setToken(token: string, userId: string): Promise<boolean> {
-        const query: any = { id: userId };
-        const updateToken: any = { $push: { 'tokens': token } };
+        const query: FilterQuery<IStrings> = { id: userId };
+        const updateToken: UpdateQuery<{ $push: IStrings}> = { $push: { 'tokens': token } };
 
         const result: mongodb.UpdateWriteOpResult = await Mongo.db
             .collection(Collections.USERS)
@@ -57,8 +57,8 @@ class UserDal {
     }
 
     public async removeTokens(userId: string): Promise<boolean> {
-        const query: any = { id: userId };
-        const updateToken: any = { $set: { 'tokens': []} };
+        const query: FilterQuery<IStrings> = { id: userId };
+        const updateToken: UpdateQuery<{ $set: IStrings }> = { $set: { 'tokens': []} };
 
         const result: mongodb.UpdateWriteOpResult = await Mongo.db
             .collection(Collections.USERS)

@@ -5,7 +5,7 @@ import { Request, Response, NextFunction } from "express";
  * @param middleware function
  * @returns function wrapped in Promise
  */
-export default function async(handler: any): IRouteWrapper {
+export default function async(handler: IRouteWrapper): IRouteWrapper {
     return (request: Request, response: Response, next: NextFunction): void => {
         Promise
             .resolve(handler(request, response, next))

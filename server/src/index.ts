@@ -25,14 +25,14 @@ class Main {
             logger.info('process id:', process.pid.toString().cyan.bold);
             logger.info(`Server running in ${process.env.NODE_ENV?.cyan.bold} mode.`);
 
-        } catch (error: any) {
+        } catch (error) {
             logger.error(error);
             process.exit(1); /* app crashed */
         }
     }
 
     private listenForError(server: http.Server): void {
-        server.on('error', (error: any): void => {
+        server.on('error', (error: Error): void => {
             logger.error('Server unable to start'.red, error);
             process.exit(0); /* clean exit */
         });

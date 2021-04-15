@@ -2,13 +2,13 @@ import bcrypt from 'bcrypt';
 import { UserDal } from '@db';
 import { Jwt, ServerError } from '@lib';
 import { Request, Response } from 'express';
-import { StatusCodes, IUser, Errors, Headers, logger } from '@utils';
+import { StatusCodes, IUser, Errors, Headers, logger, IStrings } from '@utils';
 
 class AuthService {
 
     public login = async (request: Request, response: Response): Promise<void> => {
         try {
-            const { email, password }: any = request.body;
+            const { email, password }: IStrings = request.body;
             const loginFailed: ServerError = new ServerError(Errors.LOGIN_FAILED, 'Login failed.');
 
             if (!(email && password)) {

@@ -5,7 +5,7 @@ import { handleError } from './testUtils';
 import axios, { AxiosResponse } from 'axios';
 import { UserRole } from '../src/utils/enums';
 import genBase36Key from '../src/lib/genBase36Key';
-import { IUser, IUserReq, IUserLogin } from '../src/utils/interfaces';
+import { IUser, IUserReq, IStrings, IUserLogin } from '../src/utils/interfaces';
 colors.enable();
 
 describe('users api tests', (): void => {
@@ -17,10 +17,8 @@ describe('users api tests', (): void => {
     let userId: string = '-1';
     let userEmail: string = '';
 
-    const headers: any = {
-        headers: {
-            Authorization: 'Bearer '
-        }
+    const headers: { [key: string]: IStrings} = {
+        headers: { Authorization: 'Bearer ' }
     };
 
     it('POST /user/register user in DB', async (): Promise<void> => {
@@ -47,7 +45,7 @@ describe('users api tests', (): void => {
             expect(response.data.email).toBe(email);
             expect(typeof response.data.password).toBe('string');
 
-        } catch (error: any) {
+        } catch (error) {
             handleError(path, error);
         }
     });
@@ -71,7 +69,7 @@ describe('users api tests', (): void => {
             expect(typeof response.data.role).toBe('string');
             expect(typeof response.data.password).toBe('string');
 
-        } catch (error: any) {
+        } catch (error) {
             handleError(path, error);
         }
     });
@@ -85,7 +83,7 @@ describe('users api tests', (): void => {
 
             expect(typeof response.data.length).toBe('number');
 
-        } catch (error: any) {
+        } catch (error) {
             handleError(path, error);
         }
     });
@@ -99,7 +97,7 @@ describe('users api tests', (): void => {
 
             expect(response.status).toBe(200);
 
-        } catch (error: any) {
+        } catch (error) {
             handleError(path, error);
         }
     });
@@ -113,7 +111,7 @@ describe('users api tests', (): void => {
             
             expect(response.status).toBe(200);
 
-        } catch (error: any) {
+        } catch (error) {
             handleError(path, error);
         }
     });

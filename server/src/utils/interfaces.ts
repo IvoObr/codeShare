@@ -24,3 +24,7 @@ export interface IUser extends IUserReq {
   id: string;
   tokens: string[]
 }
+
+export interface IStrings {
+  [key: string]: string
+}

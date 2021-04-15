@@ -2,14 +2,15 @@ import { UserDal } from '@db';
 import { UserModel } from "@entities";
 import { ServerError } from '@lib';
 import { Request, Response } from 'express';
-import { StatusCodes, IUser, Errors, UserRole, logger } from '@utils';
+import { StatusCodes, IUser, Errors, UserRole, logger, IStrings } from '@utils';
 
 class UserService {
 
     private validateIsAdmin(request: Request): void {
+        const { userRole, userId }: IStrings = request.body;
 
-        if (request.body.userRole !== UserRole.Admin) {
-            logger.debug(`UserID: ${request.body.userId} is not Admin.`);
+        if (userRole !== UserRole.Admin) {
+            logger.debug(`UserID: ${userId.bold} is not Admin.`);
             throw new ServerError(Errors.FORBIDDEN, `User must be Admin.`);
         }
     }
