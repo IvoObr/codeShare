@@ -5,7 +5,7 @@ import { handleError } from './testUtils';
 import axios, { AxiosResponse } from 'axios';
 import { UserRole } from '../src/utils/enums';
 import genBase36Key from '../src/lib/genBase36Key';
-import { IUser, IUserReq, IStrings, IUserLogin } from '../src/utils/interfaces';
+import { IUser, IUserReq, IStrings } from '../src/utils/interfaces';
 colors.enable();
 
 describe('users api tests', (): void => {
@@ -55,7 +55,7 @@ describe('users api tests', (): void => {
         try {
             const url: string = `http://localhost:${port}/auth/login`;
             const password: string = 'Password123@';
-            const data: IUserLogin = { email: userEmail, password };
+            const data: IStrings = { email: userEmail, password };
 
             const response: AxiosResponse<IUser> = await axios.post(url, data);
             logger.success(path, response.data);

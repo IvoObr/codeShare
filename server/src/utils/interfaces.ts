@@ -10,14 +10,16 @@ export interface IClientData {
   role: UserRole;
 }
 
-export interface IUserReq extends IUserLogin {
-  name: string;
-  role: UserRole;
+export interface IStrings {
+  [key: string]: string
 }
 
-export interface IUserLogin {
+//#region User
+export interface IUserReq {
   email: string;
   password: string;
+  name: string;
+  role: UserRole;
 }
 
 export interface IUserModel extends IUserReq {
@@ -27,7 +29,4 @@ export interface IUserModel extends IUserReq {
 export interface IUser extends IUserModel {
   _id: string;
 }
-
-export interface IStrings {
-  [key: string]: string
-}
+//#endregion User
