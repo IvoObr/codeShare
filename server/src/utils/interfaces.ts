@@ -1,8 +1,9 @@
 import { UserRole } from './enums';
 import { Request, Response, NextFunction } from 'express';
 
-export interface IRouteWrapper {
-  (request: Request, response: Response, next: NextFunction) : void
+export interface IMiddleware {
+  sync: (request: Request, response: Response, next: NextFunction) => void;
+  async: (request: Request, response: Response, next: NextFunction) => Promise<void>;
 }
 
 export interface IClientData {

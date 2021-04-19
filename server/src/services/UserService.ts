@@ -2,23 +2,12 @@ import { UserDal } from '@db';
 import { UserModel } from "@entities";
 import { ServerError } from '@lib';
 import { Request, Response } from 'express';
-import { StatusCodes, IUser, Errors, UserRole, logger, IStrings, IUserModel } from '@utils';
+import { StatusCodes, IUser, Errors, IUserModel } from '@utils';
 
 class UserService {
 
-    private validateIsAdmin(request: Request): void {
-        const { userRole, userId }: IStrings = request.body;
-
-        if (userRole !== UserRole.Admin) {
-            logger.debug(`UserID: ${userId.bold} is not Admin.`);
-            throw new ServerError(Errors.FORBIDDEN, `User must be Admin.`);
-        }
-    }
-
     public getAll = async (request: Request, response: Response): Promise<void> => {
         try {
-            this.validateIsAdmin(request);
-
             const users: IUser[] = await UserDal.getAllUsers();
             response.status(StatusCodes.OK).send(users);
 
@@ -42,9 +31,7 @@ class UserService {
     public delete = async (request: Request, response: Response): Promise<void> => {
         try {
             const id: string = request.query?.id as string;
-            
-            this.validateIsAdmin(request);
-                        
+                                    
             if (!id) {
                 throw new ServerError(Errors.MISSING_PARAMETER, 'Missing id in the request');
             }
@@ -62,7 +49,7 @@ class UserService {
         }
     }
 
-    public update = async (request: Request, response: Response): Promise<Response | void> => {
+    public update = async (request: Request, response: Response): Promise<void> => {
         
         // name: string;
         // email: string;
@@ -71,7 +58,7 @@ class UserService {
         
         const { user } = request.body;
         if (!user) {
-            return response.status(StatusCodes.BAD_REQUEST).json({
+            response.status(StatusCodes.BAD_REQUEST).json({
                 error: Errors.MISSING_PARAMETER
             });
         }

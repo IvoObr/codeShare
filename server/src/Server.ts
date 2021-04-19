@@ -5,7 +5,7 @@ import morgan from 'morgan';
 import { Env } from '@utils';
 import express from 'express';
 import * as core from "express-serve-static-core";
-import { AuthRouter, UserRouter } from '@routes';
+import { AuthRouter, UserRouter } from '@routers';
 
 class Server {
 

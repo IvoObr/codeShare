@@ -1,11 +1,11 @@
-import { IRouteWrapper } from '@utils';
+import { IMiddleware } from '@utils';
 import { Request, Response, NextFunction } from "express";
 
 /** Enables Express middleware to use async/await by wrapping the function in Promise
- * @param middleware function
- * @returns function wrapped in Promise
+ * @param > async middleware function
+ * @returns > sync middleware function
  */
-export default function async(handler: IRouteWrapper): IRouteWrapper {
+export default function async(handler: IMiddleware['async']): IMiddleware['sync'] {
     return (request: Request, response: Response, next: NextFunction): void => {
         Promise
             .resolve(handler(request, response, next))

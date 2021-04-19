@@ -4,7 +4,7 @@ import { Jwt, ServerError } from '@lib';
 import { Request, Response } from 'express';
 import { StatusCodes, IUser, Errors, Headers, logger, IStrings } from '@utils';
 
-class AuthService {
+class AuthenticationService {
 
     public login = async (request: Request, response: Response): Promise<void> => {
         try {
@@ -63,5 +63,5 @@ class AuthService {
     }
 }
 
-export default new AuthService();
+export default new AuthenticationService();
 

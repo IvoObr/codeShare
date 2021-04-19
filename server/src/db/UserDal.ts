@@ -1,5 +1,4 @@
 import { Mongo } from '@db';
-import { UserModel } from "@entities";
 import { IUser, Collections, IStrings, IUserModel } from '@utils';
 import mongodb, { ObjectId, InsertOneWriteOpResult, UpdateQuery } from 'mongodb';
 

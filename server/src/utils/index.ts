@@ -1,11 +1,11 @@
 import logger from './logger';
 import { Event } from './EventEmitter';
 import { UserRole, Errors, StatusCodes, Collections, Headers, Env } from './enums';
-import { IRouteWrapper, IClientData, IUser, IUserReq, IStrings, IUserModel } from './interfaces';
+import { IMiddleware, IClientData, IUser, IUserReq, IStrings, IUserModel } from './interfaces';
 
 export {
     Event,
     logger,
     UserRole, Errors, StatusCodes, Collections, Headers, Env,
-    IClientData, IRouteWrapper, IUser, IUserReq, IStrings, IUserModel
+    IClientData, IMiddleware, IUser, IUserReq, IStrings, IUserModel
 };

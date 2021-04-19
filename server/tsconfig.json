@@ -15,10 +15,9 @@
     "@lib": ["src/lib/"],
     "@utils": ["src/utils/"],
     "@server": ["src/Server"],
-    "@routes": ["src/routes/"],
+    "@routers": ["src/routers/"],
     "@services": ["src/services/"],      
-    "@entities": ["src/entities/"],
-    "@middlewares": ["src/middlewares/"]
+    "@entities": ["src/entities/"]
     },
   },
   "include": ["src/**/*.ts","_tests_/**/*.ts"],

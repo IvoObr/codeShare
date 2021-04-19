@@ -1,7 +1,9 @@
 import UserService from './UserService';
-import AuthService from './AuthService';
+import AuthorizationService from './AuthorizationService';
+import AuthenticationService from './AuthenticationService';
 
 export {
     UserService,
-    AuthService
+    AuthorizationService,
+    AuthenticationService
 };
