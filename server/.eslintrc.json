@@ -95,7 +95,7 @@
         "no-console": "off",
         "no-unexpected-multiline": "warn",
         "no-unreachable": "error",
-        "curly": "warn",
+        "curly": "off",
         "no-empty-function": "off",
         "no-eq-null": "warn",
         "no-eval": "warn",
