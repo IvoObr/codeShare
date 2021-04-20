@@ -2,7 +2,7 @@ import { UserDal } from '@db';
 import { UserModel } from "@entities";
 import { ServerError } from '@lib';
 import { Request, Response } from 'express';
-import { StatusCodes, IUser, Errors, IUserModel } from '@utils';
+import { StatusCodes, IUser, Errors, IUserModel, logger } from '@utils';
 
 class UserService {
 
@@ -30,7 +30,7 @@ class UserService {
 
     public delete = async (request: Request, response: Response): Promise<void> => {
         try {
-            const id: string = request.query?.id as string;
+            const id: string = request.params?.id;
                                     
             if (!id) {
                 throw new ServerError(Errors.MISSING_PARAMETER, 'Missing id in the request');

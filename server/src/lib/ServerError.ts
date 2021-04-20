@@ -31,9 +31,9 @@ export default class ServerError extends Error {
                         .json({ error: errorMessage });
                     break;
 
-                case Errors.LOGIN_FAILED:
+                case Errors.NOT_FOUND:
                     response
-                        .status(StatusCodes.UNAUTHORIZED)
+                        .status(StatusCodes.NOT_FOUND)
                         .json({ error: errorMessage });
                     break;
 

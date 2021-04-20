@@ -21,10 +21,10 @@ describe('users api tests', (): void => {
         headers: { Authorization: 'Bearer ' }
     };
 
-    it('POST /user/register user in DB', async (): Promise<void> => {
+    it('POST /api/v1/user/register user in DB', async (): Promise<void> => {
         const path: string = 'POST /user/register'.yellow;
         try {        
-            const url: string = `http://localhost:${port}/user/register`;
+            const url: string = `http://localhost:${port}/api/v1/user/register`;
             const name: string = 'ivoObr';
             const password: string = 'Password123@';
             const email: string = `${genBase36Key(8)}@yopmail.com`;
@@ -50,10 +50,10 @@ describe('users api tests', (): void => {
         }
     });
 
-    it('POST /auth/login user in DB', async (): Promise<void> => {
-        const path: string = 'POST /auth/login'.yellow;
+    it('POST /api/v1/auth/login user in DB', async (): Promise<void> => {
+        const path: string = 'POST /api/v1/auth/login'.yellow;
         try {
-            const url: string = `http://localhost:${port}/auth/login`;
+            const url: string = `http://localhost:${port}/api/v1/auth/login`;
             const password: string = 'Password123@';
             const data: IStrings = { email: userEmail, password };
 
@@ -74,10 +74,10 @@ describe('users api tests', (): void => {
         }
     });
 
-    it('GET /api/user/all returns all users', async (): Promise<void> => {
-        const path: string = 'GET /api/user/all'.yellow;
+    it('GET /api/v1/api/user/all returns all users', async (): Promise<void> => {
+        const path: string = 'GET /api/v1/api/user/all'.yellow;
         try {
-            const url: string = `http://localhost:${port}/user/all`;
+            const url: string = `http://localhost:${port}/api/v1/user/all`;
             const response: AxiosResponse<IUser[]> = await axios.get(url, headers);
             logger.success(path, response.data.length);
 
@@ -88,10 +88,10 @@ describe('users api tests', (): void => {
         }
     });
 
-    it.skip('GET /auth/logout user in DB', async (): Promise<void> => {
-        const path: string = 'GET /auth/logout'.yellow;
+    it.skip('GET /api/v1/auth/logout user in DB', async (): Promise<void> => {
+        const path: string = 'GET /api/v1/auth/logout'.yellow;
         try {
-            const url: string = `http://localhost:${port}/auth/logout`;
+            const url: string = `http://localhost:${port}/api/v1/auth/logout`;
             const response: AxiosResponse<IUser> = await axios.get(url, headers);
             logger.success(path, response.status);
 
@@ -102,10 +102,10 @@ describe('users api tests', (): void => {
         }
     });
 
-    it('DELETE /user/delete/:id user in DB', async (): Promise<void> => {
-        const path: string = 'DELETE /user/delete/:id'.yellow;
+    it('DELETE /api/v1/user/delete/:id user in DB', async (): Promise<void> => {
+        const path: string = 'DELETE /api/v1/user/delete/:id'.yellow;
         try {  
-            const url: string = `http://localhost:${port}/user/delete/?id=${userId}`;
+            const url: string = `http://localhost:${port}/api/v1/user/delete/${userId}`;
             const response: AxiosResponse<IUser> = await axios.delete(url, headers);
             logger.success(path, response.status);
             

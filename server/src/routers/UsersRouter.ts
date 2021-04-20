@@ -23,7 +23,7 @@ class UserRouter {
             async(AuthorizationService.authorizeJWT),
             async(UserService.update));
         
-        this.router.delete('/delete',
+        this.router.delete('/delete/:id',
             async(AuthorizationService.authorizeJWT),
             AuthorizationService.authorizeAdmin,
             async(UserService.delete));

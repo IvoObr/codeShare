@@ -1,6 +1,7 @@
 import { Mongo } from '@db';
-import { IUser, Collections, IStrings, IUserModel } from '@utils';
+import { IUser, Collections, IStrings, IUserModel, Errors, StatusCodes } from '@utils';
 import mongodb, { ObjectId, InsertOneWriteOpResult, UpdateQuery } from 'mongodb';
+import { ServerError } from 'src/lib';
 
 class UserDal {
 
@@ -67,6 +68,11 @@ class UserDal {
     }
 
     public async deleteUser(userId: string): Promise<number> {
+        const isValid: boolean = ObjectId.isValid(userId);
+
+        if (!isValid) {
+            throw new ServerError(Errors.NOT_FOUND, `invalid userId: ${userId}`);
+        }
         const _id: mongodb.ObjectID = new ObjectId(userId);
 
         const result: mongodb.DeleteWriteOpResultObject = await Mongo.db
