@@ -9,7 +9,7 @@ class AuthenticationService {
     public login = async (request: Request, response: Response): Promise<void> => {
         try {
             const { email, password }: IStrings = request.body;
-            const loginFailed: ServerError = new ServerError(Errors.LOGIN_FAILED, 'Login failed.');
+            const loginError: ServerError = new ServerError(Errors.LOGIN_FAILED, 'Login failed.');
 
             if (!(email && password)) {
                 throw new ServerError(Errors.MISSING_PARAMETER, `Missing email or password.`);
@@ -18,23 +18,23 @@ class AuthenticationService {
             const user: IUser = await UserDal.getUserByEmail(email);
 
             if (!user) {
-                logger.debug(`User ${email.bold} not found.`);
-                throw loginFailed;
+                logger.debug(`${Errors.LOGIN_FAILED} user ${email.bold} not found.`);
+                throw loginError;
             }
             const isPassValid: boolean = await bcrypt.compare(password, user.password);
-           
+
             if (!isPassValid) {
-                logger.debug(`Invalid password ${user.password.bold}`);
-                throw loginFailed;
+                logger.debug(`${Errors.LOGIN_FAILED} invalid password ${password.bold}`);
+                throw loginError;
             }
 
             const token: string = Jwt.sign({ _id: user._id, role: user.role });
-            
+
             const isTokenSet: boolean = await UserDal.setToken(token, user._id);
 
             if (!isTokenSet) {
-                logger.debug(`Could not set token in DB. UserID: ${user._id.bold}`);
-                throw loginFailed;
+                logger.debug(`${Errors.LOGIN_FAILED} could not set token in DB. UserID: ${user._id.bold}`);
+                throw loginError;
             }
 
             user.tokens.push(token);

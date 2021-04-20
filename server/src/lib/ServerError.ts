@@ -15,9 +15,7 @@ export default class ServerError extends Error {
      * @returns void
      */
     static handle(error: ServerError, response: Response): void {
-        
         const errorMessage: string = `${error.type || ''} - ${error.message}`;
-        logger.debug(errorMessage);
 
         if (error.type in Errors) {
             switch (error.type) {

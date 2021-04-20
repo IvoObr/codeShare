@@ -24,7 +24,7 @@ export default class Mongo {
 
         } catch (error) {
             await client.close();
-            throw (error);
+            throw error;
         }
     }
 }

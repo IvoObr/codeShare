@@ -3,9 +3,9 @@ import path from 'path';
 import helmet from 'helmet';
 import { Env } from '@utils';
 import express from 'express';
-import { LogService } from '@services';
-import * as core from "express-serve-static-core";
 import { AuthRouter, UserRouter } from '@routers';
+import * as core from "express-serve-static-core";
+import { logExpress } from '@7dev-works/log-express';
 
 class Server {
 
@@ -17,6 +17,7 @@ class Server {
     }
 
     private useMiddleware(): this {
+        this.app.use(logExpress);
         this.app.use(express.json()); 
         this.app.use(express.urlencoded({ extended: true }));
         this.app.use(express.static(this.staticDir));       
@@ -29,7 +30,6 @@ class Server {
     }
     
     private useAPIs(): this {
-        this.app.use(LogService.logCalls);
         this.app.use('/auth', AuthRouter);
         this.app.use('/user', UserRouter);
         return this;

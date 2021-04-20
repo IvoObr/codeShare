@@ -41,6 +41,7 @@
         "node_modules/"
     ],
     "dependencies": {
+        "@7dev-works/log-express": "^1.0.4",
         "@7dev-works/logger": "^2.2.4",
         "axios": "^0.21.0",
         "bcrypt": "^5.0.0",

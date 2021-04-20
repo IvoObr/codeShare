@@ -36,7 +36,7 @@ export default class AuthorizationService {
             const { userRole, userId }: IStrings = request.body;
 
             if (userRole !== UserRole.Admin) {
-                logger.debug(`UserID: ${userId.bold} is not Admin.`);
+                logger.debug(`${Errors.FORBIDDEN} userId: ${userId.bold} is not Admin.`);
                 throw new ServerError(Errors.FORBIDDEN, `User must be Admin.`);
             }
 
