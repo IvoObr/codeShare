@@ -3,7 +3,7 @@ import { Jwt, ServerError } from '@lib';
 import { Request, Response, NextFunction } from 'express';
 import { IClientData, Errors, IUser, IStrings, UserRole, logger } from '@utils';
     
-export default class AuthorizationService {
+class AuthorizationService {
     
     public static async authorizeJWT(request: Request, response: Response, next: NextFunction): Promise<void> {
         const tokenError: ServerError = new ServerError(Errors.UNAUTHORIZED, `Token not valid.`);
@@ -47,3 +47,5 @@ export default class AuthorizationService {
         }
     }
 }
+
+export const { authorizeJWT, authorizeAdmin }: typeof AuthorizationService = AuthorizationService;

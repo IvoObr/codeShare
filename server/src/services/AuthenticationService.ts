@@ -7,7 +7,7 @@ import { StatusCodes, IUser, Errors, Headers, logger, IStrings, IUserModel } fro
 
 class AuthenticationService {
 
-    public register = async (request: Request, response: Response): Promise<void> => {
+    public static async register(request: Request, response: Response): Promise<void> {
         try {
             const newUser: IUserModel = await new UserModel(request.body).validate();
             const user: IUser = await UserDal.addUser(newUser);
@@ -19,7 +19,7 @@ class AuthenticationService {
         }
     }
 
-    public login = async (request: Request, response: Response): Promise<void> => {
+    public static async login(request: Request, response: Response): Promise<void> {
         try {
             const { email, password }: IStrings = request.body;
             const loginError: ServerError = new ServerError(Errors.UNAUTHORIZED, 'Login failed.');
@@ -60,7 +60,7 @@ class AuthenticationService {
         }
     }
 
-    public logout = async (request: Request, response: Response): Promise<void> => {
+    public static async logout(request: Request, response: Response): Promise<void> {
         try {
             const areTokensRemoved: boolean = await UserDal.removeTokens(request.body.userId);
 
@@ -76,5 +76,5 @@ class AuthenticationService {
     }
 }
 
-export default new AuthenticationService();
+export const { login, logout, register }: typeof AuthenticationService = AuthenticationService;
 

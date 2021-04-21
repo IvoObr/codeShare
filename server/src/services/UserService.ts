@@ -5,7 +5,7 @@ import { StatusCodes, IUser, Errors } from '@utils';
 
 class UserService {
 
-    public getAll = async (request: Request, response: Response): Promise<void> => {
+    public static async getAllUsers(request: Request, response: Response): Promise<void> {
         try {
             const users: IUser[] = await UserDal.getAllUsers();
             response.status(StatusCodes.OK).json(users);
@@ -15,7 +15,7 @@ class UserService {
         }
     }
 
-    public delete = async (request: Request, response: Response): Promise<void> => {
+    public static async deleteUser(request: Request, response: Response): Promise<void> {
         try {
             const id: string = request.params?.id;
                                     
@@ -36,7 +36,7 @@ class UserService {
         }
     }
 
-    public update = async (request: Request, response: Response): Promise<void> => {
+    public static async updateUser(request: Request, response: Response): Promise<void> {
         const { id } = request.params;   
         const { user } = request.body;
 
@@ -59,5 +59,4 @@ class UserService {
     }
 }
 
-export default new UserService();
-        
+export const { deleteUser, updateUser, getAllUsers }: typeof UserService = UserService;

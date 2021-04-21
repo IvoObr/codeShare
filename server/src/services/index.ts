@@ -1,9 +1,9 @@
-import UserService from './UserService';
-import AuthorizationService from './AuthorizationService';
-import AuthenticationService from './AuthenticationService';
+import { login, logout, register } from './AuthenticationService';
+import { deleteUser, updateUser, getAllUsers } from './UserService';
+import { authorizeJWT, authorizeAdmin } from './AuthorizationService';
 
 export {
-    UserService,
-    AuthorizationService,
-    AuthenticationService
+    login, logout, register,
+    authorizeJWT, authorizeAdmin,
+    deleteUser, updateUser, getAllUsers
 };

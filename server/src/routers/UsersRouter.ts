@@ -1,6 +1,7 @@
-import { Router } from 'express';
 import { async } from '@lib';
-import { AuthorizationService, UserService } from '@services';
+import { Router } from 'express';
+import { getAllUsers, authorizeJWT, deleteUser,
+    updateUser, authorizeAdmin } from '@services';
 
 class UserRouter {
 
@@ -11,19 +12,19 @@ class UserRouter {
         this.router.use('/user', this.router);
 
         /* sub routes */
-         this.router.get('/all',
-            async(AuthorizationService.authorizeJWT),
-            AuthorizationService.authorizeAdmin,
-            async(UserService.getAll));
+        this.router.get('/all',
+            async(authorizeJWT),
+            authorizeAdmin,
+            async(getAllUsers));
         
         this.router.put('/update/:id',
-            async(AuthorizationService.authorizeJWT),
-            async(UserService.update));
+            async(authorizeJWT),
+            async(updateUser));
         
         this.router.delete('/delete/:id',
-            async(AuthorizationService.authorizeJWT),
-            AuthorizationService.authorizeAdmin,
-            async(UserService.delete));
+            async(authorizeJWT),
+            authorizeAdmin,
+            async(deleteUser));
        
         return this.router;
     }
