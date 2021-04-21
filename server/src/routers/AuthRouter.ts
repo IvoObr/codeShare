@@ -11,6 +11,9 @@ class AuthRouter {
         this.router.use('/auth', this.router);
 
         /* sub routes */
+        this.router.post('/register',
+            async(AuthenticationService.register));
+
         this.router.post('/login',
             async(AuthenticationService.login));
 

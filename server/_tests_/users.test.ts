@@ -21,29 +21,29 @@ describe('users api tests', (): void => {
         headers: { Authorization: 'Bearer ' }
     };
 
-    it('POST /api/v1/user/register user in DB', async (): Promise<void> => {
-        const path: string = 'POST /user/register'.yellow;
+    it('POST /api/v1/auth/register user in DB', async (): Promise<void> => {
+        const path: string = 'POST /auth/register'.yellow;
         try {        
-            const url: string = `http://localhost:${port}/api/v1/user/register`;
+            const url: string = `http://localhost:${port}/api/v1/auth/register`;
             const name: string = 'ivoObr';
             const password: string = 'Password123@';
             const email: string = `${genBase36Key(8)}@yopmail.com`;
             const role: UserRole = UserRole.Admin;
-            const data: IUserReq = { name, email, role, password };
+            const payload: IUserReq = { name, email, role, password };
 
-            const response: AxiosResponse<IUser> = await axios.post(url, data);   
-            logger.success(path, response.data);
+            const { data }: AxiosResponse<IUser> = await axios.post(url, payload);   
+            logger.success(path, data);
            
-            if (response.data?._id) {
-                userId = response.data._id;
+            if (data?._id) {
+                userId = data._id;
             }
   
-            userEmail = response.data.email;
+            userEmail = data.email;
 
-            expect(response.data.name).toBe(name);
-            expect(response.data.role).toBe(role);
-            expect(response.data.email).toBe(email);
-            expect(typeof response.data.password).toBe('string');
+            expect(data.name).toBe(name);
+            expect(data.role).toBe(role);
+            expect(data.email).toBe(email);
+            expect(typeof data.password).toBe('string');
 
         } catch (error) {
             handleError(path, error);
@@ -55,19 +55,19 @@ describe('users api tests', (): void => {
         try {
             const url: string = `http://localhost:${port}/api/v1/auth/login`;
             const password: string = 'Password123@';
-            const data: IStrings = { email: userEmail, password };
+            const payload: IStrings = { email: userEmail, password };
 
-            const response: AxiosResponse<IUser> = await axios.post(url, data);
-            logger.success(path, response.data);
+            const { data }: AxiosResponse<IUser> = await axios.post(url, payload);
+            logger.success(path, data);
 
-            if (response.data?.tokens.length) {
-                headers.headers.Authorization = `Bearer ${response.data?.tokens[0]}`;
+            if (data?.tokens.length) {
+                headers.headers.Authorization = `Bearer ${data?.tokens[0]}`;
             }
 
-            expect(response.data.email).toBe(userEmail);
-            expect(typeof response.data.name).toBe('string');
-            expect(typeof response.data.role).toBe('string');
-            expect(typeof response.data.password).toBe('string');
+            expect(data.email).toBe(userEmail);
+            expect(typeof data.name).toBe('string');
+            expect(typeof data.role).toBe('string');
+            expect(typeof data.password).toBe('string');
 
         } catch (error) {
             handleError(path, error);
@@ -78,10 +78,10 @@ describe('users api tests', (): void => {
         const path: string = 'GET /api/v1/api/user/all'.yellow;
         try {
             const url: string = `http://localhost:${port}/api/v1/user/all`;
-            const response: AxiosResponse<IUser[]> = await axios.get(url, headers);
-            logger.success(path, response.data.length);
+            const { data }: AxiosResponse<IUser[]> = await axios.get(url, headers);
+            logger.success(path, data.length);
 
-            expect(typeof response.data.length).toBe('number');
+            expect(typeof data.length).toBe('number');
 
         } catch (error) {
             handleError(path, error);

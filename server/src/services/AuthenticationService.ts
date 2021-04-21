@@ -1,10 +1,23 @@
 import bcrypt from 'bcrypt';
 import { UserDal } from '@db';
+import { UserModel } from "@entities";
 import { Jwt, ServerError } from '@lib';
 import { Request, Response } from 'express';
-import { StatusCodes, IUser, Errors, Headers, logger, IStrings } from '@utils';
+import { StatusCodes, IUser, Errors, Headers, logger, IStrings, IUserModel } from '@utils';
 
 class AuthenticationService {
+
+    public register = async (request: Request, response: Response): Promise<void> => {
+        try {
+            const newUser: IUserModel = await new UserModel(request.body).validate();
+            const user: IUser = await UserDal.addUser(newUser);
+
+            response.status(StatusCodes.CREATED).json(user);
+
+        } catch (error) {
+            ServerError.handle(error, response);
+        }
+    }
 
     public login = async (request: Request, response: Response): Promise<void> => {
         try {
@@ -39,7 +52,7 @@ class AuthenticationService {
 
             user.tokens.push(token);
 
-            response.header(Headers.Authorization, token).send(user);
+            response.header(Headers.Authorization, token).json(user);
             response.status(StatusCodes.OK).end();
 
         } catch (error) {

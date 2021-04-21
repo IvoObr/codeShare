@@ -11,15 +11,12 @@ class UserRouter {
         this.router.use('/user', this.router);
 
         /* sub routes */
-        this.router.post('/register',
-            async(UserService.register));
-
-        this.router.get('/all',
+         this.router.get('/all',
             async(AuthorizationService.authorizeJWT),
             AuthorizationService.authorizeAdmin,
             async(UserService.getAll));
         
-        this.router.put('/update',
+        this.router.put('/update/:id',
             async(AuthorizationService.authorizeJWT),
             async(UserService.update));
         

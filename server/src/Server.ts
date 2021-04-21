@@ -28,8 +28,8 @@ class Server {
         const router: Router = Router();
         router.use('/auth', AuthRouter);
         router.use('/user', UserRouter);
-        this.app.use('/api/v1/', router);
-
+        this.app.use('/api/v1', router);
+ 
         return this;
     }
 
