@@ -20,47 +20,49 @@ export default class UserModel implements IUserModel {
     }
 
     public async validate(): Promise<UserModel> {
-        this.validateName();
-        this.validatePassword();
-        await this.validateEmail();
-        await this.hashPassword();
+        UserModel.validateName(this.name);
+        UserModel.validateEmail(this.email);
+        UserModel.validatePassword(this.password);
+        await UserModel.checkIfUserExists(this.email);
+        this.password = await UserModel.hashPassword(this.password);
         return this;
     }
 
-    private async hashPassword(): Promise<void> {
+    public static async hashPassword(password: string): Promise<string> {
         const salt: string = await bcrypt.genSalt(12); // rounds
-        this.password = await bcrypt.hash(this.password, salt);
+        return await bcrypt.hash(password, salt);
     }
 
-    private validateName(): void {
-        if (typeof this.name !== 'string' || this.name.length < 1) {
-            throw new ServerError(Errors.INVALID_NAME, `Username ${this.name.bold} is invalid!`);
+    public static validateName(name: string): void {
+        if (typeof name !== 'string' || name.length < 1) {
+            throw new ServerError(Errors.INVALID_NAME, `Username ${name.bold} is invalid!`);
         }
     }
 
-    private validatePassword(): void {
-        const isValidPassword: boolean = this.isPasswordStrong(this.password);
+    public static validatePassword(password: string): void {
+        const isValidPassword: boolean = UserModel.isPasswordStrong(password);
 
         if (!isValidPassword) {
-            throw new ServerError(Errors.PASSWORD_CRITERIA_NOT_MET, `Password ${this.password.bold} is not secure enough!`);
+            throw new ServerError(Errors.PASSWORD_CRITERIA_NOT_MET, `Password ${password.bold} is not secure enough!`);
+        }
+    }
+    public static async checkIfUserExists(email: string): Promise<void> {
+        const user: IUser = await UserDal.getUserByEmail(email);
+
+        if (user) {
+            throw new ServerError(Errors.USER_EXISTS, `User ${email.bold} already exists!`);
         }
     }
 
-    private async validateEmail(): Promise<void> {
-        const user: IUser = await UserDal.getUserByEmail(this.email);
-        
-        if (user) {
-            throw new ServerError(Errors.USER_EXISTS, `User ${this.email.bold} already exists!`);
-        }
-
-        const isValidEmail: boolean = this.isEmailValid(this.email);
+    public static validateEmail(email: string): void {
+        const isValidEmail: boolean = UserModel.isEmailValid(email);
 
         if (!isValidEmail) {
-            throw new ServerError(Errors.INVALID_EMAIL, `${this.email.bold} is not a valid email!`);
+            throw new ServerError(Errors.INVALID_EMAIL, `${email.bold} is not a valid email!`);
         }
     }
 
-    private isPasswordStrong(password: string): boolean {
+    public static isPasswordStrong(password: string): boolean {
         const minLength: boolean = password.length > 8;
         const oneUppercase: boolean = new RegExp(/[A-Z]/).test(password);
         const oneLowercase: boolean = new RegExp(/[a-z]/).test(password);
@@ -70,7 +72,7 @@ export default class UserModel implements IUserModel {
         return minLength && oneUppercase && oneLowercase && oneNumber && oneSymbol;
     }
 
-    private isEmailValid(email: string): boolean {
+    public static isEmailValid(email: string): boolean {
         const regex: RegExp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return regex.test(String(email).toLowerCase());
     }

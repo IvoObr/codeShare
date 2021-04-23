@@ -87,6 +87,29 @@ describe('users api tests', (): void => {
             handleError(path, error);
         }
     });
+    
+    it('PUT /api/v1/user/update/:id user in DB', async (): Promise<void> => {
+        const path: string = 'PUT /api/v1/user/update/:id'.yellow;
+        try {
+            const userData: IStrings = {
+                email: `${genBase36Key(8)}@yopmail.com`,
+                name: 'IvoDivo',
+                password: 'Password123@'
+            };
+            const url: string = `http://localhost:${port}/api/v1/user/update/${userId}`;
+            const response: AxiosResponse<IUser> = await axios.put(url, userData, headers);
+            logger.success(path, response.status);
+
+            expect(response.data.name).toBe(userData.name);
+            expect(typeof response.data.role).toBe('string');
+            expect(response.data.email).toBe(userData.email);
+            expect(typeof response.data.password).toBe('string');
+            expect(response.status).toBe(200);
+
+        } catch (error) {
+            handleError(path, error);
+        }
+    });
 
     it.skip('GET /api/v1/auth/logout user in DB', async (): Promise<void> => {
         const path: string = 'GET /api/v1/auth/logout'.yellow;

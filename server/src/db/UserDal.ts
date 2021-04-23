@@ -1,5 +1,5 @@
 import { Mongo } from '@db';
-import { IUser, Collections, IStrings, IUserModel, Errors, StatusCodes } from '@utils';
+import { IUser, Collections, IStrings, IUserModel, Errors, logger } from '@utils';
 import mongodb, { ObjectId, InsertOneWriteOpResult, UpdateQuery } from 'mongodb';
 import { ServerError } from 'src/lib';
 
@@ -23,6 +23,24 @@ class UserDal {
         return result[0] || null;
     }
 
+    public async getUserById(userId: string): Promise<IUser> {
+        const isValid: boolean = ObjectId.isValid(userId);
+
+        logger.debug(userId);
+
+        if (!isValid) {
+            throw new ServerError(Errors.NOT_FOUND, `invalid userId: ${userId}`);
+        }
+        const _id: mongodb.ObjectID = new ObjectId(userId);
+
+        const result: IUser[] = await Mongo.db
+            .collection(Collections.USERS)
+            .find({ _id })
+            .toArray();
+
+        return result[0] || null;
+    }
+    
     public async getAllUsers(): Promise<IUser[]> {
         const result: IUser[] = await Mongo.db
             .collection(Collections.USERS)
@@ -40,9 +58,16 @@ class UserDal {
         return result.ops[0] as IUser;
     }
 
-    public async update(user: IUser): Promise<void> {
-        // TODO
-        return Promise.resolve(undefined);
+    public async updateUser(user: IUser): Promise<boolean> {
+        const _id: mongodb.ObjectID = new ObjectId(user._id);
+
+        const result: mongodb.ReplaceWriteOpResult = await Mongo.db
+            .collection(Collections.USERS)
+            .replaceOne({ _id }, user);
+        
+        console.log(result); // todo test
+        
+        return result?.result?.nModified === 1;
     }
 
     public async setToken(token: string, userId: string): Promise<boolean> {
