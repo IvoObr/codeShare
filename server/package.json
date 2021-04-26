@@ -1,18 +1,20 @@
 {
     "name": "server",
-    "version": "0.0.0",
+    "version": "1.0.0",
     "scripts": {
-        "build": "ts-node build.ts && tsc --build tsconfig.prod.json",
+        "clean": "rm -rf ./dist/ && mkdir dist",
+        "copy": "cp -r ./src/public ./dist/public &&  cp -r ./src/views ./dist/views && cp ./.env ./dist/",
+        "build": "npm run clean && npm run copy && tsc --build tsconfig.prod.json",
         "eslint-fix": "eslint . --ext .ts --fix",
-        "start": "node -r module-alias/register ./dist --env=production",
-        "dev": "nodemon",
-        "test": "nodemon --config ./_tests_/nodemon.json"
+        "start": "node -r module-alias/register ./dist ",
+        "dev": "nodemon development --delay 1",
+        "test": "nodemon --delay 3 --config ./_tests_/nodemon.json"
     },
     "nodemonConfig": {
         "watch": [
             "src"
         ],
-        "ext": "ts, html",
+        "ext": "ts",
         "ignore": [
             "src/public"
         ],
@@ -24,67 +26,49 @@
         }
     },
     "_moduleAliases": {
-        "@dals": "dist/dals",
-        "@entities": "dist/entities",
+        "@db": "dist/db/",
+        "@lib": "dist/lib/",
+        "@utils": "dist/utils/",
         "@server": "dist/Server",
-        "@interfaces": "dist/lib/interfaces",
-        "@constants": "dist/lib/constants",
-        "@logger": "dist/lib/Logger",
-        "@functions": "dist/lib/functions",
-        "@lib": "dist/lib",
-        "@db": "dist/db"
+        "@routers": "dist/routers/",
+        "@services": "dist/services/",
+        "@entities": "dist/entities/"
     },
     "eslintIgnore": [
         "src/public/",
         "dist/",
-        "build.ts"
+        "build.ts",
+        "node_modules/"
     ],
     "dependencies": {
-        "@types/axios": "^0.14.0",
-        "@types/cors": "^2.8.8",
-        "@types/jest": "^26.0.15",
+        "@7dev-works/log-express": "^1.0.5",
+        "@7dev-works/logger": "^2.2.4",
         "axios": "^0.21.0",
         "bcrypt": "^5.0.0",
         "colors": "^1.4.0",
-        "command-line-args": "^5.1.1",
         "cors": "^2.8.5",
         "dotenv": "^8.2.0",
         "express": "^4.17.1",
-        "express-async-errors": "^3.1.1",
         "helmet": "^4.2.0",
-        "http-status-codes": "^2.1.4",
         "jest": "^26.6.3",
-        "jet-logger": "^1.0.4",
-        "jsonfile": "^6.1.0",
         "jsonwebtoken": "^8.5.1",
         "module-alias": "^2.2.2",
         "mongodb": "^3.6.3",
-        "mongoose": "^5.10.15",
-        "morgan": "^1.10.0",
-        "randomstring": "^1.1.5",
         "ts-jest": "^26.4.4"
     },
     "devDependencies": {
+        "@types/axios": "^0.14.0",
         "@types/bcrypt": "^3.0.0",
-        "@types/command-line-args": "^5.0.0",
+        "@types/cors": "^2.8.8",
         "@types/express": "^4.17.9",
-        "@types/find": "^0.2.1",
-        "@types/fs-extra": "^9.0.4",
-        "@types/jsonfile": "^6.0.0",
+        "@types/jest": "^26.0.15",
         "@types/jsonwebtoken": "^8.5.0",
         "@types/mongodb": "^3.5.34",
-        "@types/mongoose": "^5.10.1",
-        "@types/morgan": "^1.9.2",
         "@types/node": "^14.14.9",
-        "@types/randomstring": "^1.1.6",
-        "@types/supertest": "^2.0.10",
         "@typescript-eslint/eslint-plugin": "^4.8.1",
         "@typescript-eslint/parser": "^4.8.1",
         "eslint": "^7.13.0",
-        "find": "^0.3.0",
-        "fs-extra": "^9.0.1",
-        "nodemon": "^2.0.6",
-        "supertest": "^6.0.1",
+        "nodemon": "^2.0.7",
         "ts-node": "^9.0.0",
         "tsconfig-paths": "^3.9.0",
         "typescript": "^4.1.2"
