@@ -4,10 +4,10 @@
     "scripts": {
         "clean": "rm -rf ./dist/ && mkdir dist",
         "copy": "cp ./.env ./dist/",
-        "build": "npm run clean && npm run copy && tsc --build tsconfig.prod.json",
+        "build": "npm run clean && npm run copy && tsc --build tsconfig.json",
         "eslint-fix": "eslint . --ext .ts --fix",
-        "start": "node -r module-alias/register ./dist ",
-        "dev": "nodemon development --delay 1",
+        "start": "node -r ./dist ",
+        "dev": "nodemon --delay 1",
         "rmlogs": "node dist/lib/rmlogs.js"
     },
     "nodemonConfig": {
@@ -17,8 +17,7 @@
         "ext": "ts",
         "ignore": [
             "src/public"
-        ],
-        "exec": "ts-node -r tsconfig-paths/register ./src"
+        ]
     },
     "eslintIgnore": [
         "src/public/",
