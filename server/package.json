@@ -8,7 +8,9 @@
         "eslint-fix": "eslint . --ext .ts --fix",
         "start": "node -r module-alias/register ./dist ",
         "dev": "nodemon development --delay 1",
-        "test": "nodemon --delay 3 --config ./_tests_/nodemon.json"
+        "test": "nodemon --delay 3 --config ./_tests_/nodemon.json",
+        "rmlogs": "node dist/lib/rmlogs.js"
+            
     },
     "nodemonConfig": {
         "watch": [
