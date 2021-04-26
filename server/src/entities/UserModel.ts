@@ -35,7 +35,7 @@ export default class UserModel implements IUserModel {
 
     public static validateName(name: string): void {
         if (typeof name !== 'string' || name.length < 1) {
-            throw new ServerError(Errors.INVALID_NAME, `Username ${name.bold} is invalid!`);
+            throw new ServerError(Errors.INVALID_NAME, `Username ${name} is invalid!`);
         }
     }
 
@@ -43,14 +43,14 @@ export default class UserModel implements IUserModel {
         const isValidPassword: boolean = UserModel.isPasswordStrong(password);
 
         if (!isValidPassword) {
-            throw new ServerError(Errors.PASSWORD_CRITERIA_NOT_MET, `Password ${password.bold} is not secure enough!`);
+            throw new ServerError(Errors.PASSWORD_CRITERIA_NOT_MET, `Password ${password} is not secure enough!`);
         }
     }
     public static async checkIfUserExists(email: string): Promise<void> {
         const user: IUser = await UserDal.getUserByEmail(email);
 
         if (user) {
-            throw new ServerError(Errors.USER_EXISTS, `User ${email.bold} already exists!`);
+            throw new ServerError(Errors.USER_EXISTS, `User ${email} already exists!`);
         }
     }
 
@@ -58,7 +58,7 @@ export default class UserModel implements IUserModel {
         const isValidEmail: boolean = UserModel.isEmailValid(email);
 
         if (!isValidEmail) {
-            throw new ServerError(Errors.INVALID_EMAIL, `${email.bold} is not a valid email!`);
+            throw new ServerError(Errors.INVALID_EMAIL, `${email} is not a valid email!`);
         }
     }
 

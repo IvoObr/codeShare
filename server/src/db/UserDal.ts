@@ -1,9 +1,15 @@
 import { Mongo } from '@db';
-import { IUser, Collections, IStrings, IUserModel, Errors, logger } from '@utils';
+import { IUser, Collections, IStrings, IUserModel, Errors } from '@utils';
 import mongodb, { ObjectId, InsertOneWriteOpResult, UpdateQuery } from 'mongodb';
 import { ServerError } from 'src/lib';
 
 class UserDal {
+
+    private validateId(id: string): void {
+        if (!ObjectId.isValid(id)) {
+            throw new ServerError(Errors.NOT_FOUND, `Invalid mongo id: ${id}`?.yellow);
+        }
+    }
 
     public async getUserByEmail(email: string): Promise<IUser> {
         const result: IUser[] = await Mongo.db
@@ -24,13 +30,8 @@ class UserDal {
     }
 
     public async getUserById(userId: string): Promise<IUser> {
-        const isValid: boolean = ObjectId.isValid(userId);
+        this.validateId(userId);
 
-        logger.debug(userId);
-
-        if (!isValid) {
-            throw new ServerError(Errors.NOT_FOUND, `invalid userId: ${userId}`);
-        }
         const _id: mongodb.ObjectID = new ObjectId(userId);
 
         const result: IUser[] = await Mongo.db
@@ -59,18 +60,20 @@ class UserDal {
     }
 
     public async updateUser(user: IUser): Promise<boolean> {
+        this.validateId(user._id);
+
         const _id: mongodb.ObjectID = new ObjectId(user._id);
 
         const result: mongodb.ReplaceWriteOpResult = await Mongo.db
             .collection(Collections.USERS)
             .replaceOne({ _id }, user);
-        
-        console.log(result); // todo test
-        
+                
         return result?.result?.nModified === 1;
     }
 
     public async setToken(token: string, userId: string): Promise<boolean> {
+        this.validateId(userId);
+
         const _id: mongodb.ObjectID = new ObjectId(userId);
         const updateToken: UpdateQuery<{ $push: IStrings}> = { $push: { 'tokens': token } };
 
@@ -82,6 +85,8 @@ class UserDal {
     }
 
     public async removeTokens(userId: string): Promise<boolean> {
+        this.validateId(userId);
+
         const _id: mongodb.ObjectID = new ObjectId(userId);
         const updateToken: UpdateQuery<{ $set: IStrings }> = { $set: { 'tokens': []} };
 
@@ -93,11 +98,8 @@ class UserDal {
     }
 
     public async deleteUser(userId: string): Promise<number> {
-        const isValid: boolean = ObjectId.isValid(userId);
+        this.validateId(userId);
 
-        if (!isValid) {
-            throw new ServerError(Errors.NOT_FOUND, `invalid userId: ${userId}`);
-        }
         const _id: mongodb.ObjectID = new ObjectId(userId);
 
         const result: mongodb.DeleteWriteOpResultObject = await Mongo.db

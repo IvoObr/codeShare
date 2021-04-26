@@ -12,12 +12,12 @@ class Server {
     constructor(private app: core.Express = express()) {}
 
     private useMiddleware(): this {
-        this.app.use(logExpress);
         this.app.use(express.json()); 
         this.app.use(express.urlencoded({ extended: true }));
         this.app.use(express.static(path.join(__dirname, 'public')));       
         this.app.use(cors({ origin: `http://localhost` })); //, exposedHeaders: [Const.xAuth]}));
-
+        this.app.use(logExpress);
+        
         if (process.env.NODE_ENV === Env.production) {
             this.app.use(helmet());
         }

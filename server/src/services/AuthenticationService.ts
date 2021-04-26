@@ -24,20 +24,20 @@ class AuthenticationService {
             const { email, password }: IStrings = request.body;
             const loginError: ServerError = new ServerError(Errors.UNAUTHORIZED, 'Login failed.');
 
-            if (!(email && password)) {
+            if (!email || !password) {
                 throw new ServerError(Errors.MISSING_PARAMETER, `Missing email or password.`);
             }
 
             const user: IUser = await UserDal.getUserByEmail(email);
 
             if (!user) {
-                logger.debug(`User ${email.bold} not found.`);
+                logger.debug(`User ${email?.bold} not found.`);
                 throw loginError;
             }
             const isPassValid: boolean = await bcrypt.compare(password, user.password);
 
             if (!isPassValid) {
-                logger.debug(`Invalid password ${password.bold}`);
+                logger.debug(`Invalid password ${password?.bold}`);
                 throw loginError;
             }
 
@@ -46,7 +46,7 @@ class AuthenticationService {
             const isTokenSet: boolean = await UserDal.setToken(token, user._id);
 
             if (!isTokenSet) {
-                logger.debug(`Could not set token in DB. UserID: ${user._id.bold}`);
+                logger.debug(`Could not set token in DB. UserID: ${user._id?.bold}`);
                 throw loginError;
             }
 

@@ -82,6 +82,8 @@ describe('users api tests', (): void => {
             logger.success(path, data.length);
 
             expect(typeof data.length).toBe('number');
+            
+            // await deleteAllUsers(data, headers);
 
         } catch (error) {
             handleError(path, error);
@@ -92,26 +94,28 @@ describe('users api tests', (): void => {
         const path: string = 'PUT /api/v1/user/update/:id'.yellow;
         try {
             const userData: IStrings = {
-                email: `${genBase36Key(8)}@yopmail.com`,
-                name: 'IvoDivo',
+                email: `${genBase36Key(8)}@gormail.com`,
+                name: 'IvoG',
                 password: 'Password123@'
             };
             const url: string = `http://localhost:${port}/api/v1/user/update/${userId}`;
             const response: AxiosResponse<IUser> = await axios.put(url, userData, headers);
             logger.success(path, response.status);
 
-            expect(response.data.name).toBe(userData.name);
-            expect(typeof response.data.role).toBe('string');
-            expect(response.data.email).toBe(userData.email);
-            expect(typeof response.data.password).toBe('string');
+            logger.debug(response.data);
+
             expect(response.status).toBe(200);
+            expect(typeof response.data.role).toBe('string');
+            expect(typeof response.data.password).toBe('string');
+            userData?.email && expect(response.data.email).toBe(userData.email);
+            userData?.name && expect(response.data.name).toBe(userData.name);
 
         } catch (error) {
             handleError(path, error);
         }
     });
 
-    it.skip('GET /api/v1/auth/logout user in DB', async (): Promise<void> => {
+    it('GET /api/v1/auth/logout user in DB', async (): Promise<void> => {
         const path: string = 'GET /api/v1/auth/logout'.yellow;
         try {
             const url: string = `http://localhost:${port}/api/v1/auth/logout`;
@@ -125,7 +129,7 @@ describe('users api tests', (): void => {
         }
     });
 
-    it('DELETE /api/v1/user/delete/:id user in DB', async (): Promise<void> => {
+    it.skip('DELETE /api/v1/user/delete/:id user in DB', async (): Promise<void> => {
         const path: string = 'DELETE /api/v1/user/delete/:id'.yellow;
         try {  
             const url: string = `http://localhost:${port}/api/v1/user/delete/${userId}`;
@@ -139,3 +143,20 @@ describe('users api tests', (): void => {
         }
     });
 });
+
+/*
+async function deleteAllUsers(users: IUser[], headers: any): Promise<void> {
+    const path: string = 'DELETE /api/v1/user/delete/:id'.yellow;
+    try {
+        for (let index = 0; index < users.length; index++) {
+            const user: IUser = users[index];
+            const url: string = `http://localhost:8080/api/v1/user/delete/${user._id}`;
+            const response: AxiosResponse<IUser> = await axios.delete(url, headers);
+
+        }
+       
+    } catch (error) {
+        handleError(path, error);
+    }
+}
+*/

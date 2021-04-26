@@ -17,12 +17,12 @@ class Main {
             const port: string = process.env.PORT || '3000';
 
             const server: http.Server = app.listen(port, (): void => 
-                logger.success(('Express server started on port: '.yellow + port.america).bold)
+                logger.success(('Express server started on port: '?.yellow + port.america)?.bold)
             );
             
             this.listenForError(server);
             this.listenForSIGTERM(server);
-            logger.info('process id:', process.pid.toString().cyan.bold);
+            logger.info('process id:', process.pid.toString()?.cyan.bold);
             logger.info(`Server running in ${process.env.NODE_ENV?.cyan.bold} mode.`);
 
         } catch (error) {
