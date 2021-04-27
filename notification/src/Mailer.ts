@@ -21,14 +21,12 @@ export default class Mailer {
             }
         });
     
-        logger.success("Mailer started!".bold);
-
-        transporter.verify(function(error, success) {
+        transporter.verify(function(error) {
             if (error) {
                 logger.error('Mailer unable to start'.red, error);
                 process.exit(0); /* clean exit */
             } else {
-                console.log("Server is ready to take our messages");
+                logger.success("Mailer started!".bold);
             }
         });
     

@@ -1,16 +1,16 @@
 import colors from 'colors';
 import Mailer from "./Mailer";
 import logger from './lib/logger';
+import SocketServer from './SocketServer';
 import dotenv, { DotenvConfigOutput } from 'dotenv';
 colors.enable();
 
 class Main {
 
-    public subscribeMailer(): void {
+    public subscribeMailer(): this {
         try {
             const mailer: Mailer = new Mailer();
 
-            // subscribe to keep the event loop busy
             // on
             // mailer.sendMail(msg)
             setTimeout(() => {
@@ -21,6 +21,7 @@ class Main {
                 });
             }, 1000);
 
+            return this;
         
         } catch (error) {
             logger.error('Mailer unable to start'.red, error);
@@ -29,6 +30,11 @@ class Main {
 
     }
 
+    public startSocketServer(): void {
+        const server: SocketServer = new SocketServer();
+        server.start();
+    }
+    
     public setEnv(): this {
         const result: DotenvConfigOutput = dotenv.config();
 
@@ -40,4 +46,7 @@ class Main {
     }
 }
 
-new Main().setEnv().subscribeMailer();
+new Main()
+    .setEnv()
+    .subscribeMailer()
+    .startSocketServer();

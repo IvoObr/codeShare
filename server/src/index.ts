@@ -1,9 +1,10 @@
 import http from 'http';
 import colors from 'colors';
 import { Mongo } from '@db';
-import Server from '@server';
 import 'module-alias/register';
 import { logger, Env } from '@utils';
+import SocketClient from './SocketClient';
+import ExpressServer from 'src/ExpressServer';
 import * as core from "express-serve-static-core";
 import dotenv, { DotenvConfigOutput } from 'dotenv';
 colors.enable();
@@ -13,7 +14,7 @@ class Main {
     public async startServer(): Promise<void> {
         try {
             await new Mongo().connect();
-            const app: core.Express = new Server().start();
+            const app: core.Express = new ExpressServer().start();
             const port: string = process.env.PORT || '3000';
 
             const server: http.Server = app.listen(port, (): void => 
@@ -30,6 +31,12 @@ class Main {
             process.exit(1); /* app crashed */
         }
     }
+
+    public connectSocket(): this {
+        const client: SocketClient = new SocketClient();
+        client.connect();
+        return this;
+    } 
 
     private listenForError(server: http.Server): void {
         server.on('error', (error: Error): void => {
@@ -62,4 +69,7 @@ class Main {
     }
 }
 
-new Main().setEnv().startServer();
+new Main()
+    .setEnv()
+    .connectSocket()
+    .startServer();

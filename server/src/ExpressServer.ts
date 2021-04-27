@@ -7,7 +7,7 @@ import { AuthRouter, UserRouter } from '@routers';
 import * as core from "express-serve-static-core";
 import { logExpress } from '@7dev-works/log-express';
 
-class Server {
+class ExpressServer {
 
     constructor(private app: core.Express = express()) {}
 
@@ -38,4 +38,4 @@ class Server {
     }
 }
 
-export default Server;
+export default ExpressServer;
