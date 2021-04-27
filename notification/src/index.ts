@@ -1,45 +1,43 @@
-import nodemailer from "nodemailer";
+import colors from 'colors';
+import Mailer from "./Mailer";
+import logger from './lib/logger';
+import dotenv, { DotenvConfigOutput } from 'dotenv';
+colors.enable();
 
-// async..await is not allowed in global scope, must use a wrapper
-async function main() {
-    // Generate test SMTP service account from ethereal.email
-    // Only needed if you don't have a real mail account for testing
-    // const testAccount = await nodemailer.createTestAccount();
+class Main {
 
-    // create reusable transporter object using the default SMTP transport
-    const transporter = nodemailer.createTransport({
-        host: "smtp.office365.com",
-        port: 465,
-        secure: true, // true for 465, false for other ports
-        auth: {
-            user: 'ivo_obr@hotmail.com', // generated ethereal user
-            pass: '....' // generated ethereal password
+    public subscribeMailer(): void {
+        try {
+            const mailer: Mailer = new Mailer();
+
+            // subscribe to keep the event loop busy
+            // on
+            // mailer.sendMail(msg)
+            setTimeout(() => {
+                mailer.sendMail({
+                    to: 'ivo_obr@hotmail.com',
+                    subject: 'mailer test',
+                    body: '<p>Hello Man!<p/>'
+                });
+            }, 1000);
+
+        
+        } catch (error) {
+            logger.error('Mailer unable to start'.red, error);
+            process.exit(0); /* clean exit */
         }
-    });
 
-    transporter.verify(function(error, success) {
-        if (error) {
-            console.log(error);
-        } else {
-            console.log("Server is ready to take our messages");
+    }
+
+    public setEnv(): this {
+        const result: DotenvConfigOutput = dotenv.config();
+
+        if (result.error) {
+            logger.error('Mailer unable to start'.red, result.error);
+            process.exit(0); /* clean exit */
         }
-    });
-
-    // send mail with defined transport object
-    const info: any = await transporter.sendMail({
-        from: '"Fred Foo 👻" <server_api@knowhow.com>', // sender address
-        to: "ivo_obr@hotmail.com, baz@example.com", // list of receivers
-        subject: "Hello ✔", // Subject line
-        text: "Hello ., world?", // plain text body
-        html: "<b>Hello world?</b>" // html body
-    });
-
-    console.log("Message sent: %s", info.messageId);
-    // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-
-    // Preview only available when sending through an Ethereal account
-    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-    // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+        return this;
+    }
 }
 
-main().catch(console.error);
+new Main().setEnv().subscribeMailer();
