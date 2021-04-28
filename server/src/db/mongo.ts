@@ -22,6 +22,8 @@ export default class Mongo {
             logger.success(`Connected to ${process.env.DB_NAME?.yellow?.bold} DB`);
             Mongo.db = db;
 
+            logger.info(Mongo.db)
+
         } catch (error) {
             await client.close();
             throw error;

@@ -5,10 +5,6 @@ import { Request, Response, NextFunction } from "express";
  * @param > async middleware function
  * @returns > sync middleware function
  */
-export default function async(handler: IMiddleware['async']): IMiddleware['sync'] {
-    return (request: Request, response: Response, next: NextFunction): void => {
-        Promise
-            .resolve(handler(request, response, next))
-            .catch((error): void => next(error));
-    };
-}
+export const async = (handler: IMiddleware['async']): IMiddleware['sync'] =>
+    (request: Request, response: Response, next: NextFunction): Promise<void> =>
+        Promise.resolve(handler(request, response, next)).catch((error) => next(error));
