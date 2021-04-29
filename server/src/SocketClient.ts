@@ -12,8 +12,8 @@ export default class SocketClient {
             .on('connect', this.onConnect)
 
     private onError = (error: Error) => logger.error(error)
+    private onClose = () => logger.info('MailerSocket closed.')
     private onTimeout = () => logger.info('MailerSocket timeout.')     
     private onConnect = () => logger.info('MailerSocket connected.')
     private onData = (data: Buffer) => logger.info(`MailerSocket data: ${data}`)
-    private onClose = (hadError: boolean) => hadError ? logger.error(`MailerSocket error.`) : logger.info('MailerSocket closed.')
 }

@@ -34,9 +34,9 @@ class ExpressServer {
         return this;
     }
 
-    public start = (): core.Express => 
-        this.useMiddleware().useAPIs().app;
-    
+    public start(): core.Express {
+        return this.useMiddleware().useAPIs().app;
+    }
 }
 
 export default ExpressServer;
