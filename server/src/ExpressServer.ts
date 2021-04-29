@@ -9,20 +9,22 @@ import { logExpress } from '@7dev-works/log-express';
 
 class ExpressServer {
 
-    constructor(private app: core.Express = express()) {}
+    constructor(private app: core.Express = express()) { }
 
     private useMiddleware(): this {
         this.app
             .use(express.json())
             .use(express.urlencoded({ extended: true }))
-            .use(express.static(path.join(__dirname, 'public')))    
+            .use(express.static(path.join(__dirname, 'public')))
             .use(cors({ origin: `http://localhost` })) //, exposedHeaders: [Const.xAuth]}));
             .use(logExpress);
-        
-        (process.env.NODE_ENV === Env.production) && this.app.use(helmet());
+
+        if (process.env.NODE_ENV === Env.production) {
+            this.app.use(helmet());
+        }
         return this;
     }
-    
+
     private useAPIs(): this {
         const router: Router = Router()
             .use('/auth', AuthRouter)
@@ -32,11 +34,9 @@ class ExpressServer {
         return this;
     }
 
-    public start = () => this
-        .useMiddleware()
-        .useAPIs()
-        .app;
-  
+    public start = (): core.Express => 
+        this.useMiddleware().useAPIs().app;
+    
 }
 
 export default ExpressServer;

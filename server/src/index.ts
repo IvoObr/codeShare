@@ -1,11 +1,12 @@
-import { Socket } from 'net';
 import http from 'http';
 import colors from 'colors';
 import { Mongo } from '@db';
+import { Socket } from 'net';
+import SocketClient from './SocketClient';
+import ExpressServer from './ExpressServer';
+
 import 'module-alias/register';
 import { logger, Env } from '@utils';
-import SocketClient from './SocketClient';
-import ExpressServer from 'src/ExpressServer';
 import * as core from "express-serve-static-core";
 import dotenv, { DotenvConfigOutput } from 'dotenv';
 colors.enable();
@@ -49,9 +50,9 @@ class Main {
         if (process.argv[2] === Env.development) {
             process.env.NODE_ENV = Env.development;
         }
-        
+
         const result: DotenvConfigOutput = dotenv.config();
-        
+
         if (result.error) {
             logger.error('Server unable to start'.red, result.error);
             process.exit(0); /* clean exit */
