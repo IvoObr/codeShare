@@ -3,8 +3,8 @@ import logger from './lib/logger';
 import Event from './lib/EventEmitter';
 
 export default class SocketServer {
-    private port: number = 8085;
-    private host: string = 'localhost';
+    private port: number = Number(process.env.PORT) || 8085;
+    private host: string = process.env.HOST || 'localhost';
 
     public start(): void {
         const settings = {

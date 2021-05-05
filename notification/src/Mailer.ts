@@ -1,7 +1,7 @@
 import logger from './lib/logger';
 import nodemailer from "nodemailer";
-import { IMessage } from './lib/interfaces';
 import Mail from "nodemailer/lib/mailer";
+import { IMessage } from './lib/interfaces';
 
 export default class Mailer {
 
@@ -14,7 +14,7 @@ export default class Mailer {
     private initTransporter(): Mail {
 
         const transporter: Mail = nodemailer.createTransport({
-            service: 'gmail',
+            service: process.env.SERVICE,
             auth: {
                 user: process.env.MAILER_USER,
                 pass: process.env.MAILER_PASS
