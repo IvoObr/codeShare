@@ -142,6 +142,11 @@ describe('users api tests', (): void => {
             handleError(path, error);
         }
     });
+
+    // todo 
+    // sendResetPassword
+    // resetPassword
+    
 });
 
 /*

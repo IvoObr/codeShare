@@ -3,7 +3,7 @@ import { UserDal } from '@db';
 import { UserModel } from "@entities";
 import { Jwt, ServerError } from '@lib';
 import { Request, Response } from 'express';
-import { StatusCodes, IUser, Errors, Headers, logger, IStrings, IUserModel } from '@utils';
+import { StatusCodes, IUser, Errors, Headers, logger, IStrings, IUserModel, IClientData } from '@utils';
 
 class AuthenticationService {
 
@@ -74,7 +74,67 @@ class AuthenticationService {
             ServerError.handle(error, response);
         }
     }
+
+    public static async sendResetPassword(request: Request, response: Response): Promise<void> {
+        try {
+            const { email }: IStrings = request.body;
+
+            if (!email) {
+                throw new ServerError(Errors.MISSING_PARAMETER, `Missing email.`);
+            }
+            
+            const user: IUser = await UserDal.getUserByEmail(email);
+
+            if (!user) {
+                logger.debug(`User ${email?.bold} not found.`);
+                throw new ServerError(Errors.NOT_FOUND, 'User not found.');
+            }
+
+            const message: string = JSON.stringify({
+                to: user.email,
+                subject: 'Password reset',
+                body: `<p>Dear ${user.name},</p>
+                       <p>Please follow the link to reset your password:</p>
+                       <href>${process.env.host}:${process.env.port}/api/v1/auth/reset-password/${user.tokens[0]}</href>
+                       <p>The link is valid for 24 hours.</p>
+                       <p>All the Best!</p>`
+            });
+
+            response.status(StatusCodes.CREATED).end();
+
+        } catch (error) {
+            ServerError.handle(error, response);
+        }
+    }
+
+    public static async resetPassword(request: Request, response: Response): Promise<void> {
+        try {
+            const token: string = request.params?.token;
+
+            if (!token) {
+                throw new ServerError(Errors.MISSING_PARAMETER, `Missing token.`);
+            }
+
+            const clientData: IClientData = Jwt.verify(token);
+            const user: IUser = await UserDal.getUserById(clientData._id);
+    
+            if (!user) {
+                throw new ServerError(Errors.NOT_FOUND, 'User not found.');
+            }
+
+            // todo change user password
+
+        } catch (error) {
+            ServerError.handle(error, response);
+        }
+    }
 }
 
-export const { login, logout, register }: typeof AuthenticationService = AuthenticationService;
+export const {
+    login,
+    logout,
+    register,
+    resetPassword,
+    sendResetPassword
+}: typeof AuthenticationService = AuthenticationService;
 

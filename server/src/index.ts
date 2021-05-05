@@ -2,8 +2,8 @@ import http from 'http';
 import colors from 'colors';
 import { Mongo } from '@db';
 import { Socket } from 'net';
-import { logger, Env } from '@utils';
 import SocketClient from './SocketClient';
+import { logger, Env, Event } from '@utils';
 import ExpressServer from './ExpressServer';
 import * as core from "express-serve-static-core";
 import dotenv, { DotenvConfigOutput } from 'dotenv';
@@ -43,9 +43,16 @@ class Main {
     }
 
     private connectMailerClient() {
-        const mailerClient: Socket = new SocketClient().connect(Number(process.env.MAILER_PORT));
+        const mailerClient: Socket = new SocketClient()
+            .connect(Number(process.env.MAILER_PORT));
         
-        mailerClient.write('Poluchi li, Kole?')
+        const message: string = JSON.stringify({
+            to: 'ivo_obr@yopmail.com',
+            subject: 'mailer test',
+            body: '<p>Zaplata!<p/>'
+        });
+        
+        mailerClient.write(message);
         // mailerClient.end()
     }
 

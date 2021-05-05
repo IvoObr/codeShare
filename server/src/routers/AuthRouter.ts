@@ -1,13 +1,16 @@
 import { async } from '@lib';
 import { Router } from 'express';
-import { login, logout, register, authorizeJWT } from '@services';
+import {
+    login, logout, register,
+    authorizeJWT, resetPassword, sendResetPassword
+} from '@services';
 
 class AuthRouter {
 
     private router: Router = Router()
     
     public getRouter(): Router {
-        /* route */
+        /* main route */
         this.router.use('/auth', this.router);
 
         /* sub routes */
@@ -16,6 +19,13 @@ class AuthRouter {
 
         this.router.post('/login',
             async(login));
+        
+        this.router.post('/send-reset-password',
+            async(sendResetPassword));
+        
+        this.router.get('/reset-password/:token',
+            // async(authorizeJWT),
+            async(resetPassword));
 
         this.router.get('/logout',
             async(authorizeJWT),
