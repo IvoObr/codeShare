@@ -1,7 +1,9 @@
 import colors from 'colors';
 import Mailer from "./Mailer";
 import logger from './lib/logger';
+import Event from './lib/EventEmitter';
 import SocketServer from './SocketServer';
+import { IMessage } from './lib/interfaces';
 import dotenv, { DotenvConfigOutput } from 'dotenv';
 colors.enable();
 
@@ -11,15 +13,9 @@ class Main {
         try {
             const mailer: Mailer = new Mailer();
 
-            // on
-            // mailer.sendMail(msg)
-            // setTimeout(() => {
-            //     mailer.sendMail({
-            //         to: 'ivo_obr@hotmail.com',
-            //         subject: 'mailer test',
-            //         body: '<p>Hello Man!<p/>'
-            //     });
-            // }, 1000);
+            Event.on('newMail', (data: IMessage) => {
+                mailer.sendMail(data);
+            });
 
             return this;
         
