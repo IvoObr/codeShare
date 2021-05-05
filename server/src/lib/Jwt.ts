@@ -7,9 +7,7 @@ class Jwt {
 
     private readonly secret: string = process.env.JWT_SECRET || genBase36Key();
 
-    public sign(payload: IClientData): string {
-        return jwt.sign(payload, this.secret);
-    }
+    public sign = (payload: IClientData): string => jwt.sign(payload, this.secret);
 
     public verify(token: string): IClientData {
         try {
