@@ -13,13 +13,13 @@ class Main {
 
             // on
             // mailer.sendMail(msg)
-            setTimeout(() => {
-                mailer.sendMail({
-                    to: 'ivo_obr@hotmail.com',
-                    subject: 'mailer test',
-                    body: '<p>Hello Man!<p/>'
-                });
-            }, 1000);
+            // setTimeout(() => {
+            //     mailer.sendMail({
+            //         to: 'ivo_obr@hotmail.com',
+            //         subject: 'mailer test',
+            //         body: '<p>Hello Man!<p/>'
+            //     });
+            // }, 1000);
 
             return this;
         

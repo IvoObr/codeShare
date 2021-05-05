@@ -19,6 +19,7 @@ class Main {
                 .connectDB())
                 .startExpressServer()
                 .connectMailerClient();
+            
         } catch (error) {
             logger.error(error);
             process.exit(1); /* app crashed */
@@ -43,6 +44,9 @@ class Main {
 
     private connectMailerClient() {
         const mailerClient: Socket = new SocketClient().connect(Number(process.env.MAILER_PORT));
+        
+        mailerClient.write('Poluchi li, Kole?')
+        // mailerClient.end()
     }
 
     private async connectDB(): Promise<this> {
