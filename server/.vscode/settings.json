@@ -13,7 +13,6 @@
     "editor.codeLens": false,
     "editor.formatOnPaste": true,
     "editor.formatOnSave": true,
-    "terminal.external.linuxExec": "Terminal.app",
     "explorer.confirmDragAndDrop": false,
     "explorer.confirmDelete": false,
     "workbench.activityBar.visible": false,
@@ -38,7 +37,7 @@
     "node-module-intellisense.scanFileModules": true,
     "extensions.ignoreRecommendations": true,
     "window.title": "${rootName}/${activeEditorMedium}",
-    "workbench.iconTheme": "file-icons",
+    "workbench.iconTheme": "vscode-icons",
     "todohighlight.include": [
         "**/*.js",
         "**/*.jsx",
