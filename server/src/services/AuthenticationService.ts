@@ -3,7 +3,10 @@ import { UserDal } from '@db';
 import { UserModel } from "@entities";
 import { Jwt, ServerError } from '@lib';
 import { Request, Response } from 'express';
-import { StatusCodes, IUser, Errors, Headers, logger, IStrings, IUserModel, IClientData } from '@utils';
+import {
+    StatusCodes, IUser, Errors, Headers,
+    logger, IStrings, IUserModel, IClientData, Event, Events
+} from '@utils';
 
 class AuthenticationService {
 
@@ -100,7 +103,15 @@ class AuthenticationService {
                        <p>All the Best!</p>`
             });
 
-            response.status(StatusCodes.CREATED).end();
+            Event.emit(Events.sendEmail, message);
+
+            Event.on(Events.emailError, (error: string) => {
+                throw new ServerError(Errors.COULD_NOT_SEND_EMAIL, error);
+            });
+
+            Event.on(Events.emailSuccess, (info: string) => {
+                response.status(StatusCodes.CREATED).json(info);
+            });
 
         } catch (error) {
             ServerError.handle(error, response);

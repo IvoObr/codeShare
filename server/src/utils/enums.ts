@@ -8,6 +8,12 @@ export enum Collections {
   USERS = 'users',
 }
 
+export enum Events {
+  sendEmail = 'sendEmail',
+  emailError = 'emailError',
+  emailSuccess = 'emailSuccess'
+}
+
 export enum Env {
   development = 'development',
   production = 'production'
@@ -32,6 +38,7 @@ export enum Errors {
   COULD_NOT_LOGIN = 'COULD_NOT_LOGIN',
   COULD_NOT_LOGOUT = 'COULD_NOT_LOGOUT',
   INVALID_PASSWORD = 'INVALID_PASSWORD',
+  COULD_NOT_SEND_EMAIL = 'COULD_NOT_SEND_EMAIL',
   PASSWORD_CRITERIA_NOT_MET = 'PASSWORD_CRITERIA_NOT_MET',
   COULD_NOT_DELETE_USER_BY_ID = 'COULD_NOT_DELETE_USER_BY_ID',
   COULD_NOT_INSERT_TOKEN_IN_DB = 'COULD_NOT_INSERT_TOKEN_IN_DB',

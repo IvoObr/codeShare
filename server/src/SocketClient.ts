@@ -1,5 +1,5 @@
 import Net from 'net';
-import { logger } from '@utils';
+import { logger, Events, Event } from '@utils';
 
 export default class SocketClient {
 
@@ -16,8 +16,10 @@ export default class SocketClient {
         const info: any = JSON.parse(data.toString());
 
         if (info?.error) {
+            Event.emit(Events.emailError, info?.error);
             logger.error('Message not delivered', info.error);
         } else {
+            Event.emit(Events.emailSuccess, info);
             logger.success('Mail sent to: ', info?.accepted);
         }
     }

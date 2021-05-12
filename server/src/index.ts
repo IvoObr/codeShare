@@ -3,10 +3,10 @@ import colors from 'colors';
 import { Mongo } from '@db';
 import { Socket } from 'net';
 import SocketClient from './SocketClient';
-import { logger, Env, Event } from '@utils';
 import ExpressServer from './ExpressServer';
 import * as core from "express-serve-static-core";
 import dotenv, { DotenvConfigOutput } from 'dotenv';
+import { logger, Env, Event, Events } from '@utils';
 import 'module-alias/register';
 colors.enable();
 
@@ -46,14 +46,7 @@ class Main {
         const mailerClient: Socket = new SocketClient()
             .connect(Number(process.env.MAILER_PORT));
         
-        const message: string = JSON.stringify({
-            to: 'ivo0@yopmail.com',
-            subject: 'mailer test',
-            body: '<p>Zaplata!<p/>'
-        });
-        
-        mailerClient.write(message);
-        // mailerClient.end()
+        Event.on(Events.sendEmail, (message: string) => mailerClient.write(message));
     }
 
     private async connectDB(): Promise<this> {

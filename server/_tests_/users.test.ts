@@ -143,6 +143,20 @@ describe('users api tests', (): void => {
         }
     });
 
+    it('POST /api/v1/user/delete/:id user in DB', async (): Promise<void> => {
+        const path: string = 'DELETE /api/v1/user/delete/:id'.yellow;
+        try {
+            const url: string = `http://localhost:${port}/api/v1/user/delete/${userId}`;
+            const response: AxiosResponse<IUser> = await axios.delete(url, headers);
+            logger.success(path, response.status);
+
+            expect(response.status).toBe(200);
+
+        } catch (error) {
+            handleError(path, error);
+        }
+    });
+
     // todo 
     // sendResetPassword
     // resetPassword

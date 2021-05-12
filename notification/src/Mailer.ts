@@ -1,7 +1,9 @@
 import logger from './lib/logger';
 import nodemailer from "nodemailer";
+import { Events } from './lib/enums';
+import Event from './lib/EventEmitter';
 import Mail from "nodemailer/lib/mailer";
-import { IMessage } from './lib/interfaces';
+import { IMessage, IMailInfo } from './lib/interfaces';
 
 export default class Mailer {
 
@@ -35,7 +37,7 @@ export default class Mailer {
 
     public async sendMail(msg: IMessage): Promise<void> {
         try {
-            const info: any = await this.transporter.sendMail({
+            const info: IMailInfo = await this.transporter.sendMail({
                 from: msg?.from || '"CodeShare" <codeShare@example.com>',
                 to: msg?.to,
                 subject: msg?.subject,
@@ -44,9 +46,11 @@ export default class Mailer {
                 headers: msg?.headers
             });
 
+            Event.emit(Events.emailSend, info);
             logger.success("Message sent: ", info);
 
         } catch (error) {
+            Event.emit(Events.emailError, error);
             logger.error(error);
         }
     }

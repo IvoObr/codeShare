@@ -1,6 +1,7 @@
 import colors from 'colors';
 import Mailer from "./Mailer";
 import logger from './lib/logger';
+import { Events } from './lib/enums';
 import Event from './lib/EventEmitter';
 import SocketServer from './SocketServer';
 import { IMessage } from './lib/interfaces';
@@ -13,7 +14,7 @@ class Main {
         try {
             const mailer: Mailer = new Mailer();
 
-            Event.on('newMail', (data: IMessage) => {
+            Event.on(Events.newMail, (data: IMessage) => {
                 mailer.sendMail(data);
             });
 

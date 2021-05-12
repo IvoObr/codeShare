@@ -1,6 +1,8 @@
 import Net from 'net';
 import logger from './lib/logger';
+import { Events } from './lib/enums';
 import Event from './lib/EventEmitter';
+import { IMailInfo } from './lib/interfaces';
 
 export default class SocketServer {
     private port: number = Number(process.env.PORT) || 8085;
@@ -13,35 +15,29 @@ export default class SocketServer {
         };
             
         Net.createServer()
-            .listen(settings, this.onListen)
             .on('connection', this.onConnection)
-            .on('error', this.onError);
+            .on('error', (error: Error) => logger.error(error))
+            .listen(settings, () => logger.success(`SocketServer listening on port ${this.port}`.yellow));
     }
-
-    private onError = (error: Error) => logger.error(error)
-    private onEnd = () => logger.info('Socket ended.')
-    private onClose = () => logger.info('Socket closed.')
-    private onTimeout = () => logger.info('Socket timeout.')
-    private onConnect = () => logger.info('Socket connected.')
-    private onListen = () => logger.success(`SocketServer listening on port ${this.port}`.yellow)
 
     private onConnection = (socket: Net.Socket): void => {
         logger.success(`Client connected!`.bold);
 
         socket
-            .on('end', this.onEnd)
-            .on('close', this.onClose)
-            .on('error', this.onError)
-            .on('timeout', this.onTimeout)
-            .on('connect', this.onConnect)
+            .on('end', () => logger.info('Socket ended.'))
+            .on('close', () => logger.info('Socket closed.'))
+            .on('error', (error: Error) => logger.error(error))
+            .on('timeout', () => logger.info('Socket timeout.'))
+            .on('connect', () => logger.info('Socket connected.'))
             .on('data', (data: Buffer) => this.onData(data, socket));
     }
 
     private onData = (data: Buffer, socket: Net.Socket) => {
         logger.info(`Socket data: ${data}`);
-        Event.emit('newMail', JSON.parse(data.toString()));
-        socket.write('Message received!'.green);
-        // socket.end()
+        Event.emit(Events.newMail, JSON.parse(data.toString()));
+
+        Event.on(Events.emailSend, (mailInfo: IMailInfo) => socket.write(JSON.stringify(mailInfo)));
+        Event.on(Events.emailError, (error) => socket.write(JSON.stringify({ error })));
     }
 
 }
