@@ -5,17 +5,20 @@ export default class SocketClient {
 
     public connect = (port: number): Net.Socket => 
         Net.createConnection({ port })
-            .on('end', this.onEnd)
             .on('data', this.onData)
-            .on('close', this.onClose)
-            .on('error', this.onError)
-            .on('timeout', this.onTimeout)
-            .on('connect', this.onConnect)
+            .on('end', () => logger.info('Socket ended.'))
+            .on('close', () => logger.info('Socket closed.'))
+            .on('error', (error: Error) => logger.error(error))
+            .on('timeout', () => logger.info('Socket timeout.'))
+            .on('connect', () => logger.info('Socket connected.'))
     
-    private onError = (error: Error) => logger.error(error)
-    private onEnd = () => logger.info('Socket ended.')
-    private onClose = () => logger.info('Socket closed.')
-    private onTimeout = () => logger.info('Socket timeout.')     
-    private onConnect = () => logger.info('Socket connected.')
-    private onData = (data: Buffer) => logger.info(`Socket data: ${data}`)
+    private onData = (data: Buffer) => {
+        const info: any = JSON.parse(data.toString());
+
+        if (info?.error) {
+            logger.error('Message not delivered', info.error);
+        } else {
+            logger.success('Mail sent to: ', info?.accepted);
+        }
+    }
 }

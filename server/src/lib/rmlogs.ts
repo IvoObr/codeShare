@@ -8,7 +8,8 @@ import * as path from 'path';
  * @param excludeFolders - folders to exclude
  * @param fileList - files paths to be deleted
  */
-
+// sessite se pazqt v bazata!!!
+// tokuna da se pazi i v bazata
 export function rmlogs(dir: string, filter: RegExp, excludeFolders?: RegExp, fileList: string[] = []) {
     const files: string[] = fs.readdirSync(dir);
     excludeFolders = excludeFolders || /(node_modules|dist|src|.git)/;

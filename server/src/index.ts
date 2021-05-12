@@ -47,7 +47,7 @@ class Main {
             .connect(Number(process.env.MAILER_PORT));
         
         const message: string = JSON.stringify({
-            to: 'ivo_obr@yopmail.com',
+            to: 'ivo0@yopmail.com',
             subject: 'mailer test',
             body: '<p>Zaplata!<p/>'
         });
