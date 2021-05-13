@@ -33,11 +33,16 @@ export default class SocketServer {
     }
 
     private onData = (data: Buffer, socket: Net.Socket) => {
-        logger.info(`Socket data: ${data}`);
         Event.emit(Events.newMail, JSON.parse(data.toString()));
 
-        Event.on(Events.emailSend, (mailInfo: IMailInfo) => socket.write(JSON.stringify(mailInfo)));
-        Event.on(Events.emailError, (error) => socket.write(JSON.stringify({ error })));
+        Event.once(Events.emailSend, (mailInfo: IMailInfo) => {
+            socket.write(JSON.stringify(mailInfo));
+            socket.end();
+        });
+        Event.once(Events.emailError, (error) => {
+            socket.write(JSON.stringify({ error }));
+            socket.end();
+        });
     }
 
 }

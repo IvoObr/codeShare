@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import { UserDal } from '@db';
 import { UserModel } from "@entities";
 import { Jwt, ServerError } from '@lib';
+import SocketClient from '../SocketClient';
 import { Request, Response } from 'express';
 import {
     StatusCodes, IUser, Errors, Headers, IMailInfo,
@@ -105,20 +106,24 @@ class AuthenticationService {
                 to: user.email,
                 subject: 'Password reset',
                 body: `<p>Dear ${user.name},</p>
-                       <p>Please follow the link to reset your password:</p>
-                       <href>${process.env.host}:${process.env.port}/api/v1/auth/reset-password/${token}</href>
+                       <p> Please follow the link to
+                       <a href="http://${process.env.host}:${process.env.port}/api/v1/auth/reset-password/${token}">
+                       reset your password. </a>                     
+                       </p>
                        <p>The link is valid for 24 hours.</p>
                        <p>All the Best!</p>`
             });
 
-            Event.emit(Events.sendEmail, message);
+            SocketClient.connectMailerClient(() => {
+                Event.emit(Events.sendEmail, message);
+            });
 
-            Event.on(Events.emailError, (error: string) => {
+            Event.once(Events.emailError, (error: string) => {
                 const err = new ServerError(Errors.COULD_NOT_SEND_EMAIL, error);
                 ServerError.handle(err, response);
             });
 
-            Event.on(Events.emailSuccess, (info: IMailInfo) => {
+            Event.once(Events.emailSuccess, (info: IMailInfo) => {
                 response.status(StatusCodes.CREATED)
                     .json({
                         result: `Email successfully send.`,
@@ -145,8 +150,10 @@ class AuthenticationService {
             if (!user) {
                 throw new ServerError(Errors.NOT_FOUND, 'User not found.');
             }
-
+            
             // todo change user password
+
+            response.status(StatusCodes.CREATED).json({ success: true }); // todo 
 
         } catch (error) {
             ServerError.handle(error, response);

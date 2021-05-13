@@ -1,7 +1,18 @@
-import Net from 'net';
+import Net, { Socket } from 'net';
 import { logger, Events, Event, IMailInfo } from '@utils';
 
 export default class SocketClient {
+
+    public static connectMailerClient(callback: () => void) {
+        const mailerClient: Socket = new SocketClient()
+            .connect(Number(process.env.MAILER_PORT));
+
+        Event.once(Events.sendEmail, (message: string) => {
+            mailerClient.write(message);
+        });
+        
+        callback();
+    }
 
     public connect = (port: number): Net.Socket => 
         Net.createConnection({ port })

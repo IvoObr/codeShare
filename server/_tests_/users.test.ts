@@ -161,7 +161,6 @@ describe('users api tests', (): void => {
     });
 
     // todo 
-    // sendResetPassword
     // resetPassword
     
 });
