@@ -94,7 +94,7 @@ describe('users api tests', (): void => {
         const path: string = 'PUT /api/v1/user/update/:id'.yellow;
         try {
             const userData: IStrings = {
-                email: `${genBase36Key(8)}@gormail.com`,
+                email: `${genBase36Key(8)}@yopmail.com`,
                 name: 'IvoG',
                 password: 'Password123@'
             };
@@ -102,7 +102,7 @@ describe('users api tests', (): void => {
             const response: AxiosResponse<IUser> = await axios.put(url, userData, headers);
             logger.success(path, response.status);
 
-            logger.debug(response.data);
+            userEmail = userData.email;
 
             expect(response.status).toBe(200);
             expect(typeof response.data.role).toBe('string');
@@ -143,14 +143,17 @@ describe('users api tests', (): void => {
         }
     });
 
-    it('POST /api/v1/user/delete/:id user in DB', async (): Promise<void> => {
-        const path: string = 'DELETE /api/v1/user/delete/:id'.yellow;
+    it('POST /api/v1/auth/send-reset-password', async (): Promise<void> => {
+        const path: string = 'POST /api/v1/auth/send-reset-password'.yellow;
         try {
-            const url: string = `http://localhost:${port}/api/v1/user/delete/${userId}`;
-            const response: AxiosResponse<IUser> = await axios.delete(url, headers);
+            const url: string = `http://localhost:${port}/api/v1/auth/send-reset-password`;
+            const payload: IStrings = { email: userEmail };
+
+            const response: AxiosResponse<any> = await axios.post(url, payload);
             logger.success(path, response.status);
 
-            expect(response.status).toBe(200);
+            expect(response.status).toBe(201);
+            expect(response.data.receiver).toBe(userEmail);
 
         } catch (error) {
             handleError(path, error);

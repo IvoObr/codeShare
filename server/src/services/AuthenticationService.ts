@@ -4,7 +4,7 @@ import { UserModel } from "@entities";
 import { Jwt, ServerError } from '@lib';
 import { Request, Response } from 'express';
 import {
-    StatusCodes, IUser, Errors, Headers,
+    StatusCodes, IUser, Errors, Headers, IMailInfo,
     logger, IStrings, IUserModel, IClientData, Event, Events
 } from '@utils';
 
@@ -93,12 +93,20 @@ class AuthenticationService {
                 throw new ServerError(Errors.NOT_FOUND, 'User not found.');
             }
 
+            const token = Jwt.sign({ _id: user._id, role: user.role });
+            const isTokenSet: boolean = await UserDal.setToken(token, user._id);
+
+            if (!isTokenSet) {
+                logger.debug(`Could not set token in DB. UserID: ${user._id?.bold}`);
+                throw new ServerError(Errors.COULD_NOT_SEND_EMAIL, 'Could not set token in DB.');
+            }
+
             const message: string = JSON.stringify({
                 to: user.email,
                 subject: 'Password reset',
                 body: `<p>Dear ${user.name},</p>
                        <p>Please follow the link to reset your password:</p>
-                       <href>${process.env.host}:${process.env.port}/api/v1/auth/reset-password/${user.tokens[0]}</href>
+                       <href>${process.env.host}:${process.env.port}/api/v1/auth/reset-password/${token}</href>
                        <p>The link is valid for 24 hours.</p>
                        <p>All the Best!</p>`
             });
@@ -106,11 +114,16 @@ class AuthenticationService {
             Event.emit(Events.sendEmail, message);
 
             Event.on(Events.emailError, (error: string) => {
-                throw new ServerError(Errors.COULD_NOT_SEND_EMAIL, error);
+                const err = new ServerError(Errors.COULD_NOT_SEND_EMAIL, error);
+                ServerError.handle(err, response);
             });
 
-            Event.on(Events.emailSuccess, (info: string) => {
-                response.status(StatusCodes.CREATED).json(info);
+            Event.on(Events.emailSuccess, (info: IMailInfo) => {
+                response.status(StatusCodes.CREATED)
+                    .json({
+                        result: `Email successfully send.`,
+                        receiver: info?.accepted[0]
+                    });
             });
 
         } catch (error) {

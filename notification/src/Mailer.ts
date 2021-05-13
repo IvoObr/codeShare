@@ -50,7 +50,7 @@ export default class Mailer {
             logger.success("Message sent: ", info);
 
         } catch (error) {
-            Event.emit(Events.emailError, error);
+            Event.emit(Events.emailError, error.message);
             logger.error(error);
         }
     }

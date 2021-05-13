@@ -6,6 +6,18 @@ export interface IMiddleware {
   async: (request: Request, response: Response, next: NextFunction) => Promise<void>;
 }
 
+export interface IMailInfo {
+  accepted: string[];
+  rejected: string[];
+  envelopeTime: number;
+  messageTime: number;
+  messageSize: number;
+  response: string;
+  envelope: { [key: string]: string };
+  messageId: string;
+  error?: string;
+}
+
 export interface IClientData {
   _id: string;
   role: UserRole;
