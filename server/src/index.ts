@@ -1,9 +1,7 @@
 import http from 'http';
 import colors from 'colors';
 import { Mongo } from '@db';
-import { Socket } from 'net';
 import { logger, Env } from '@utils';
-import SocketClient from './SocketClient';
 import ExpressServer from './ExpressServer';
 import * as core from "express-serve-static-core";
 import dotenv, { DotenvConfigOutput } from 'dotenv';
@@ -14,11 +12,10 @@ class Main {
     
     public async start() {
         try {
-            (await new Main()
-                .setEnv()
-                .connectDB())
-                .startExpressServer()
-                .connectMailerClient();
+            const main = new Main();
+            main.setEnv();
+            await main.connectDB();
+            main.startExpressServer();
             
         } catch (error) {
             logger.error(error);
@@ -40,13 +37,6 @@ class Main {
         logger.info('process id:', process.pid.toString()?.cyan.bold);
         logger.info(`Server running in ${process.env.NODE_ENV?.cyan.bold} mode.`);
         return this;
-    }
-
-    private connectMailerClient() {
-        const mailerClient: Socket = new SocketClient().connect(Number(process.env.MAILER_PORT));
-        
-        mailerClient.write('Poluchi li, Kole?')
-        // mailerClient.end()
     }
 
     private async connectDB(): Promise<this> {

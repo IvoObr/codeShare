@@ -1,21 +1,37 @@
-import Net from 'net';
-import { logger } from '@utils';
+import Net, { Socket } from 'net';
+import { logger, Events, Event, IMailInfo } from '@utils';
 
 export default class SocketClient {
 
+    public static connectMailerClient(callback: () => void) {
+        const mailerClient: Socket = new SocketClient()
+            .connect(Number(process.env.MAILER_PORT));
+
+        Event.once(Events.sendEmail, (message: string) => {
+            mailerClient.write(message);
+        });
+        
+        callback();
+    }
+
     public connect = (port: number): Net.Socket => 
         Net.createConnection({ port })
-        .on('end', this.onEnd)
-        .on('data', this.onData)
-        .on('close', this.onClose)
-        .on('error', this.onError)
-        .on('timeout', this.onTimeout)
-        .on('connect', this.onConnect)
+            .on('data', this.onData)
+            .on('end', () => logger.info('Socket ended.'))
+            .on('close', () => logger.info('Socket closed.'))
+            .on('error', (error: Error) => logger.error(error))
+            .on('timeout', () => logger.info('Socket timeout.'))
+            .on('connect', () => logger.info('Socket connected.'))
     
-    private onError = (error: Error) => logger.error(error)
-    private onEnd = () => logger.info('MailerSocket ended.')
-    private onClose = () => logger.info('MailerSocket closed.')
-    private onTimeout = () => logger.info('MailerSocket timeout.')     
-    private onConnect = () => logger.info('MailerSocket connected.')
-    private onData = (data: Buffer) => logger.info(`MailerSocket data: ${data}`)
+    private onData = (data: Buffer) => {
+        const info: IMailInfo = JSON.parse(data.toString());
+
+        if (info?.error) {
+            Event.emit(Events.emailError, info?.error);
+            logger.error('Message not delivered', info);
+        } else {
+            Event.emit(Events.emailSuccess, info);
+            logger.success('Mail sent to: ', info?.accepted);
+        }
+    }
 }

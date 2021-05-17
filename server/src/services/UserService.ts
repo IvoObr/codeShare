@@ -2,14 +2,18 @@ import { UserDal } from '@db';
 import { ServerError } from '@lib';
 import { UserModel } from '@entities';
 import { Request, Response } from 'express';
-import { StatusCodes, IUser, Errors, IStrings, logger } from '@utils';
+import { StatusCodes, IUser, Errors, IStrings, IPublicUser } from '@utils';
 
 class UserService {
 
     public static async getAllUsers(request: Request, response: Response): Promise<void> {
         try {
             const users: IUser[] = await UserDal.getAllUsers();
-            response.status(StatusCodes.OK).json(users);
+
+            const publicUsers: IPublicUser[] =
+                users.map((user: IUser) => UserModel.getPublicUser(user));
+
+            response.status(StatusCodes.OK).json(publicUsers);
 
         } catch (error) {
             ServerError.handle(error, response);
@@ -75,7 +79,9 @@ class UserService {
                 throw new ServerError(Errors.BAD_REQUEST, `Could not update user with id: ${id}.`);
             }
 
-            response.status(StatusCodes.OK).json(user);
+            const publicUser: IPublicUser = UserModel.getPublicUser(user);
+
+            response.status(StatusCodes.OK).json(publicUser);
             
         } catch (error) {
             ServerError.handle(error, response);

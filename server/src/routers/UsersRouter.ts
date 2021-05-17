@@ -8,7 +8,7 @@ class UserRouter {
     private router: Router = Router()
 
     public getRouter(): Router {
-        /* route */
+        /* main route */
         this.router.use('/user', this.router);
 
         /* sub routes */
