@@ -2,7 +2,7 @@ import { UserDal } from '@db';
 import { ServerError } from '@lib';
 import { UserModel } from '@entities';
 import { Request, Response } from 'express';
-import { StatusCodes, IUser, Errors, IStrings, logger } from '@utils';
+import { StatusCodes, IUser, Errors, IStrings } from '@utils';
 
 class UserService {
 

@@ -23,8 +23,8 @@ class AuthRouter {
         this.router.post('/send-reset-password',
             async(sendResetPassword));
         
-        this.router.get('/reset-password/:token',
-            // async(authorizeJWT),
+        this.router.post('/reset-password',
+            async(authorizeJWT),
             async(resetPassword));
 
         this.router.get('/logout',

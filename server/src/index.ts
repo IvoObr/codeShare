@@ -2,7 +2,6 @@ import http from 'http';
 import colors from 'colors';
 import { Mongo } from '@db';
 import { logger, Env } from '@utils';
-import SocketClient from './SocketClient';
 import ExpressServer from './ExpressServer';
 import * as core from "express-serve-static-core";
 import dotenv, { DotenvConfigOutput } from 'dotenv';
@@ -17,7 +16,6 @@ class Main {
             main.setEnv();
             await main.connectDB();
             main.startExpressServer();
-            // SocketClient.connectMailerClient(() => null);
             
         } catch (error) {
             logger.error(error);

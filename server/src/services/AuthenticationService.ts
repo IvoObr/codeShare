@@ -114,6 +114,8 @@ class AuthenticationService {
                        <p>All the Best!</p>`
             });
 
+            // todo change url to frontend
+
             SocketClient.connectMailerClient(() => {
                 Event.emit(Events.sendEmail, message);
             });
@@ -138,23 +140,24 @@ class AuthenticationService {
 
     public static async resetPassword(request: Request, response: Response): Promise<void> {
         try {
-            const token: string = request.params?.token;
+            const userId: string = request.body.userId;
+            let password: string = request.body.password;
 
-            if (!token) {
-                throw new ServerError(Errors.MISSING_PARAMETER, `Missing token.`);
+            const user: IUser = await UserDal.getUserById(userId);
+
+            password && UserModel.validatePassword(password);
+            password && (password = await UserModel.hashPassword(password));
+
+            user.password = password || user.password;
+
+            const didUpdate: boolean = await UserDal.updateUser(user);
+
+            if (!didUpdate) {
+                throw new ServerError(Errors.BAD_REQUEST, `Could not update user with id: ${userId}.`);
             }
 
-            const clientData: IClientData = Jwt.verify(token);
-            const user: IUser = await UserDal.getUserById(clientData._id);
-    
-            if (!user) {
-                throw new ServerError(Errors.NOT_FOUND, 'User not found.');
-            }
+            response.status(StatusCodes.OK).json(user);
             
-            // todo change user password
-
-            response.status(StatusCodes.CREATED).json({ success: true }); // todo 
-
         } catch (error) {
             ServerError.handle(error, response);
         }
