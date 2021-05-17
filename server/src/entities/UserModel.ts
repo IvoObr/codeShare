@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { UserDal } from '@db';
 import { ServerError } from '@lib';
-import { UserRole, Errors, IUser, IUserReq, IUserModel } from '@utils';
+import { UserRole, Errors, IUser, INewUserReq, IUserModel, IPublicUser } from '@utils';
 
 export default class UserModel implements IUserModel {
 
@@ -11,7 +11,7 @@ export default class UserModel implements IUserModel {
     public password: string;
     public name: string;
 
-    constructor({ name, email, password, role }: IUserReq) { 
+    constructor({ name, email, password, role }: INewUserReq) {
         this.email = email || '';
         this.role = role || UserRole.Member;
         this.password = password || '';
@@ -75,5 +75,14 @@ export default class UserModel implements IUserModel {
     public static isEmailValid(email: string): boolean {
         const regex: RegExp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return regex.test(String(email).toLowerCase());
+    }
+
+    public static getPublicUser(user: IUser): IPublicUser {
+        return {
+            _id: user._id,
+            email: user.email,
+            name: user.name,
+            role: user.role
+        };
     }
 }

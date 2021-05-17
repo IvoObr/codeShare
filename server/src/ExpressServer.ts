@@ -1,7 +1,7 @@
 import cors from 'cors';
 import path from 'path';
 import helmet from 'helmet';
-import { Env } from '@utils';
+import { Env, Headers } from '@utils';
 import express, { Router } from 'express';
 import { AuthRouter, UserRouter } from '@routers';
 import * as core from "express-serve-static-core";
@@ -16,7 +16,7 @@ class ExpressServer {
             .use(express.json())
             .use(express.urlencoded({ extended: true }))
             .use(express.static(path.join(__dirname, 'public')))
-            .use(cors({ origin: `http://localhost` })) //, exposedHeaders: [Const.xAuth]}));
+            .use(cors({ origin: `http://localhost`, exposedHeaders: [Headers.Authorization]}))
             .use(logExpress);
 
         if (process.env.NODE_ENV === Env.production) {

@@ -6,7 +6,7 @@ import { handleError } from './testUtils';
 import axios, { AxiosResponse } from 'axios';
 import { UserRole } from '../src/utils/enums';
 import genBase36Key from '../src/lib/genBase36Key';
-import { IUser, IUserReq, IStrings } from '../src/utils/interfaces';
+import { IUser, INewUserReq, IStrings } from '../src/utils/interfaces';
 colors.enable();
 
 describe('users api tests', (): void => {
@@ -30,7 +30,7 @@ describe('users api tests', (): void => {
             const password: string = 'Password123@';
             const email: string = `${genBase36Key(8)}@yopmail.com`;
             const role: UserRole = UserRole.Admin;
-            const payload: IUserReq = { name, email, role, password };
+            const payload: INewUserReq = { name, email, role, password };
 
             const { data }: AxiosResponse<IUser> = await axios.post(url, payload);   
             logger.success(path, data);
@@ -44,7 +44,6 @@ describe('users api tests', (): void => {
             expect(data.name).toBe(name);
             expect(data.role).toBe(role);
             expect(data.email).toBe(email);
-            expect(typeof data.password).toBe('string');
 
         } catch (error) {
             handleError(path, error);
@@ -63,13 +62,8 @@ describe('users api tests', (): void => {
             const payload = { password: newPassword };
             const response: AxiosResponse<any> = await axios.post(url, payload, headers);
 
-            logger.success(path, response.status);
-
+            logger.success(path, response);
             expect(response.status).toBe(200);
-
-            logger.debug(response);
-            // expect(response.data.receiver).toBe(userEmail);
-
             password = newPassword;
 
         } catch (error) {
@@ -127,7 +121,6 @@ describe('users api tests', (): void => {
 
             expect(response.status).toBe(200);
             expect(typeof response.data.role).toBe('string');
-            expect(typeof response.data.password).toBe('string');
             userData?.email && expect(response.data.email).toBe(userData.email);
             userData?.name && expect(response.data.name).toBe(userData.name);
 
@@ -175,17 +168,15 @@ async function login(userEmail: string, headers: IHeaders, port: number, passwor
         const url: string = `http://localhost:${port}/api/v1/auth/login`;
         const payload: IStrings = { email: userEmail, password };
 
-        const { data }: AxiosResponse<IUser> = await axios.post(url, payload);
-        logger.success(path, data);
+        const response: AxiosResponse<IUser> = await axios.post(url, payload);
+        logger.success(path, response);
 
-        if (data?.tokens.length) {
-            headers.headers.Authorization = `Bearer ${data?.tokens[0]}`;
-        }
-
-        expect(data.email).toBe(userEmail);
-        expect(typeof data.name).toBe('string');
-        expect(typeof data.role).toBe('string');
-        expect(typeof data.password).toBe('string');
+        /* authorize next requests */
+        headers.headers.Authorization = `Bearer ${response.headers?.authorization}`;
+        
+        expect(response.data.email).toBe(userEmail);
+        expect(typeof response.data.name).toBe('string');
+        expect(typeof response.data.role).toBe('string');
 
     } catch (error) {
         handleError(path, error);

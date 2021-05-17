@@ -28,18 +28,29 @@ export interface IStrings {
 }
 
 //#region User
-export interface IUserReq {
-  email: string;
-  password: string;
+export interface IBaseUser {
   name: string;
+  email: string;
   role: UserRole;
 }
 
-export interface IUserModel extends IUserReq {
-  tokens: string[]
-}
-
-export interface IUser extends IUserModel {
+export interface IPublicUser extends IBaseUser {
   _id: string;
 }
+
+export interface INewUserReq extends IBaseUser {
+  password: string;
+}
+
+export interface IUserModel extends IBaseUser {
+  tokens: string[];
+  password: string;
+}
+
+export interface IUser extends IBaseUser {
+  _id: string;
+  tokens: string[];
+  password: string;
+}
+
 //#endregion User

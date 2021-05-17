@@ -6,7 +6,7 @@ import SocketClient from '../SocketClient';
 import { Request, Response } from 'express';
 import {
     StatusCodes, IUser, Errors, Headers, IMailInfo,
-    logger, IStrings, IUserModel, IClientData, Event, Events
+    logger, IStrings, IUserModel, Event, Events, IPublicUser
 } from '@utils';
 
 class AuthenticationService {
@@ -15,8 +15,9 @@ class AuthenticationService {
         try {
             const newUser: IUserModel = await new UserModel(request.body).validate();
             const user: IUser = await UserDal.addUser(newUser);
+            const publicUser: IPublicUser = UserModel.getPublicUser(user);
 
-            response.status(StatusCodes.CREATED).json(user);
+            response.status(StatusCodes.CREATED).json(publicUser);
 
         } catch (error) {
             ServerError.handle(error, response);
@@ -54,9 +55,9 @@ class AuthenticationService {
                 throw loginError;
             }
 
-            user.tokens.push(token);
+            const publicUser: IPublicUser = UserModel.getPublicUser(user);
 
-            response.header(Headers.Authorization, token).json(user);
+            response.header(Headers.Authorization, token).json(publicUser);
             response.status(StatusCodes.OK).end();
 
         } catch (error) {
@@ -94,7 +95,7 @@ class AuthenticationService {
                 throw new ServerError(Errors.NOT_FOUND, 'User not found.');
             }
 
-            const token = Jwt.sign({ _id: user._id, role: user.role });
+            const token: string = Jwt.sign({ _id: user._id, role: user.role });
             const isTokenSet: boolean = await UserDal.setToken(token, user._id);
 
             if (!isTokenSet) {
@@ -116,16 +117,16 @@ class AuthenticationService {
 
             // todo change url to frontend
 
-            SocketClient.connectMailerClient(() => {
+            SocketClient.connectMailerClient((): void => {
                 Event.emit(Events.sendEmail, message);
             });
 
-            Event.once(Events.emailError, (error: string) => {
-                const err = new ServerError(Errors.COULD_NOT_SEND_EMAIL, error);
+            Event.once(Events.emailError, (error: string): void => {
+                const err: ServerError = new ServerError(Errors.COULD_NOT_SEND_EMAIL, error);
                 ServerError.handle(err, response);
             });
 
-            Event.once(Events.emailSuccess, (info: IMailInfo) => {
+            Event.once(Events.emailSuccess, (info: IMailInfo): void => {
                 response.status(StatusCodes.CREATED)
                     .json({
                         result: `Email successfully send.`,
@@ -156,7 +157,7 @@ class AuthenticationService {
                 throw new ServerError(Errors.BAD_REQUEST, `Could not update user with id: ${userId}.`);
             }
 
-            response.status(StatusCodes.OK).json(user);
+            response.status(StatusCodes.OK).end();
             
         } catch (error) {
             ServerError.handle(error, response);
