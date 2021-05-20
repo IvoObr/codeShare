@@ -1,7 +1,9 @@
-import { UserDal } from '@db';
-import { Jwt, ServerError } from '@lib';
+import Jwt from '../lib/Jwt';
+import UserDal from '../db/UserDal';
+import { Errors } from '../lib/enums';
+import ServerError from '../lib/ServerError';
+import { IClientData, IUser } from '../lib/interfaces';
 import { Request, Response, NextFunction } from 'express';
-import { IClientData, Errors, IUser, IStrings, UserRole, logger } from '@utils';
     
 class AuthorizationService {
     
