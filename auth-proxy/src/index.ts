@@ -3,7 +3,7 @@ import colors from 'colors';
 import { Mongo } from './db';
 import { Env } from './lib/enums';
 import logger from './lib/logger';
-import ExpressServer from './ExpressServer';
+import ExpressProxy from './ExpressProxy';
 import * as core from "express-serve-static-core";
 import dotenv, { DotenvConfigOutput } from 'dotenv';
 colors.enable();
@@ -15,7 +15,7 @@ class Main {
             const main = new Main();
             main.setEnv();
             await main.connectDB();
-            main.startExpressServer();
+            main.startExpressProxy();
 
         } catch (error) {
             logger.error(error);
@@ -23,12 +23,12 @@ class Main {
         }
     }
 
-    private startExpressServer(): this {
-        const app: core.Express = new ExpressServer().start();
+    private startExpressProxy(): this {
+        const app: core.Express = new ExpressProxy().start();
         const port: string = process.env.PORT || '3000';
 
         const server: http.Server = app.listen(port, (): void =>
-            logger.success(('Auth-proxy server started on port: '?.yellow + port.america)?.bold)
+            logger.success(('Auth-proxy server started on port: '?.yellow + port.rainbow)?.bold)
         );
 
         server.on('error', this.onError);

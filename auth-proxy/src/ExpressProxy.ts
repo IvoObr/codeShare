@@ -1,12 +1,14 @@
 import cors from 'cors';
 import http from 'http';
+import axios, { Method } from 'axios';
 import helmet from 'helmet';
 import { Env, Headers } from './lib/enums';
 import * as core from "express-serve-static-core";
 import { logExpress } from '@7dev-works/log-express';
 import express, { Request, Response, NextFunction } from 'express';
+import logger from './lib/logger';
 
-class ExpressServer {
+class ExpressProxy {
 
     constructor(private app: core.Express = express()) { }
 
@@ -31,18 +33,7 @@ class ExpressServer {
     }
 
     private forwardHttp(): this {            
-        /*
-            POST '/api/v1/auth/login'
-            POST '/api/v1/auth/register'
-            POST '/api/v1/auth/send-reset-password'
-            
-            AUTH POST '/api/v1/auth/reset-password'
-            AUTH GET '/api/v1/auth/logout'
-            AUTH GET '/api/v1/api/user/all'
-            AUTH PUT '/api/v1/user/update/:id'
-            AUTH DELETE '/api/v1/user/delete/:id'
-            */
-
+ 
         this.app.all('/api/v1/*', (request: Request, response: Response, next: NextFunction) => {
 
             enum publicRoutes {
@@ -61,7 +52,7 @@ class ExpressServer {
 
             if (request.url in publicRoutes) {
                 // send to express rest-server
-                http.get();
+                this.send(request, response);
             }
            
             if (request.url in privateRoutes) {
@@ -73,41 +64,21 @@ class ExpressServer {
         return this;
     }
 
-    private request() {
-        const postData = querystring.stringify({
-            'msg': 'Hello World!'
-        });
+    private send(request: Request, response: Response) {
+        axios({
+            method: request.method as Method,
+            url: 'http://localhost:8080' + request.originalUrl,
+            headers: request.headers,
+            data: request.body
+        }).then(res => response
+            .header('authorization', res.headers?.authorization)
+            .status(res?.status)
+            .json(res?.data)
 
-        const options = {
-            hostname: 'www.google.com',
-            port: 80,
-            path: '/upload',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Content-Length': Buffer.byteLength(postData)
-            }
-        };
-
-        const req = http.request(options, (res) => {
-            console.log(`STATUS: ${res.statusCode}`);
-            console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
-            res.setEncoding('utf8');
-            res.on('data', (chunk) => {
-                console.log(`BODY: ${chunk}`);
-            });
-            res.on('end', () => {
-                console.log('No more data in response.');
-            });
-        });
-
-        req.on('error', (e) => {
-            console.error(`problem with request: ${e.message}`);
-        });
-
-        // Write data to request body
-        req.write(postData);
-        req.end();
+        ).catch(error => response
+            .status(error?.response?.status)
+            .json({ error: error?.response?.data })
+        );
     }
 
     public start(): core.Express {
@@ -115,4 +86,4 @@ class ExpressServer {
     }
 }
 
-export default ExpressServer;
+export default ExpressProxy;
