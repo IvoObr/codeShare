@@ -22,10 +22,10 @@ describe('users api tests', (): void => {
         headers: { Authorization: 'Bearer ' }
     };
 
-    it('POST /api/v1/auth/register user in DB', async (): Promise<void> => {
-        const path: string = 'POST /auth/register'.yellow;
+    it('POST /api/v1/auth/pub/register user in DB', async (): Promise<void> => {
+        const path: string = 'POST /auth/pub/register'.yellow;
         try {        
-            const url: string = `http://localhost:${port}/api/v1/auth/register`;
+            const url: string = `http://localhost:${port}/api/v1/auth/pub/register`;
             const name: string = 'ivoObr';
             const password: string = 'Password123@';
             const email: string = `${genBase36Key(8)}@yopmail.com`;
@@ -50,7 +50,7 @@ describe('users api tests', (): void => {
         }
     });
 
-    it('POST /api/v1/auth/login user in DB', async (): Promise<void> => {
+    it('POST /api/v1/auth/pub/login user in DB', async (): Promise<void> => {
         await login(userEmail, headers, port, password);
     });
 
@@ -85,12 +85,12 @@ describe('users api tests', (): void => {
         }
     });
 
-    it('POST /api/v1/auth/login user in DB', async (): Promise<void> => {
+    it('POST /api/v1/auth/pub/login user in DB', async (): Promise<void> => {
         await login(userEmail, headers, port, password);
     });
 
     it('GET /api/v1/api/user/all returns all users', async (): Promise<void> => {
-        const path: string = 'GET /api/v1/api/user/all'.yellow;
+        const path: string = 'GET /api/v1/user/all'.yellow;
         try {
             const url: string = `http://localhost:${port}/api/v1/user/all`;
             const { data }: AxiosResponse<IUser[]> = await axios.get(url, headers);
@@ -129,10 +129,10 @@ describe('users api tests', (): void => {
         }
     });
 
-    it('POST /api/v1/auth/send-reset-password', async (): Promise<void> => {
-        const path: string = 'POST /api/v1/auth/send-reset-password'.yellow;
+    it('POST /api/v1/auth/pub/send-reset-password', async (): Promise<void> => {
+        const path: string = 'POST /api/v1/auth/pub/send-reset-password'.yellow;
         try {
-            const url: string = `http://localhost:${port}/api/v1/auth/send-reset-password`;
+            const url: string = `http://localhost:${port}/api/v1/auth/pub/send-reset-password`;
             const payload: IStrings = { email: userEmail };
 
             const response: AxiosResponse<any> = await axios.post(url, payload);
@@ -163,9 +163,9 @@ describe('users api tests', (): void => {
 });
 
 async function login(userEmail: string, headers: IHeaders, port: number, password: string): Promise<void> {
-    const path: string = 'POST /api/v1/auth/login'.yellow;
+    const path: string = 'POST /api/v1/auth/pub/login'.yellow;
     try {
-        const url: string = `http://localhost:${port}/api/v1/auth/login`;
+        const url: string = `http://localhost:${port}/api/v1/auth/pub/login`;
         const payload: IStrings = { email: userEmail, password };
 
         const response: AxiosResponse<IUser> = await axios.post(url, payload);

@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import { UserDal } from '@db';
-import { ServerError } from '@lib';
+import { ServerError } from '@services';
 import { UserRole, Errors, IUser, INewUserReq, IUserModel, IPublicUser } from '@utils';
 
 export default class UserModel implements IUserModel {

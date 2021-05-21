@@ -1,6 +1,6 @@
-import logger from './logger';
+import logger from '../lib/logger';
 import { Response } from "express";
-import { Errors, StatusCodes } from './enums';
+import { Errors, StatusCodes } from '../lib/enums';
 
 export default class ServerError extends Error {
    

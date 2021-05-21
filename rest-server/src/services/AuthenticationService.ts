@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt';
 import { UserDal } from '@db';
 import { UserModel } from "@entities";
-import { Jwt, ServerError } from '@lib';
 import SocketClient from '../SocketClient';
 import { Request, Response } from 'express';
+import { ServerError, JwtService } from '@services';
 import {
     StatusCodes, IUser, Errors, Headers, IMailInfo,
     logger, IStrings, IUserModel, Event, Events, IPublicUser
@@ -46,7 +46,7 @@ class AuthenticationService {
                 throw loginError;
             }
 
-            const token: string = Jwt.sign({ _id: user._id, role: user.role });
+            const token: string = JwtService.sign({ _id: user._id, role: user.role });
 
             const isTokenSet: boolean = await UserDal.setToken(token, user._id);
 
@@ -95,7 +95,7 @@ class AuthenticationService {
                 throw new ServerError(Errors.NOT_FOUND, 'User not found.');
             }
 
-            const token: string = Jwt.sign({ _id: user._id, role: user.role });
+            const token: string = JwtService.sign({ _id: user._id, role: user.role });
             const isTokenSet: boolean = await UserDal.setToken(token, user._id);
 
             if (!isTokenSet) {

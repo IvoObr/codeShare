@@ -1,37 +1,42 @@
-import Jwt from '../lib/Jwt';
 import UserDal from '../db/UserDal';
 import { Errors } from '../lib/enums';
-import ServerError from '../lib/ServerError';
+import JwtService from './JwtService';
+import ServerError from './ServerError';
 import { IClientData, IUser } from '../lib/interfaces';
 import { Request, Response, NextFunction } from 'express';
     
-class AuthorizationService {
+export default class AuthorizationService {
     
-    public static async authorizeJWT(request: Request, response: Response, next: NextFunction): Promise<void> {
+    public static authorizeJWT(request: Request, response: Response, next: NextFunction): void {
         const tokenError: ServerError = new ServerError(Errors.UNAUTHORIZED, `Token not valid.`);
         try {
+            if (request.url.includes('/pub/')) {
+                next();
+                return;
+            }
+
             const token: string = request.headers.authorization?.split(' ')[1] || '';
             
             if (!token) {
                 throw tokenError;
             }
        
-            const clientData: IClientData = Jwt.verify(token);
-            const user: IUser = await UserDal.getUserByToken(token);
+            const clientData: IClientData = JwtService.verify(token);
 
-            if (!user) {
-                throw tokenError;
-            }
+            UserDal.getUserByToken(token).then((user: IUser) => { 
+                if (!user) {
+                    ServerError.handle(tokenError, response);
+                    return;
+                }
 
-            request.body.userId = clientData._id;
-            request.body.userRole = clientData.role;
+                request.body.userId = clientData._id;
+                request.body.userRole = clientData.role;
 
-            next();
+                next();
+            });
 
         } catch (error) {
             ServerError.handle(tokenError, response); 
         }
     }
 }
-
-export const { authorizeJWT }: typeof AuthorizationService = AuthorizationService;

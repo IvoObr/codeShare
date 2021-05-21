@@ -1,5 +1,5 @@
 import { UserDal } from '@db';
-import { Jwt, ServerError } from '@lib';
+import { ServerError, JwtService } from '@services';
 import { Request, Response, NextFunction } from 'express';
 import { IClientData, Errors, IUser, IStrings, UserRole, logger } from '@utils';
     
@@ -8,13 +8,18 @@ class AuthorizationService {
     public static async authorizeJWT(request: Request, response: Response, next: NextFunction): Promise<void> {
         const tokenError: ServerError = new ServerError(Errors.UNAUTHORIZED, `Token not valid.`);
         try {
+
+
+            logger.debug(request.body)
+
+
             const token: string = request.headers.authorization?.split(' ')[1] || '';
             
             if (!token) {
                 throw tokenError;
             }
        
-            const clientData: IClientData = Jwt.verify(token);
+            const clientData: IClientData = JwtService.verify(token);
             const user: IUser = await UserDal.getUserByToken(token);
 
             if (!user) {

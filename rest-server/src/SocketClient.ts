@@ -17,11 +17,11 @@ export default class SocketClient {
     public connect = (port: number): Net.Socket => 
         Net.createConnection({ port })
             .on('data', this.onData)
-            .on('end', () => logger.info('Socket ended.'))
-            .on('close', () => logger.info('Socket closed.'))
+            .on('end', () => logger.debug('Socket ended.'))
+            .on('close', () => logger.debug('Socket closed.'))
             .on('error', (error: Error) => logger.error(error))
-            .on('timeout', () => logger.info('Socket timeout.'))
-            .on('connect', () => logger.info('Socket connected.'))
+            .on('timeout', () => logger.debug('Socket timeout.'))
+            .on('connect', () => logger.debug('Socket connected.'))
     
     private onData = (data: Buffer) => {
         const info: IMailInfo = JSON.parse(data.toString());
@@ -31,7 +31,7 @@ export default class SocketClient {
             logger.error('Message not delivered', info);
         } else {
             Event.emit(Events.emailSuccess, info);
-            logger.success('Mail sent to: ', info?.accepted);
+            logger.debug('Mail sent to: ', info?.accepted);
         }
     }
 }

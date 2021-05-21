@@ -1,11 +1,11 @@
 import cors from 'cors';
-import http from 'http';
-import axios, { Method } from 'axios';
 import helmet from 'helmet';
+import axios, { Method } from 'axios';
 import { Env, Headers } from './lib/enums';
 import * as core from "express-serve-static-core";
 import { logExpress } from '@7dev-works/log-express';
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response } from 'express';
+import AuthorizationService from './services/AuthorizationService';
 import logger from './lib/logger';
 
 class ExpressProxy {
@@ -32,46 +32,26 @@ class ExpressProxy {
         return this;
     }
 
-    private forwardHttp(): this {            
- 
-        this.app.all('/api/v1/*', (request: Request, response: Response, next: NextFunction) => {
+    private forwardHttp(): this {
 
-            enum publicRoutes {
-                '/api/v1/auth/login',
-                '/api/v1/auth/register',
-                '/api/v1/auth/send-reset-password'
-            }
-
-            enum privateRoutes {
-                '/api/v1/auth/logout',
-                '/api/v1/api/user/all',
-                '/api/v1/user/update/:id',
-                '/api/v1/user/delete/:id',
-                '/api/v1/auth/reset-password',
-            }
-
-            if (request.url in publicRoutes) {
-                // send to express rest-server
-                this.send(request, response);
-            }
-           
-            if (request.url in privateRoutes) {
-                // authorize and send to rest-server
-            }
-
-        });
-
+        this.app.all('/api/v1/*',
+            AuthorizationService.authorizeJWT,
+            (request: Request, response: Response) => this.send(request, response));
+        
         return this;
     }
 
     private send(request: Request, response: Response) {
+        const host: string = `${process.env.REST_API_HOST}:${process.env.REST_API_PORT}`;
+
         axios({
             method: request.method as Method,
-            url: 'http://localhost:8080' + request.originalUrl,
+            url: host + request.originalUrl,
             headers: request.headers,
             data: request.body
+
         }).then(res => response
-            .header('authorization', res.headers?.authorization)
+            .header(Headers.Authorization, res.headers?.authorization)
             .status(res?.status)
             .json(res?.data)
 

@@ -28,7 +28,7 @@ class Main {
         const port: string = process.env.PORT || '3000';
 
         const server: http.Server = app.listen(port, (): void =>
-            logger.success(('Express server started on port: '?.yellow + port.america)?.bold)
+            logger.success(('Express server started on port: '?.yellow + port.rainbow)?.bold)
         );
 
         server.on('error', this.onError);

@@ -27,12 +27,12 @@ class Main {
         const app: core.Express = new ExpressProxy().start();
         const port: string = process.env.PORT || '3000';
 
-        const server: http.Server = app.listen(port, (): void =>
+        const proxy: http.Server = app.listen(port, (): void =>
             logger.success(('Auth-proxy server started on port: '?.yellow + port.rainbow)?.bold)
         );
 
-        server.on('error', this.onError);
-        process.on('SIGTERM', () => this.closeServer(server));
+        proxy.on('error', this.onError);
+        process.on('SIGTERM', () => this.closeServer(proxy));
 
         logger.info('process id:', process.pid.toString()?.cyan.bold);
         logger.info(`Auth-proxy running in ${process.env.NODE_ENV?.cyan.bold} mode.`);
@@ -49,8 +49,8 @@ class Main {
         process.exit(0); /* clean exit */
     }
 
-    private closeServer(server: http.Server) {
-        server.close((): void => {
+    private closeServer(proxy: http.Server) {
+        proxy.close((): void => {
             logger.success(('SIGTERM'.yellow), 'Auth-proxy gracefully terminated.');
             process.exit(0); /* clean exit */
         });

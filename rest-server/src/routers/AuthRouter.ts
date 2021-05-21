@@ -14,13 +14,13 @@ class AuthRouter {
         this.router.use('/auth', this.router);
 
         /* sub routes */
-        this.router.post('/register',
+        this.router.post('/pub/register',
             async(register));
 
-        this.router.post('/login',
+        this.router.post('/pub/login',
             async(login));
         
-        this.router.post('/send-reset-password',
+        this.router.post('/pub/send-reset-password',
             async(sendResetPassword));
         
         this.router.post('/reset-password',

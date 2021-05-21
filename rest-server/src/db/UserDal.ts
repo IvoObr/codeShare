@@ -1,7 +1,7 @@
 import { Mongo } from '@db';
+import { ServerError } from '@services';
 import { IUser, Collections, IStrings, IUserModel, Errors } from '@utils';
 import mongodb, { ObjectId, InsertOneWriteOpResult, UpdateQuery } from 'mongodb';
-import { ServerError } from 'src/lib';
 
 class UserDal {
 

@@ -1,11 +1,11 @@
 import jwt from 'jsonwebtoken';
-import { ServerError } from '@lib';
-import genBase36Key from './genBase36Key';
-import { Errors, IClientData } from '@utils';
+import { Errors } from '../lib/enums';
+import ServerError from './ServerError';
+import { IClientData } from '../lib/interfaces';
 
-class Jwt {
+class JwtService {
 
-    private readonly secret: string = process.env.JWT_SECRET || genBase36Key();
+    private readonly secret: string = String(process.env.JWT_SECRET);
 
     public sign = (payload: IClientData): string => jwt.sign(payload, this.secret);
 
@@ -19,4 +19,4 @@ class Jwt {
     }
 }
 
-export default new Jwt();
+export default new JwtService();

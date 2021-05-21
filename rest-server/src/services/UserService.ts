@@ -1,6 +1,6 @@
 import { UserDal } from '@db';
-import { ServerError } from '@lib';
 import { UserModel } from '@entities';
+import { ServerError } from '@services';
 import { Request, Response } from 'express';
 import { StatusCodes, IUser, Errors, IStrings, IPublicUser } from '@utils';
 
