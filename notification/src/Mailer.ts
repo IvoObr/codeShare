@@ -47,7 +47,7 @@ export default class Mailer {
             });
 
             Event.emit(Events.emailSend, info);
-            logger.success("Message sent: ", info.envelope);
+            logger.debug("Message sent: ", info.envelope);
 
         } catch (error) {
             Event.emit(Events.emailError, error.message);
