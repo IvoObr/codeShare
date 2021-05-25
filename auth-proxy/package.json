@@ -6,6 +6,7 @@
         "copy": "cp ./.env ./dist/",
         "build": "npm run clean && npm run copy && tsc --build tsconfig.json",
         "eslint-fix": "eslint . --ext .ts --fix",
+        "test": "nodemon --delay 3 --config ./_tests_/nodemon.json",
         "start": "node -r ./dist ",
         "dev": "nodemon src/index.ts --delay 1"
     },
@@ -17,6 +18,11 @@
         "ignore": [
             "src/public"
         ]
+    },
+    "jest": {
+        "transform": {
+            "^.+\\.ts?$": "ts-jest"
+        }
     },
     "eslintIgnore": [
         "src/public/",

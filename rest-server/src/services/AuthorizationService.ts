@@ -8,11 +8,6 @@ class AuthorizationService {
     public static async authorizeJWT(request: Request, response: Response, next: NextFunction): Promise<void> {
         const tokenError: ServerError = new ServerError(Errors.UNAUTHORIZED, `Token not valid.`);
         try {
-
-
-            logger.debug(request.body)
-
-
             const token: string = request.headers.authorization?.split(' ')[1] || '';
             
             if (!token) {

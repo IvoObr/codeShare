@@ -1,12 +1,12 @@
 import dotenv from 'dotenv';
 import colors from 'colors';
-import { IHeaders } from './interfaces';
-import logger from '../src/utils/logger';
+import logger from '../src/lib/logger';
 import { handleError } from './testUtils';
 import axios, { AxiosResponse } from 'axios';
-import { UserRole } from '../src/utils/enums';
+import { UserRole } from '../src/lib/enums';
 import genBase36Key from '../src/lib/genBase36Key';
-import { IUser, INewUserReq, IStrings } from '../src/utils/interfaces';
+import { IHeaders, INewUserReq } from './interfaces';
+import { IUser, IStrings } from '../src/lib/interfaces';
 colors.enable();
 
 describe('users api tests', (): void => {
@@ -98,8 +98,6 @@ describe('users api tests', (): void => {
 
             expect(typeof data.length).toBe('number');
             
-            // await deleteAllUsers(data, headers);
-
         } catch (error) {
             handleError(path, error);
         }
@@ -182,20 +180,3 @@ async function login(userEmail: string, headers: IHeaders, port: number, passwor
         handleError(path, error);
     }
 }
-
-/************************************************************************************** 
-async function deleteAllUsers(users: IUser[], headers: any): Promise<void> {
-    const path: string = 'DELETE /api/v1/user/delete/:id'.yellow;
-    try {
-        for (let index = 0; index < users.length; index++) {
-            const user: IUser = users[index];
-            const url: string = `http://localhost:8080/api/v1/user/delete/${user._id}`;
-            const response: AxiosResponse<IUser> = await axios.delete(url, headers);
-
-        }
-       
-    } catch (error) {
-        handleError(path, error);
-    }
-}
-**************************************************************************************/

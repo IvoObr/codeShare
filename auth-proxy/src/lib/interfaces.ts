@@ -13,3 +13,7 @@ export interface IClientData {
     _id: string;
     role: UserRole;
 }
+
+export interface IStrings {
+    [key: string]: string
+}
