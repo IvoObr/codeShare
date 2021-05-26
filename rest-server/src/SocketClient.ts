@@ -1,20 +1,32 @@
 import Net, { Socket } from 'net';
-import { logger, Events, Event, IMailInfo } from '@utils';
+import { logger, Events, Event } from '@utils';
 
 export default class SocketClient {
 
-    public static connectMailerClient(callback: () => void) {
-        const mailerClient: Socket = new SocketClient()
-            .connect(Number(process.env.MAILER_PORT));
+    private client!: Socket;
 
-        Event.once(Events.sendEmail, (message: string) => {
-            mailerClient.write(message);
-        });
-        
-        callback();
+    public connectMailerClient(): this {
+        const port: number = Number(process.env.MAILER_PORT);
+        this.client = new SocketClient().connect(port);
+        return this;
     }
 
-    public connect = (port: number): Net.Socket => 
+    public send(message: string): this {
+        this.client.write(message);
+        return this;
+    }
+
+    public onSuccess(callback: (info: any) => void): this {
+        Event.once(Events.messageSuccess, callback);
+        return this;
+    }
+    
+    public onError(callback: (error: string) => void): this {
+        Event.once(Events.messageError, callback);
+        return this;
+    }
+
+    public connect = (port: number): Socket => 
         Net.createConnection({ port })
             .on('data', this.onData)
             .on('end', () => logger.debug('Socket ended.'))
@@ -24,14 +36,14 @@ export default class SocketClient {
             .on('connect', () => logger.debug('Socket connected.'))
     
     private onData = (data: Buffer) => {
-        const info: IMailInfo = JSON.parse(data.toString());
+        const response = JSON.parse(data.toString());
 
-        if (info?.error) {
-            Event.emit(Events.emailError, info?.error);
-            logger.error('Message not delivered', info);
+        if (response?.error) {
+            Event.emit(Events.messageError, response?.error);
+            logger.error('Message not delivered', response);
         } else {
-            Event.emit(Events.emailSuccess, info);
-            logger.debug('Mail sent to: ', info?.accepted);
+            Event.emit(Events.messageSuccess, response);
+            logger.debug('Mail sent to: ', response?.accepted);
         }
     }
 }

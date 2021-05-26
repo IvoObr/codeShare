@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import { UserDal } from '@db';
+import { Socket } from 'net';
 import { UserModel } from "@entities";
 import SocketClient from '../SocketClient';
 import { Request, Response } from 'express';
@@ -116,23 +117,19 @@ class AuthenticationService {
             });
 
             // todo change url to frontend
-
-            SocketClient.connectMailerClient((): void => {
-                Event.emit(Events.sendEmail, message);
-            });
-
-            Event.once(Events.emailError, (error: string): void => {
-                const err: ServerError = new ServerError(Errors.COULD_NOT_SEND_EMAIL, error);
-                ServerError.handle(err, response);
-            });
-
-            Event.once(Events.emailSuccess, (info: IMailInfo): void => {
-                response.status(StatusCodes.CREATED)
-                    .json({
-                        result: `Email successfully send.`,
-                        receiver: info?.accepted[0]
-                    });
-            });
+        
+            new SocketClient()
+                .connectMailerClient()
+                .send(message)
+                .onSuccess((info: IMailInfo): void => {
+                    response
+                        .status(StatusCodes.CREATED)
+                        .json({ result: `Email successfully send.`, receiver: info?.accepted[0] });
+                })
+                .onError((error: string): void => {
+                    const err: ServerError = new ServerError(Errors.COULD_NOT_SEND_EMAIL, error);
+                    ServerError.handle(err, response);
+                });
 
         } catch (error) {
             ServerError.handle(error, response);
