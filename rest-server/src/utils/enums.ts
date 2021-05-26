@@ -9,10 +9,9 @@ export enum Collections {
 }
 
 export enum Events {
-  sendEmail = 'sendEmail',
-  emailError = 'emailError',
-  emailSuccess = 'emailSuccess'
-}
+  messageError = 'messageError',
+  messageSuccess = 'messageSuccess'
+} 
 
 export enum Env {
   development = 'development',
