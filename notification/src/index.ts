@@ -1,6 +1,7 @@
 import colors from 'colors';
 import Mailer from "./Mailer";
 import logger from './lib/logger';
+import { text } from './lib/text';
 import { Events } from './lib/enums';
 import Event from './lib/EventEmitter';
 import SocketServer from './SocketServer';
@@ -12,9 +13,10 @@ class Main {
 
     public subscribeMailer(): this {
         try {
+            console.log(text.rainbow);
             const mailer: Mailer = new Mailer();
 
-            Event.on(Events.newMail, (data: IMessage) => {
+            Event.on(Events.newMail, (data: IMessage): void => {
                 mailer.sendMail(data);
             });
 

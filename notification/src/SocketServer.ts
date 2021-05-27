@@ -16,30 +16,30 @@ export default class SocketServer {
             
         Net.createServer()
             .on('connection', this.onConnection)
-            .on('error', (error: Error) => logger.error(error))
-            .listen(settings, () => logger.success(`SocketServer listening on port ${this.port}`.yellow));
+            .on('error', (error: Error): void => logger.error(error))
+            .listen(settings, (): void => logger.success(`SocketServer listening on port ${this.port}`.yellow));
     }
 
     private onConnection = (socket: Net.Socket): void => {
         logger.debug(`Client connected!`.bold);
 
         socket
-            .on('end', () => logger.debug('Socket ended.'))
-            .on('close', () => logger.debug('Socket closed.'))
-            .on('error', (error: Error) => logger.error(error))
-            .on('timeout', () => logger.debug('Socket timeout.'))
-            .on('connect', () => logger.debug('Socket connected.'))
-            .on('data', (data: Buffer) => this.onData(data, socket));
+            .on('end', (): void => logger.debug('Socket ended.'))
+            .on('close', (): void => logger.debug('Socket closed.'))
+            .on('error', (error: Error): void => logger.error(error))
+            .on('timeout', (): void => logger.debug('Socket timeout.'))
+            .on('connect', (): void => logger.debug('Socket connected.'))
+            .on('data', (data: Buffer): void => this.onData(data, socket));
     }
 
-    private onData = (data: Buffer, socket: Net.Socket) => {
+    private onData(data: Buffer, socket: Net.Socket): void {
         Event.emit(Events.newMail, JSON.parse(data.toString()));
 
-        Event.once(Events.emailSend, (mailInfo: IMailInfo) => {
+        Event.once(Events.emailSend, (mailInfo: IMailInfo): void => {
             socket.write(JSON.stringify(mailInfo));
             socket.end();
         });
-        Event.once(Events.emailError, (error) => {
+        Event.once(Events.emailError, (error): void => {
             socket.write(JSON.stringify({ error }));
             socket.end();
         });

@@ -3,16 +3,16 @@ import { logger, Events, Event } from '@utils';
 
 export default class SocketClient {
 
-    private client!: Socket;
+    private socket!: Socket;
 
-    public connectMailerClient(): this {
+    public mailerSocket(): this {
         const port: number = Number(process.env.MAILER_PORT);
-        this.client = new SocketClient().connect(port);
+        this.socket = new SocketClient().connect(port);
         return this;
     }
 
     public send(message: string): this {
-        this.client.write(message);
+        this.socket.write(message);
         return this;
     }
 
@@ -29,13 +29,13 @@ export default class SocketClient {
     public connect = (port: number): Socket => 
         Net.createConnection({ port })
             .on('data', this.onData)
-            .on('end', () => logger.debug('Socket ended.'))
-            .on('close', () => logger.debug('Socket closed.'))
-            .on('error', (error: Error) => logger.error(error))
-            .on('timeout', () => logger.debug('Socket timeout.'))
-            .on('connect', () => logger.debug('Socket connected.'))
+            .on('end', (): void => logger.debug('Socket ended.'))
+            .on('close', (): void => logger.debug('Socket closed.'))
+            .on('error', (error: Error): void => logger.error(error))
+            .on('timeout', (): void => logger.debug('Socket timeout.'))
+            .on('connect', (): void => logger.debug('Socket connected.'))
     
-    private onData = (data: Buffer) => {
+    private onData(data: Buffer): void {
         const response = JSON.parse(data.toString());
 
         if (response?.error) {

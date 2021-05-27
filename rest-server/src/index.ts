@@ -1,7 +1,7 @@
 import http from 'http';
 import colors from 'colors';
 import { Mongo } from '@db';
-import { logger, Env } from '@utils';
+import { logger, Env, text } from '@utils';
 import ExpressServer from './ExpressServer';
 import * as core from "express-serve-static-core";
 import dotenv, { DotenvConfigOutput } from 'dotenv';
@@ -9,10 +9,11 @@ import 'module-alias/register';
 colors.enable();
 
 class Main {
-    
+
     public async start() {
         try {
-            const main = new Main();
+            console.log(text.rainbow);
+            const main: Main = new Main();
             main.setEnv();
             await main.connectDB();
             main.startExpressServer();
@@ -32,7 +33,7 @@ class Main {
         );
 
         server.on('error', this.onError);
-        process.on('SIGTERM', () => this.closeServer(server));
+        process.on('SIGTERM', (): void => this.closeServer(server));
 
         logger.info('process id:', process.pid.toString()?.cyan.bold);
         logger.info(`Server running in ${process.env.NODE_ENV?.cyan.bold} mode.`);
@@ -49,7 +50,7 @@ class Main {
         process.exit(0); /* clean exit */
     }
 
-    private closeServer(server: http.Server) {
+    private closeServer(server: http.Server): void {
         server.close((): void => {
             logger.success(('SIGTERM'.yellow), 'REST Server gracefully terminated.');
             process.exit(0); /* clean exit */

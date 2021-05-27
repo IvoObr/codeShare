@@ -35,12 +35,12 @@ class ExpressProxy {
     private forwardHttp(): this {
 
         this.app.all('/api/v1/*', AuthorizationService.authorizeJWT,
-            (request: Request, response: Response) => this.send(request, response));
+            (request: Request, response: Response): void => this.send(request, response));
         
         return this;
     }
 
-    private send(request: Request, response: Response) {
+    private send(request: Request, response: Response): void {
         const host: string = `${process.env.REST_API_HOST}:${process.env.REST_API_PORT}`;
 
         axios({
@@ -49,12 +49,12 @@ class ExpressProxy {
             headers: request.headers,
             data: request.body
 
-        }).then(res => response
+        }).then((res): Response => response
             .header(Headers.Authorization, res.headers?.authorization)
             .status(res?.status)
             .json(res?.data)
 
-        ).catch(error => response
+        ).catch((error): Response => response
             .status(error?.response?.status)
             .json({ error: error?.response?.data })
         );

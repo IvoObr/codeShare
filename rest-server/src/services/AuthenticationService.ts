@@ -1,13 +1,12 @@
 import bcrypt from 'bcrypt';
 import { UserDal } from '@db';
-import { Socket } from 'net';
 import { UserModel } from "@entities";
 import SocketClient from '../SocketClient';
 import { Request, Response } from 'express';
 import { ServerError, JwtService } from '@services';
 import {
     StatusCodes, IUser, Errors, Headers, IMailInfo,
-    logger, IStrings, IUserModel, Event, Events, IPublicUser
+    logger, IStrings, IUserModel, IPublicUser
 } from '@utils';
 
 class AuthenticationService {
@@ -119,7 +118,7 @@ class AuthenticationService {
             // todo change url to frontend
         
             new SocketClient()
-                .connectMailerClient()
+                .mailerSocket()
                 .send(message)
                 .onSuccess((info: IMailInfo): void => {
                     response

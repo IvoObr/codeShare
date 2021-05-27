@@ -58,13 +58,12 @@ describe('users api tests', (): void => {
         const path: string = 'POST /api/v1/auth/reset-password'.yellow;
         try {
             const url: string = `http://localhost:${port}/api/v1/auth/reset-password`;
-            const newPassword: string = '4Password#';
-            const payload = { password: newPassword };
-            const response: AxiosResponse<any> = await axios.post(url, payload, headers);
+            const newPass: string = '4Password#';
+            const response: AxiosResponse<any> = await axios.post(url, { password: newPass }, headers);
 
             logger.success(path, response);
             expect(response.status).toBe(200);
-            password = newPassword;
+            password = newPass;
 
         } catch (error) {
             handleError(path, error);

@@ -11,7 +11,7 @@ class UserService {
             const users: IUser[] = await UserDal.getAllUsers();
 
             const publicUsers: IPublicUser[] =
-                users.map((user: IUser) => UserModel.getPublicUser(user));
+                users.map((user: IUser): IPublicUser => UserModel.getPublicUser(user));
 
             response.status(StatusCodes.OK).json(publicUsers);
 

@@ -1,6 +1,7 @@
 import http from 'http';
 import colors from 'colors';
 import { Mongo } from './db';
+import { text } from './lib/text';
 import { Env } from './lib/enums';
 import logger from './lib/logger';
 import ExpressProxy from './ExpressProxy';
@@ -12,6 +13,7 @@ class Main {
 
     public async start() {
         try {
+            console.log(text.rainbow);
             const main = new Main();
             main.setEnv();
             await main.connectDB();

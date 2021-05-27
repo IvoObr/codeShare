@@ -23,7 +23,7 @@ export default class AuthorizationService {
        
             const clientData: IClientData = JwtService.verify(token);
 
-            UserDal.getUserByToken(token).then((user: IUser) => { 
+            UserDal.getUserByToken(token).then((user: IUser): void => { 
                 if (!user) {
                     ServerError.handle(tokenError, response);
                     return;
