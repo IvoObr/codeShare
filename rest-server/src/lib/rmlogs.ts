@@ -1,6 +1,13 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+interface IProps {
+    dir: string,
+    filter: RegExp,
+    ignore?: RegExp,
+    fileList: string[]
+}
+
 /**
  * Recursively deletes files from directory matching RegEx
  * @param dir - directory
@@ -8,24 +15,28 @@ import * as path from 'path';
  * @param excludeFolders - folders to exclude
  * @param fileList - files paths to be deleted
  */
-export function rmlogs(dir: string, filter: RegExp, excludeFolders?: RegExp, fileList: string[] = []) {
-    const files: string[] = fs.readdirSync(dir);
-    excludeFolders = excludeFolders || /(node_modules|dist|src|.git)/;
 
-    files.forEach((file: string) => {
+export function rmlogs(props: IProps): string[] {
+
+    const { dir, filter, fileList = [],
+        ignore = /(node_modules|dist|src|.git)/ } = props;
+    
+    const files: string[] = fs.readdirSync(dir);
+
+    files.forEach((file: string): void => {
         const filePath: any = path.join(dir, file);
-        const excluded = filePath.match(excludeFolders);
+        const excluded: any = filePath.match(ignore);
 
         if (!excluded) {
-            const fileStat = fs.lstatSync(filePath);
+            const fileStat: fs.Stats = fs.lstatSync(filePath);
 
             if (fileStat.isDirectory()) {
-                rmlogs(filePath, filter, excludeFolders, fileList);
+                rmlogs({ dir: filePath, filter, ignore, fileList });
 
             } else if (filter.test(filePath)) {
                 fileList.push(filePath);
                 console.log('deleting: ', filePath);
-                fs.unlink(filePath, (error) => error && console.error(error));
+                fs.unlink(filePath, (error: any) => error && console.error(error));
             }
         }
     });
@@ -33,4 +44,8 @@ export function rmlogs(dir: string, filter: RegExp, excludeFolders?: RegExp, fil
     return fileList;
 }
 
-rmlogs(path.join(__dirname, '../../../'), /.log/);
+rmlogs({
+    dir: path.join(__dirname, '../../../'),
+    filter: new RegExp(/.log/),
+    fileList: []
+});
