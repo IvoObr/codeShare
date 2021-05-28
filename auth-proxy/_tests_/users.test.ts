@@ -58,13 +58,12 @@ describe('users api tests', (): void => {
         const path: string = 'POST /api/v1/auth/reset-password'.yellow;
         try {
             const url: string = `http://localhost:${port}/api/v1/auth/reset-password`;
-            const newPassword: string = '4Password#';
-            const payload = { password: newPassword };
-            const response: AxiosResponse<any> = await axios.post(url, payload, headers);
+            const newPass: string = '4Password#';
+            const response: AxiosResponse<any> = await axios.post(url, { password: newPass }, headers);
 
             logger.success(path, response);
             expect(response.status).toBe(200);
-            password = newPassword;
+            password = newPass;
 
         } catch (error) {
             handleError(path, error);
@@ -86,7 +85,7 @@ describe('users api tests', (): void => {
     });
 
     it('POST /api/v1/auth/pub/login user in DB', async (): Promise<void> => {
-        await login(userEmail, headers, port, password);
+        await login(userEmail, headers, port, password); //+ 'wrong pass');
     });
 
     it('GET /api/v1/api/user/all returns all users', async (): Promise<void> => {
@@ -98,6 +97,8 @@ describe('users api tests', (): void => {
 
             expect(typeof data.length).toBe('number');
             
+            // await deleteAllUsers(data, headers);
+
         } catch (error) {
             handleError(path, error);
         }
@@ -180,3 +181,20 @@ async function login(userEmail: string, headers: IHeaders, port: number, passwor
         handleError(path, error);
     }
 }
+
+/**************************************************************************************
+async function deleteAllUsers(users: IUser[], headers: any): Promise<void> {
+    const path: string = 'DELETE /api/v1/user/delete/:id'.yellow;
+    try {
+        for (let index = 0; index < users.length; index++) {
+            const user: IUser = users[index];
+            const url: string = `http://localhost:8080/api/v1/user/delete/${user._id}`;
+            const response: AxiosResponse<IUser> = await axios.delete(url, headers);
+
+        }
+
+    } catch (error) {
+        handleError(path, error);
+    }
+}
+**************************************************************************************/
