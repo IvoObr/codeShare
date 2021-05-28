@@ -6,24 +6,13 @@ class UserRouter {
 
     private router: Router = Router()
 
-    public getRouter(): Router {
+    public getRouter = (): Router => Router()
         /* main route */
-        this.router.use('/user', this.router);
-
+        .use('/user', this.router)
         /* sub routes */
-        this.router.get('/all',
-            authorizeAdmin,
-            async(getAllUsers));
-        
-        this.router.put('/update/:id',
-            async(updateUser));
-        
-        this.router.delete('/delete/:id',
-            authorizeAdmin,
-            async(deleteUser));
-       
-        return this.router;
-    }
+        .put('/update/:id', async(updateUser))
+        .delete('/delete/:id', authorizeAdmin, async(deleteUser))
+        .get('/all', authorizeAdmin, async(getAllUsers));
 }
 
 export default new UserRouter().getRouter();

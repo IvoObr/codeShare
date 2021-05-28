@@ -34,7 +34,7 @@ class ExpressProxy {
 
     private forwardHttp(): this {
 
-        this.app.all('/api/v1/*', AuthorizationService.authorizeJWT,
+        this.app.all('/api/v1/*', AuthorizationService.validateJwt,
             (request: Request, response: Response): void => this.send(request, response));
         
         return this;

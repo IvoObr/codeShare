@@ -7,7 +7,7 @@ import { Request, Response, NextFunction } from 'express';
     
 export default class AuthorizationService {
     
-    public static authorizeJWT(request: Request, response: Response, next: NextFunction): void {
+    public static validateJwt(request: Request, response: Response, next: NextFunction): void {
         const tokenError: ServerError = new ServerError(Errors.UNAUTHORIZED, `Token not valid.`);
         try {
             if (request.url.includes('/pub/')) {

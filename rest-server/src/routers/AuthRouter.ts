@@ -6,28 +6,15 @@ class AuthRouter {
 
     private router: Router = Router()
     
-    public getRouter(): Router {
+    public getRouter = (): Router => Router()
         /* main route */
-        this.router.use('/auth', this.router);
-
+        .use('/auth', this.router)
         /* sub routes */
-        this.router.post('/pub/register',
-            async(register));
-
-        this.router.post('/pub/login',
-            async(login));
-        
-        this.router.post('/pub/send-reset-password',
-            async(sendResetPassword));
-        
-        this.router.post('/reset-password',
-            async(resetPassword));
-
-        this.router.get('/logout',
-            async(logout));
-       
-        return this.router;
-    }
+        .get('/logout', async(logout))
+        .post('/pub/login', async(login))
+        .post('/pub/register', async(register))
+        .post('/reset-password', async(resetPassword))
+        .post('/pub/send-reset-password', async(sendResetPassword));   
 }
 
 export default new AuthRouter().getRouter();

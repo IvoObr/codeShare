@@ -11,13 +11,11 @@ colors.enable();
 
 class Main {
 
-    public async start() {
+    public async start(): Promise<void> {
         try {
             console.log(text.rainbow);
-            const main = new Main();
-            main.setEnv();
-            await main.connectDB();
-            main.startExpressProxy();
+            (await new Main()
+                .setEnv().connectDB()).startExpressProxy();
 
         } catch (error) {
             logger.error(error);

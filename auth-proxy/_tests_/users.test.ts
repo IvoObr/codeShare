@@ -5,7 +5,7 @@ import { StatusCodes } from '../src/lib/enums';
 colors.enable();
 dotenv.config();
 
-describe('Authorized 200 users api tests', (): void => {
+describe('Authorized 200 OK Users api tests', (): void => {
 
     it('POST /api/v1/auth/pub/register user in DB', UsersTest.register);
 
@@ -34,7 +34,7 @@ describe('Authorized 200 users api tests', (): void => {
     
 });
 
-describe('Unauthorized 401 users api tests', (): void => {
+describe('Unauthorized 401 Users api tests', (): void => {
 
     it('401 POST /api/v1/auth/pub/login user in DB',
         async (): Promise<void> => await UsersTest.login(UsersTest.config.email, 'incorrect password', StatusCodes.UNAUTHORIZED));
