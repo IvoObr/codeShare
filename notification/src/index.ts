@@ -11,30 +11,35 @@ colors.enable();
 
 class Main {
 
-    public subscribeMailer(): this {
+    public start(): void {
         try {
             console.log(text.rainbow);
-            const mailer: Mailer = new Mailer();
+            new Main()
+                .setEnvVars()
+                .subscribeMailer()
+                .startSocketServer();
 
-            Event.on(Events.newMail, (data: IMessage): void => {
-                mailer.sendMail(data);
-            });
-
-            return this;
-        
         } catch (error) {
             logger.error('Mailer unable to start'.red, error);
             process.exit(0); /* clean exit */
         }
-
     }
 
     public startSocketServer(): void {
         const server: SocketServer = new SocketServer();
         server.start();
     }
+
+    private subscribeMailer(): this {
+        const mailer: Mailer = new Mailer();
+
+        Event.on(Events.newMail, (data: IMessage): void => {
+            mailer.sendMail(data);
+        });
+        return this;
+    }
     
-    public setEnv(): this {
+    private setEnvVars(): this {
         const result: DotenvConfigOutput = dotenv.config();
 
         if (result.error) {
@@ -45,7 +50,4 @@ class Main {
     }
 }
 
-new Main()
-    .setEnv()
-    .subscribeMailer()
-    .startSocketServer();
+new Main().start();

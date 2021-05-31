@@ -9,17 +9,11 @@ import tls, { TLSSocket, TlsOptions, Server } from 'tls';
 export default class SocketServer {
 
     public start(): void {
-        try {
-            const port: number = Number(process.env.PORT) || 8085;
-            const host: string = process.env.HOST || 'localhost';
-
-            this.createServer().listen({ host, port }, (): void =>
-                logger.success(`SocketServer listening on port ${port}`.yellow));
-      
-        } catch (error) {
-            logger.error(error);
-            process.exit(0);
-        }
+        const port: number = Number(process.env.PORT) || 8085;
+        const host: string = process.env.HOST || 'localhost';
+        
+        this.createServer().listen({ host, port }, (): void =>
+            logger.success('SocketServer listening on port'.yellow, `${port}`.rainbow));
     }
 
     private createServer(): Server {
@@ -31,7 +25,7 @@ export default class SocketServer {
 
         return tls.createServer(options, (socket: TLSSocket): void => {
             logger.debug(`Client connected!`.bold);
-            
+
             socket
                 .on('end', (): void => logger.debug('Socket ended.'))
                 .on('close', (): void => logger.debug('Socket closed.'))

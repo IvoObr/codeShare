@@ -14,8 +14,6 @@ export default class SocketClient {
         return this;
     }
 
-    // TODO error (connect, cert) handling 
-
     public send(message: string): this {
         this.socket.write(message);
         return this;

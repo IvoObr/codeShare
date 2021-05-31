@@ -14,8 +14,10 @@ class Main {
         try {
             console.log(text.rainbow);
             (await new Main()
-                .setEnv().connectDB()).startExpressServer();
-            
+                .setEnvVars()
+                .connectDB())
+                .startExpressServer();
+
         } catch (error) {
             logger.error(error);
             process.exit(1); /* app crashed */
@@ -55,7 +57,7 @@ class Main {
         }); 
     }
 
-    private setEnv(): this {
+    private setEnvVars(): this {
         if (process.argv[2] === Env.development) {
             process.env.NODE_ENV = Env.development;
         }
