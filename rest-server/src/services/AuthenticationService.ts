@@ -123,7 +123,7 @@ class AuthenticationService {
                 .onSuccess((info: IMailInfo): void => {
                     response
                         .status(StatusCodes.CREATED)
-                        .json({ result: `Email successfully send.`, receiver: info?.accepted[0] });
+                        .json({ result: `Email successfully send.`, receiver: info?.accepted?.[0] || info });
                 })
                 .onError((error: string): void => {
                     const err: ServerError = new ServerError(Errors.COULD_NOT_SEND_EMAIL, error);

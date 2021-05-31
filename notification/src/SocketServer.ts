@@ -1,38 +1,48 @@
-import Net from 'net';
+import fs from 'fs';
+import path from 'path';
 import logger from './lib/logger';
 import { Events } from './lib/enums';
 import Event from './lib/EventEmitter';
 import { IMailInfo } from './lib/interfaces';
+import tls, { TLSSocket, TlsOptions, Server } from 'tls';
 
 export default class SocketServer {
-    private port: number = Number(process.env.PORT) || 8085;
-    private host: string = process.env.HOST || 'localhost';
 
     public start(): void {
-        const settings = {
-            host: this.host,
-            port: this.port
+        try {
+            const port: number = Number(process.env.PORT) || 8085;
+            const host: string = process.env.HOST || 'localhost';
+
+            this.createServer().listen({ host, port }, (): void =>
+                logger.success(`SocketServer listening on port ${port}`.yellow));
+      
+        } catch (error) {
+            logger.error(error);
+            process.exit(0);
+        }
+    }
+
+    private createServer(): Server {
+        const options: TlsOptions = {
+            rejectUnauthorized: false, // accept self signed certificates
+            cert: fs.readFileSync(path.resolve(__dirname, '../ssl/public-cert.pem')),
+            key: fs.readFileSync(path.resolve(__dirname, '../ssl/private-key.pem'))
         };
+
+        return tls.createServer(options, (socket: TLSSocket): void => {
+            logger.debug(`Client connected!`.bold);
             
-        Net.createServer()
-            .on('connection', this.onConnection)
-            .on('error', (error: Error): void => logger.error(error))
-            .listen(settings, (): void => logger.success(`SocketServer listening on port ${this.port}`.yellow));
+            socket
+                .on('end', (): void => logger.debug('Socket ended.'))
+                .on('close', (): void => logger.debug('Socket closed.'))
+                .on('error', (error: Error): void => logger.error(error))
+                .on('timeout', (): void => logger.debug('Socket timeout.'))
+                .on('connect', (): void => logger.debug('Socket connected.'))
+                .on('data', (data: Buffer): void => this.onData(data, socket));
+        });
     }
 
-    private onConnection = (socket: Net.Socket): void => {
-        logger.debug(`Client connected!`.bold);
-
-        socket
-            .on('end', (): void => logger.debug('Socket ended.'))
-            .on('close', (): void => logger.debug('Socket closed.'))
-            .on('error', (error: Error): void => logger.error(error))
-            .on('timeout', (): void => logger.debug('Socket timeout.'))
-            .on('connect', (): void => logger.debug('Socket connected.'))
-            .on('data', (data: Buffer): void => this.onData(data, socket));
-    }
-
-    private onData(data: Buffer, socket: Net.Socket): void {
+    private onData(data: Buffer, socket: TLSSocket): void {
         Event.emit(Events.newMail, JSON.parse(data.toString()));
 
         Event.once(Events.emailSend, (mailInfo: IMailInfo): void => {
