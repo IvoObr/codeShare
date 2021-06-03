@@ -1,73 +1,90 @@
 import fs from 'fs';
 import path from 'path';
 import { Mongo } from './db';
-import { Env } from './lib/enums';
 import logger from './lib/logger';
-import ExpressProxy from './ExpressProxy';
-import * as core from "express-serve-static-core";
+import { Headers, Env } from './lib/enums';
+import ExpressServer from './ExpressServer';
+import { Request, Response } from 'express';
+import https, { RequestOptions } from 'https';
+import { Express } from "express-serve-static-core";
 import dotenv, { DotenvConfigOutput } from 'dotenv';
-import https, { Server, ServerOptions } from 'https';
+import { ClientRequest, IncomingMessage } from 'http';
+import AuthorizationService from './services/AuthorizationService';
 
 export default class AuthProxy {
 
     public async start(): Promise<void> {
         try {
-            const authProxy: AuthProxy = new AuthProxy();
-            authProxy.setEnvVars();
+            new AuthProxy().setEnv();
             await new Mongo().connect();
-            authProxy.startExpressProxy();
+            
+            const app: Express = new ExpressServer().start();
+            this.forwardHttps(app);
 
         } catch (error: unknown) {
-            logger.error(error);
-            process.exit(1); /* app crashed */
+            this.onError(error);
         }
     }
 
-    private startExpressProxy(): void {
-        const port: string = process.env.PORT || '3000';
+    private forwardSocket(): this {
 
-        const options: ServerOptions = {
+        // BIG TODO 
+
+        return this;
+    }
+
+    private forwardHttps(app: Express): void {
+        app.all('/api/v1/*', AuthorizationService.validateSSL, AuthorizationService.validateJwt,
+            (request: Request, response: Response): void => this.send(request, response));
+    }
+
+    private send(request: Request, response: Response): void {
+        const body: string = JSON.stringify(request.body);
+
+        const options: RequestOptions = {
+            method: request.method,
+            path: request.originalUrl,
+            hostname: process.env.REST_API_HOST,
+            port: Number(process.env.REST_API_PORT),
             rejectUnauthorized: Boolean(Number(process.env.SELF_SIGNED_CERT)),
             key: fs.readFileSync(path.resolve(__dirname, '../ssl/private-key.pem')),
-            cert: fs.readFileSync(path.resolve(__dirname, '../ssl/public-key.pem'))
+            cert: fs.readFileSync(path.resolve(__dirname, '../ssl/public-key.pem')),
+            headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) }
         };
 
-        const app: core.Express = new ExpressProxy().start();
-        const proxy: Server = https.createServer(options, app);
+        const req: ClientRequest = https.request(options, (res: IncomingMessage): void => {
+            console.log(`statusCode: ${res.statusCode}`);
 
-        proxy.listen(port, (): void =>
-            logger.success(('Auth-proxy server listening on port: '?.yellow + port.rainbow)?.bold)
-        );
-
-        proxy.on('error', this.onError);
-        process.on('SIGTERM', (): void => this.closeServer(proxy));
-
-        logger.info('process id:', process.pid.toString()?.cyan.bold);
-        logger.info(`Auth-proxy running in ${process.env.NODE_ENV?.cyan.bold} mode.`);
-    }
-
-    private onError = (error: Error): void => {
-        logger.error('Auth-proxy unable to start'.red, error);
-        process.exit(0); /* clean exit */
-    }
-
-    private closeServer(proxy: Server): void {
-        proxy.close((): void => {
-            logger.success(('SIGTERM'.yellow), 'Auth-proxy gracefully terminated.');
-            process.exit(0); /* clean exit */
+            res.on('data', (data: Buffer): Response => response
+                .header(Headers.Authorization, res.headers?.authorization)
+                .status(Number(res?.statusCode))
+                .json(data.toString())
+            );
         });
+
+        req.on('error', (error: unknown): void => {
+            console.error(error);
+        });
+
+        req.write(body);
+        req.end();
+
+        // ).catch((error): Response => response
+        //     .status(error?.response?.status)
+        //     .json({ error: error?.response?.data })
+        // );
     }
 
-    private setEnvVars(): void {
+    private setEnv(): void {
         if (process.argv[2] === Env.development) {
-            process.env.NODE_ENV = Env.development;
+            (process.env.NODE_ENV = Env.development);
         }
-
         const result: DotenvConfigOutput = dotenv.config();
+        result.error && this.onError(result.error);
+    }
 
-        if (result.error) {
-            logger.error('Auth-proxy unable to start'.red, result.error);
-            process.exit(0); /* clean exit */
-        }
+    private onError(error: unknown): void {
+        logger.error('Auth-proxy unable to start'.red, error);
+        process.exit(1); /* app crashed */
     }
 }
