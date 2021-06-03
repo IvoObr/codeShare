@@ -19,13 +19,13 @@ interface IProps {
 export function rmlogs(props: IProps): string[] {
 
     const { dir, filter, fileList = [],
-        ignore = /(node_modules|dist|src|.git)/ } = props;
+        ignore = /(node_modules|dist|src|.git)/ }: IProps = props;
     
     const files: string[] = fs.readdirSync(dir);
 
     files.forEach((file: string): void => {
-        const filePath: any = path.join(dir, file);
-        const excluded: any = filePath.match(ignore);
+        const filePath: string = path.join(dir, file);
+        const excluded = filePath.match(ignore);
 
         if (!excluded) {
             const fileStat: fs.Stats = fs.lstatSync(filePath);
@@ -36,7 +36,7 @@ export function rmlogs(props: IProps): string[] {
             } else if (filter.test(filePath)) {
                 fileList.push(filePath);
                 console.log('deleting: ', filePath);
-                fs.unlink(filePath, (error: any) => error && console.error(error));
+                fs.unlink(filePath, (error) => error && console.error(error));
             }
         }
     });

@@ -7,8 +7,8 @@ export default class SocketClient {
 
     private socket!: TLSSocket;
 
-    public mailerSocket(): this {
-        const port: number = Number(process.env.MAILER_PORT);
+    public notificationSocket(): this {
+        const port: number = Number(process.env.NOTIFICATION_PORT);
         const host: string = process.env.HOST || 'localhost';
         this.socket = new SocketClient().connect(port, host);
         return this;
@@ -23,7 +23,7 @@ export default class SocketClient {
         Event.once(Events.messageSuccess, callback);
         return this;
     }
-    
+
     public onError(callback: (error: string) => void): this {
         Event.once(Events.messageError, callback);
         return this;
@@ -31,9 +31,9 @@ export default class SocketClient {
 
     public connect = (port: number, host: string): TLSSocket => {
         const options: ConnectionOptions = {
-            rejectUnauthorized: false, // accept self signed certificates
+            rejectUnauthorized: Boolean(Number(process.env.SELF_SIGNED_CERT)),
             key: fs.readFileSync(path.resolve(__dirname, '../ssl/private-key.pem')),
-            cert: fs.readFileSync(path.resolve(__dirname, '../ssl/public-cert.pem'))
+            cert: fs.readFileSync(path.resolve(__dirname, '../ssl/public-key.pem'))
         };
 
         return tls.connect(port, host, options)
@@ -50,12 +50,12 @@ export default class SocketClient {
             const response: any = JSON.parse(data.toString());
 
             if (response?.error) {
-                throw response?.error; 
+                throw response?.error;
             }
-                
+
             Event.emit(Events.messageSuccess, response);
             logger.debug('Mail sent to: ', response?.accepted);
-            
+
         } catch (error) {
             Event.emit(Events.messageError, error);
             logger.error('Message not delivered', data.toString());

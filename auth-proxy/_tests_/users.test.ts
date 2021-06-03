@@ -7,7 +7,7 @@ dotenv.config();
 
 describe('Authorized 200 OK Users api tests', (): void => {
 
-    it('POST /api/v1/auth/pub/register user in DB', UsersTest.register);
+    it.only('POST /api/v1/auth/pub/register user in DB', UsersTest.register);
 
     it('POST /api/v1/auth/pub/login user in DB',
         async (): Promise<void> => await UsersTest.login(UsersTest.config.email, UsersTest.config.password));

@@ -16,8 +16,8 @@ class ExpressServer {
             .use(express.json())
             .use(express.urlencoded({ extended: true }))
             .use(express.static(path.join(__dirname, 'public')))
-            .use(cors({ origin: `http://localhost`, exposedHeaders: [Headers.Authorization]}))
-            .use(logExpress);
+            .use(cors({ origin: `https://localhost`, exposedHeaders: [Headers.Authorization]}))
+            .use(logExpress);   
 
         if (process.env.NODE_ENV === Env.production) {
             this.app.use(helmet());

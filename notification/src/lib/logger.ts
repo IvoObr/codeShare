@@ -5,7 +5,7 @@ dotenv.config();
 const options: ILogOptions = {
     useColor: true,
     logInFile: true,
-    fileName: 'api-mailer.log',
+    fileName: 'notification.log',
     logLevel: process.env.LOG_LEVEL
 };
 

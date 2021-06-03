@@ -118,7 +118,7 @@ class AuthenticationService {
             // todo change url to frontend
         
             new SocketClient()
-                .mailerSocket()
+                .notificationSocket()
                 .send(message)
                 .onSuccess((info: IMailInfo): void => {
                     response

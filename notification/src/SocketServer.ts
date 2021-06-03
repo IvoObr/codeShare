@@ -6,20 +6,20 @@ import Event from './lib/EventEmitter';
 import { IMailInfo } from './lib/interfaces';
 import tls, { TLSSocket, TlsOptions, Server } from 'tls';
 
-export default class SocketServer {
+export default class TLSServer {
 
     public start(): void {
         const port: number = Number(process.env.PORT) || 8085;
         const host: string = process.env.HOST || 'localhost';
-        
+
         this.createServer().listen({ host, port }, (): void =>
-            logger.success('SocketServer listening on port'.yellow, `${port}`.rainbow));
+            logger.success('TLSServer listening on port'.yellow, `${port}`.rainbow));
     }
 
     private createServer(): Server {
         const options: TlsOptions = {
-            rejectUnauthorized: false, // accept self signed certificates
-            cert: fs.readFileSync(path.resolve(__dirname, '../ssl/public-cert.pem')),
+            rejectUnauthorized: Boolean(Number(process.env.SELF_SIGNED_CERT)),
+            cert: fs.readFileSync(path.resolve(__dirname, '../ssl/public-key.pem')),
             key: fs.readFileSync(path.resolve(__dirname, '../ssl/private-key.pem'))
         };
 
