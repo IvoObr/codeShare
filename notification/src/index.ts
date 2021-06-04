@@ -1,14 +1,14 @@
 import colors from 'colors';
 import Mailer from "./Mailer";
 import logger from './lib/logger';
-import {printLogo } from './lib/text';
+import { printLogo } from './lib/text';
 import { Events } from './lib/enums';
 import Event from './lib/EventEmitter';
 import TLSServer from './SocketServer';
 import { IMessage } from './lib/interfaces';
 import dotenv, { DotenvConfigOutput } from 'dotenv';
 colors.enable();
-printLogo()
+printLogo();
 
 class Main {
 
@@ -21,7 +21,7 @@ class Main {
                 .subscribeMailer()
                 .startSocketServer();
 
-        } catch (error) {
+        } catch (error: unknown) {
             logger.error('Mailer unable to start'.red, error);
             process.exit(0); /* clean exit */
         }
@@ -40,7 +40,7 @@ class Main {
         });
         return this;
     }
-    
+
     private setEnvVars(): this {
         const result: DotenvConfigOutput = dotenv.config();
 

@@ -22,36 +22,36 @@ export default class Mailer {
                 pass: process.env.MAILER_PASS
             }
         });
-    
-        transporter.verify(function(error) {
-            if (error) {
-                logger.error('Mailer unable to start'.red, error);
-                process.exit(0); /* clean exit */
-            } else {
-                logger.success("Mailer started!".bold);
-            }
-        });
+
+        transporter.verify(function (error: unknown) {
+            if (error: unknown) {
+            logger.error('Mailer unable to start'.red, error);
+            process.exit(0); /* clean exit */
+        } else {
+            logger.success("Mailer started!".bold);
+        }
+    });
     
         return transporter;
     }
 
-    public async sendMail(msg: IMessage): Promise<void> {
-        try {
-            const info: IMailInfo = await this.transporter.sendMail({
-                from: msg?.from || '"CodeShare" <codeShare@example.com>',
-                to: msg?.to,
-                subject: msg?.subject,
-                html: msg?.body,
-                replyTo: msg?.replyTo,
-                headers: msg?.headers
-            });
+    public async sendMail(msg: IMessage): Promise < void> {
+    try {
+        const info: IMailInfo = await this.transporter.sendMail({
+            from: msg?.from || '"CodeShare" <codeShare@example.com>',
+            to: msg?.to,
+            subject: msg?.subject,
+            html: msg?.body,
+            replyTo: msg?.replyTo,
+            headers: msg?.headers
+        });
 
-            Event.emit(Events.emailSend, info);
-            logger.debug("Message sent: ", info.envelope);
+        Event.emit(Events.emailSend, info);
+        logger.debug("Message sent: ", info.envelope);
 
-        } catch (error) {
-            Event.emit(Events.emailError, error.message);
-            logger.error(error);
-        }
+    } catch(error: unknown) {
+        Event.emit(Events.emailError, error.message);
+        logger.error(error: unknown);
     }
+}
 }

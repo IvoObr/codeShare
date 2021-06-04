@@ -15,7 +15,7 @@ class UserService {
 
             response.status(StatusCodes.OK).json(publicUsers);
 
-        } catch (error) {
+        } catch (error: unknown) {
             ServerError.handle(error, response);
         }
     }
@@ -23,7 +23,7 @@ class UserService {
     public static async deleteUser(request: Request, response: Response): Promise<void> {
         try {
             const id: string = request.params?.id;
-                                    
+
             if (!id) {
                 throw new ServerError(Errors.BAD_REQUEST, 'Missing user id in the request.');
             }
@@ -36,7 +36,7 @@ class UserService {
 
             response.status(StatusCodes.OK).end();
 
-        } catch (error) {
+        } catch (error: unknown) {
             ServerError.handle(error, response);
         }
     }
@@ -62,13 +62,13 @@ class UserService {
             }
 
             name && UserModel.validateName(name);
-   
+
             email && UserModel.validateEmail(email);
             email && await UserModel.checkIfUserExists(email);
-    
+
             password && UserModel.validatePassword(password);
             password && (password = await UserModel.hashPassword(password));
-        
+
             user.name = name || user.name;
             user.email = email || user.email;
             user.password = password || user.password;
@@ -82,8 +82,8 @@ class UserService {
             const publicUser: IPublicUser = UserModel.getPublicUser(user);
 
             response.status(StatusCodes.OK).json(publicUser);
-            
-        } catch (error) {
+
+        } catch (error: unknown) {
             ServerError.handle(error, response);
         }
     }

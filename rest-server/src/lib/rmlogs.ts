@@ -20,7 +20,7 @@ export function rmlogs(props: IProps): string[] {
 
     const { dir, filter, fileList = [],
         ignore = /(node_modules|dist|src|.git)/ }: IProps = props;
-    
+
     const files: string[] = fs.readdirSync(dir);
 
     files.forEach((file: string): void => {
@@ -36,7 +36,7 @@ export function rmlogs(props: IProps): string[] {
             } else if (filter.test(filePath)) {
                 fileList.push(filePath);
                 console.log('deleting: ', filePath);
-                fs.unlink(filePath, (error) => error && console.error(error));
+                fs.unlink(filePath, (error: unknown) => error && console.error(error: unknown));
             }
         }
     });

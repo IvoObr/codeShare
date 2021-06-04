@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import { logger, Events, Event } from '@utils';
+import logger from './lib/logger';
+import { Events } from './lib/enums';
+import { Event } from './lib/EventEmitter';
 import tls, { TLSSocket, ConnectionOptions } from 'tls';
 
 export default class SocketClient {

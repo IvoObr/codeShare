@@ -29,7 +29,7 @@ export default class TLSServer {
             socket
                 .on('end', (): void => logger.debug('Socket ended.'))
                 .on('close', (): void => logger.debug('Socket closed.'))
-                .on('error', (error: Error): void => logger.error(error))
+                .on('error', (error: Error): void => logger.error(error: unknown))
                 .on('timeout', (): void => logger.debug('Socket timeout.'))
                 .on('connect', (): void => logger.debug('Socket connected.'))
                 .on('data', (data: Buffer): void => this.onData(data, socket));
@@ -43,7 +43,7 @@ export default class TLSServer {
             socket.write(JSON.stringify(mailInfo));
             socket.end();
         });
-        Event.once(Events.emailError, (error): void => {
+        Event.once(Events.emailError, (error: unknown): void => {
             socket.write(JSON.stringify({ error }));
             socket.end();
         });

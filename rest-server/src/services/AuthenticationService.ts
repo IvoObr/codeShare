@@ -19,7 +19,7 @@ class AuthenticationService {
 
             response.status(StatusCodes.CREATED).json(publicUser);
 
-        } catch (error) {
+        } catch (error: unknown) {
             ServerError.handle(error, response);
         }
     }
@@ -60,7 +60,7 @@ class AuthenticationService {
             response.header(Headers.Authorization, token).json(publicUser);
             response.status(StatusCodes.OK).end();
 
-        } catch (error) {
+        } catch (error: unknown) {
             ServerError.handle(error, response);
         }
     }
@@ -75,7 +75,7 @@ class AuthenticationService {
 
             response.status(StatusCodes.OK).end();
 
-        } catch (error) {
+        } catch (error: unknown) {
             ServerError.handle(error, response);
         }
     }
@@ -87,7 +87,7 @@ class AuthenticationService {
             if (!email) {
                 throw new ServerError(Errors.MISSING_PARAMETER, `Missing email.`);
             }
-            
+
             const user: IUser = await UserDal.getUserByEmail(email);
 
             if (!user) {
@@ -116,7 +116,7 @@ class AuthenticationService {
             });
 
             // todo change url to frontend
-        
+
             new SocketClient()
                 .notificationSocket()
                 .send(message)
@@ -130,7 +130,7 @@ class AuthenticationService {
                     ServerError.handle(err, response);
                 });
 
-        } catch (error) {
+        } catch (error: unknown) {
             ServerError.handle(error, response);
         }
     }
@@ -154,8 +154,8 @@ class AuthenticationService {
             }
 
             response.status(StatusCodes.OK).end();
-            
-        } catch (error) {
+
+        } catch (error: unknown) {
             ServerError.handle(error, response);
         }
     }

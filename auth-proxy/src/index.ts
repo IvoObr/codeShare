@@ -4,4 +4,5 @@ import { printLogo } from './lib/text';
 
 printLogo();
 colors.enable();
+
 new AuthProxy().start();

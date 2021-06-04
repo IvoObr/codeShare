@@ -3,7 +3,7 @@ import { Response } from "express";
 import { Errors, StatusCodes } from '../lib/enums';
 
 export default class ServerError extends Error {
-   
+
     constructor(
         public type: Errors,
         public message: string) {
@@ -45,7 +45,7 @@ export default class ServerError extends Error {
                     break;
             }
         } else {
-            logger.error(error);
+            logger.error(error: unknown);
             response
                 .status(StatusCodes.INTERNAL_SERVER_ERROR)
                 .json({ error: StatusCodes[500] });

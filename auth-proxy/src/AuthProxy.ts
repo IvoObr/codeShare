@@ -10,30 +10,32 @@ import { Express } from "express-serve-static-core";
 import dotenv, { DotenvConfigOutput } from 'dotenv';
 import { ClientRequest, IncomingMessage } from 'http';
 import AuthorizationService from './services/AuthorizationService';
-
+/**
+ *
+ */
 export default class AuthProxy {
 
     public async start(): Promise<void> {
         try {
             new AuthProxy().setEnv();
             await new Mongo().connect();
-            
+
             const app: Express = new ExpressServer().start();
-            this.forwardHttps(app);
+            this.proxyHttps(app);
 
         } catch (error: unknown) {
-            this.onError(error);
+            this.onError(error: unknown);
         }
     }
 
-    private forwardSocket(): this {
+    private proxySocket(): this {
 
         // BIG TODO 
 
         return this;
     }
 
-    private forwardHttps(app: Express): void {
+    private proxyHttps(app: Express): void {
         app.all('/api/v1/*', AuthorizationService.validateSSL, AuthorizationService.validateJwt,
             (request: Request, response: Response): void => this.send(request, response));
     }
@@ -63,13 +65,13 @@ export default class AuthProxy {
         });
 
         req.on('error', (error: unknown): void => {
-            console.error(error);
+            console.error(error: unknown);
         });
 
         req.write(body);
         req.end();
 
-        // ).catch((error): Response => response
+        // ).catch((error: unknown): Response => response
         //     .status(error?.response?.status)
         //     .json({ error: error?.response?.data })
         // );

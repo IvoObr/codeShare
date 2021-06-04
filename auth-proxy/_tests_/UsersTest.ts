@@ -30,7 +30,7 @@ export default class UsersTest {
             const email: string = `${genBase36Key(8)}@yopmail.com`;
             const role: UserRole = UserRole.Admin;
             const payload: string = JSON.stringify({ name, email, role, password });
-            
+
             const options = {
                 hostname: 'localhost',
                 port: Number(process.env.PORT),
@@ -55,7 +55,7 @@ export default class UsersTest {
             });
 
             req.on('error', (error: unknown): void => {
-                console.error(error);
+                console.error(error: unknown);
             });
 
             req.write(payload);
@@ -90,7 +90,7 @@ export default class UsersTest {
             // expect(typeof response.data.name).toBe('string');
             // expect(typeof response.data.role).toBe('string');
 
-        } catch (error) {
+        } catch (error: unknown) {
             handleError(path, error, statusCode);
         }
     }
@@ -104,7 +104,7 @@ export default class UsersTest {
 
             // expect(response.status).toBe(200);
 
-        } catch (error) {
+        } catch (error: unknown) {
             handleError(path, error, statusCode);
         }
     }
@@ -120,7 +120,7 @@ export default class UsersTest {
 
             /* await deleteAllUsers(data, UsersFunc.config.headers); */
 
-        } catch (error) {
+        } catch (error: unknown) {
             handleError(path, error, statusCode);
         }
     }
@@ -141,14 +141,14 @@ export default class UsersTest {
 
             // expect(response.status).toBe(200);
             // expect(typeof response.data.role).toBe('string');
-            
+
             // userData?.email && expect(response.data.email).toBe(userData.email);
             // userData?.name && expect(response.data.name).toBe(userData.name);
 
             // UsersTest.config.email = userData.email;
             // UsersTest.config.password = userData.password;
 
-        } catch (error) {
+        } catch (error: unknown) {
             handleError(path, error, statusCode);
         }
     }
@@ -162,7 +162,7 @@ export default class UsersTest {
 
             // expect(response.status).toBe(200);
 
-        } catch (error) {
+        } catch (error: unknown) {
             handleError(path, error, statusCode);
         }
     }
@@ -179,7 +179,7 @@ export default class UsersTest {
             // expect(response.status).toBe(201);
             // expect(response.data.receiver).toBe(UsersTest.config.email);
 
-        } catch (error) {
+        } catch (error: unknown) {
             handleError(path, error);
         }
     }
@@ -195,25 +195,25 @@ export default class UsersTest {
             // expect(response.status).toBe(200);
             // UsersTest.config.password = newPass;
 
-        } catch (error) {
+        } catch (error: unknown) {
             handleError(path, error, statusCode);
         }
     }
 
-/**************************************************************************************
-public static async deleteAllUsers(users: IUser[], headers: IHeaders): Promise<void> {
-    const path: string = 'DELETE /api/v1/user/delete/:id'.yellow;
-    try {
-        for (let index = 0; index < users.length; index++) {
-            const user: IUser = users[index];
-            const url: string = `http://localhost:8080/api/v1/user/delete/${user._id}`;
-            const response: AxiosResponse<IUser> = await axios.delete(url, headers);
-
+    /**************************************************************************************
+    public static async deleteAllUsers(users: IUser[], headers: IHeaders): Promise<void> {
+        const path: string = 'DELETE /api/v1/user/delete/:id'.yellow;
+        try {
+            for (let index = 0; index < users.length; index++) {
+                const user: IUser = users[index];
+                const url: string = `http://localhost:8080/api/v1/user/delete/${user._id}`;
+                const response: AxiosResponse<IUser> = await axios.delete(url, headers);
+    
+            }
+    
+        } catch (error: unknown) {
+            handleError(path, error);
         }
-
-    } catch (error) {
-        handleError(path, error);
     }
-}
-**************************************************************************************/
+    **************************************************************************************/
 }

@@ -20,8 +20,8 @@ class Main {
                 .connectDB())
                 .startExpressServer();
 
-        } catch (error) {
-            logger.error(error);
+        } catch (error: unknown) {
+            logger.error(error: unknown);
             process.exit(1); /* app crashed */
         }
     }
@@ -31,7 +31,6 @@ class Main {
         const port: string = process.env.PORT || '3000';
 
         const options: ServerOptions = {
-            // requestCert: true,
             rejectUnauthorized: Boolean(Number(process.env.SELF_SIGNED_CERT)),
             key: fs.readFileSync(path.resolve(__dirname, '../ssl/private-key.pem')),
             cert: fs.readFileSync(path.resolve(__dirname, '../ssl/public-key.pem'))
