@@ -21,7 +21,7 @@ class Main {
                 .subscribeMailer()
                 .startSocketServer();
 
-        } catch (error: unknown) {
+        } catch (error) {
             logger.error('Mailer unable to start'.red, error);
             process.exit(0); /* clean exit */
         }

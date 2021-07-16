@@ -19,7 +19,7 @@ class AuthenticationService {
 
             response.status(StatusCodes.CREATED).json(publicUser);
 
-        } catch (error: unknown) {
+        } catch (error) {
             ServerError.handle(error, response);
         }
     }
@@ -60,7 +60,7 @@ class AuthenticationService {
             response.header(Headers.Authorization, token).json(publicUser);
             response.status(StatusCodes.OK).end();
 
-        } catch (error: unknown) {
+        } catch (error) {
             ServerError.handle(error, response);
         }
     }
@@ -75,7 +75,7 @@ class AuthenticationService {
 
             response.status(StatusCodes.OK).end();
 
-        } catch (error: unknown) {
+        } catch (error) {
             ServerError.handle(error, response);
         }
     }
@@ -115,7 +115,7 @@ class AuthenticationService {
                        <p>All the Best!</p>`
             });
 
-            // todo change url to frontend
+            // todo: change url to frontend
 
             new SocketClient()
                 .notificationSocket()
@@ -130,7 +130,7 @@ class AuthenticationService {
                     ServerError.handle(err, response);
                 });
 
-        } catch (error: unknown) {
+        } catch (error) {
             ServerError.handle(error, response);
         }
     }
@@ -155,7 +155,7 @@ class AuthenticationService {
 
             response.status(StatusCodes.OK).end();
 
-        } catch (error: unknown) {
+        } catch (error) {
             ServerError.handle(error, response);
         }
     }

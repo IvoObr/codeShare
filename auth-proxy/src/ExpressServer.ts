@@ -1,34 +1,40 @@
 import fs from 'fs';
+import tls from 'tls';
 import path from 'path';
 import cors from 'cors';
 import helmet from 'helmet';
 import express from 'express';
 import logger from './lib/logger';
 import { Headers } from './lib/enums';
-import { Express } from "express-serve-static-core";
 import https, { Server, ServerOptions } from 'https';
+import { Express } from "express-serve-static-core";
 import { logExpress } from '@7dev-works/log-express';
 /**
  *  
  */
 export default class ExpressServer {
 
-    private setKeys(): ServerOptions {
-        const rejectUnauthorized: boolean = Boolean(Number(process.env.SELF_SIGNED_CERT));
-        const key: Buffer = fs.readFileSync(path.resolve(__dirname, '../ssl/private-key.pem'));
-        const cert: Buffer = fs.readFileSync(path.resolve(__dirname, '../ssl/public-key.pem'));
-        return { rejectUnauthorized, key, cert };
+    private setKeys() {
+        try {
+            return {
+                key: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.key')),
+                cert: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.crt')),
+                ca: fs.readFileSync(path.resolve(__dirname, '../../ssl/rootCA.crt'))
+            }
+        } catch (error) {
+            logger.error(error)
+        }
     }
 
     public start(): Express {
         const app: Express = this.setApp();
-        const keys: ServerOptions = this.setKeys();
+        const keys = this.setKeys() as ServerOptions;
         const port: string = process.env.PORT || '3000';
 
-        const server: Server = https.createServer(keys, app);
+        const server = https.createServer(keys, app);
         server.listen(port, (): void => this.onListen(port));
         server.on('error', this.onError);
-            
+
         process.on('SIGTERM', (): void => this.closeServer(server));
         logger.info('process id:', process.pid.toString().cyan.bold);
         logger.info(`Auth-proxy running in ${process.env.NODE_ENV?.cyan.bold} mode.`);
@@ -56,8 +62,10 @@ export default class ExpressServer {
             .use(helmet())
             .use(express.json())
             .use(express.urlencoded({ extended: true }))
-            .use(cors({ origin: `https://localhost`,
-                exposedHeaders: [Headers.Authorization]}))
+            .use(cors({
+                origin: `https://localhost`,
+                exposedHeaders: [Headers.Authorization]
+            }))
             .use(logExpress);
     }
 }

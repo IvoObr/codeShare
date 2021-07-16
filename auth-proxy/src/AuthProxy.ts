@@ -5,7 +5,7 @@ import logger from './lib/logger';
 import { Headers, Env } from './lib/enums';
 import ExpressServer from './ExpressServer';
 import { Request, Response } from 'express';
-import https, { RequestOptions } from 'https';
+import https, { RequestOptions, ServerOptions } from 'https';
 import { Express } from "express-serve-static-core";
 import dotenv, { DotenvConfigOutput } from 'dotenv';
 import { ClientRequest, IncomingMessage } from 'http';
@@ -23,14 +23,14 @@ export default class AuthProxy {
             const app: Express = new ExpressServer().start();
             this.proxyHttps(app);
 
-        } catch (error: unknown) {
-            this.onError(error: unknown);
+        } catch (error) {
+            this.onError(error);
         }
     }
 
     private proxySocket(): this {
 
-        // BIG TODO 
+        // BIG TODO: 
 
         return this;
     }
@@ -40,19 +40,30 @@ export default class AuthProxy {
             (request: Request, response: Response): void => this.send(request, response));
     }
 
+    private setKeys() {
+        try {
+            return {
+                key: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.key')),
+                cert: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.crt')),
+                ca: fs.readFileSync(path.resolve(__dirname, '../../ssl/rootCA.crt'))
+            }
+        } catch (error) {
+            logger.error(error)
+        }
+    }
+
     private send(request: Request, response: Response): void {
         const body: string = JSON.stringify(request.body);
 
-        const options: RequestOptions = {
+        let options: RequestOptions = {
             method: request.method,
             path: request.originalUrl,
             hostname: process.env.REST_API_HOST,
             port: Number(process.env.REST_API_PORT),
-            rejectUnauthorized: Boolean(Number(process.env.SELF_SIGNED_CERT)),
-            key: fs.readFileSync(path.resolve(__dirname, '../ssl/private-key.pem')),
-            cert: fs.readFileSync(path.resolve(__dirname, '../ssl/public-key.pem')),
             headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) }
         };
+
+        options = { ...options, ...this.setKeys() }
 
         const req: ClientRequest = https.request(options, (res: IncomingMessage): void => {
             console.log(`statusCode: ${res.statusCode}`);
@@ -64,14 +75,14 @@ export default class AuthProxy {
             );
         });
 
-        req.on('error', (error: unknown): void => {
-            console.error(error: unknown);
+        req.on('error', (error): void => {
+            console.error(error);
         });
 
         req.write(body);
         req.end();
 
-        // ).catch((error: unknown): Response => response
+        // ).catch((error): Response => response
         //     .status(error?.response?.status)
         //     .json({ error: error?.response?.data })
         // );

@@ -1,16 +1,14 @@
+import fs from 'fs';
+import path from 'path';
 import logger from '../src/lib/logger';
 import { handleError } from './testUtils';
 import genBase36Key from '../src/lib/genBase36Key';
 import { IHeaders, INewUserReq } from './interfaces';
+import { ClientRequest, IncomingMessage } from 'http';
 import { IUser, IStrings } from '../src/lib/interfaces';
 import { UserRole, StatusCodes } from '../src/lib/enums';
+import https, { RequestOptions, ServerOptions } from 'https';
 
-import fs from 'fs';
-import path from 'path';
-import https from 'https';
-import { ClientRequest, IncomingMessage } from 'http';
-
-// TODO readFileSync try catch !!!!
 
 export default class UsersTest {
 
@@ -22,6 +20,18 @@ export default class UsersTest {
         headers: { headers: { Authorization: 'Bearer ' } }
     };
 
+    private static setKeys() {
+        try {
+            return {
+                key: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.key')),
+                cert: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.crt')),
+                ca: fs.readFileSync(path.resolve(__dirname, '../../ssl/rootCA.crt'))
+            }
+        } catch (error) {
+            logger.error(error)
+        }
+    }
+
     public static async register(): Promise<void> {
         // const path: string = 'POST /auth/pub/register'.yellow;
         try {
@@ -31,7 +41,7 @@ export default class UsersTest {
             const role: UserRole = UserRole.Admin;
             const payload: string = JSON.stringify({ name, email, role, password });
 
-            const options = {
+            let options: RequestOptions = {
                 hostname: 'localhost',
                 port: Number(process.env.PORT),
                 path: '/api/v1/auth/pub/register',
@@ -39,11 +49,11 @@ export default class UsersTest {
                 headers: {
                     'Content-Type': 'application/json',
                     'Content-Length': Buffer.byteLength(payload)
-                },
-                key: fs.readFileSync(path.resolve(__dirname, '../ssl/private-key.pem')),
-                cert: fs.readFileSync(path.resolve(__dirname, '../ssl/public-key.pem')),
-                rejectUnauthorized: Boolean(Number(process.env.SELF_SIGNED_CERT))
+                }
             };
+
+            options = { ...options, ...UsersTest.setKeys() }
+
 
             const req: ClientRequest = https.request(options, (res: IncomingMessage): void => {
                 console.log(`statusCode: ${res.statusCode}`);
@@ -54,8 +64,8 @@ export default class UsersTest {
                 });
             });
 
-            req.on('error', (error: unknown): void => {
-                console.error(error: unknown);
+            req.on('error', (error): void => {
+                console.error(error);
             });
 
             req.write(payload);
@@ -69,7 +79,7 @@ export default class UsersTest {
             // expect(response.data.role).toBe(role);
             // expect(response.data.email).toBe(email);
 
-        } catch (error: unknown) {
+        } catch (error) {
             // handleError(path, error);
         }
     }
@@ -90,7 +100,7 @@ export default class UsersTest {
             // expect(typeof response.data.name).toBe('string');
             // expect(typeof response.data.role).toBe('string');
 
-        } catch (error: unknown) {
+        } catch (error) {
             handleError(path, error, statusCode);
         }
     }
@@ -104,7 +114,7 @@ export default class UsersTest {
 
             // expect(response.status).toBe(200);
 
-        } catch (error: unknown) {
+        } catch (error) {
             handleError(path, error, statusCode);
         }
     }
@@ -120,7 +130,7 @@ export default class UsersTest {
 
             /* await deleteAllUsers(data, UsersFunc.config.headers); */
 
-        } catch (error: unknown) {
+        } catch (error) {
             handleError(path, error, statusCode);
         }
     }
@@ -148,7 +158,7 @@ export default class UsersTest {
             // UsersTest.config.email = userData.email;
             // UsersTest.config.password = userData.password;
 
-        } catch (error: unknown) {
+        } catch (error) {
             handleError(path, error, statusCode);
         }
     }
@@ -162,7 +172,7 @@ export default class UsersTest {
 
             // expect(response.status).toBe(200);
 
-        } catch (error: unknown) {
+        } catch (error) {
             handleError(path, error, statusCode);
         }
     }
@@ -179,7 +189,7 @@ export default class UsersTest {
             // expect(response.status).toBe(201);
             // expect(response.data.receiver).toBe(UsersTest.config.email);
 
-        } catch (error: unknown) {
+        } catch (error) {
             handleError(path, error);
         }
     }
@@ -195,7 +205,7 @@ export default class UsersTest {
             // expect(response.status).toBe(200);
             // UsersTest.config.password = newPass;
 
-        } catch (error: unknown) {
+        } catch (error) {
             handleError(path, error, statusCode);
         }
     }
@@ -211,7 +221,7 @@ export default class UsersTest {
     
             }
     
-        } catch (error: unknown) {
+        } catch (error) {
             handleError(path, error);
         }
     }

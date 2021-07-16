@@ -22,7 +22,7 @@ export default class Mongo {
             logger.success(`Connected to ${process.env.DB_NAME?.yellow?.bold} DB`);
             Mongo.db = db;
 
-        } catch (error: unknown) {
+        } catch (error) {
             await client.close();
             throw error;
         }

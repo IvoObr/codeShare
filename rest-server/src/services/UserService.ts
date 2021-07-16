@@ -15,7 +15,7 @@ class UserService {
 
             response.status(StatusCodes.OK).json(publicUsers);
 
-        } catch (error: unknown) {
+        } catch (error) {
             ServerError.handle(error, response);
         }
     }
@@ -36,7 +36,7 @@ class UserService {
 
             response.status(StatusCodes.OK).end();
 
-        } catch (error: unknown) {
+        } catch (error) {
             ServerError.handle(error, response);
         }
     }
@@ -83,7 +83,7 @@ class UserService {
 
             response.status(StatusCodes.OK).json(publicUser);
 
-        } catch (error: unknown) {
+        } catch (error) {
             ServerError.handle(error, response);
         }
     }

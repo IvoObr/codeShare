@@ -15,7 +15,7 @@ class AuthorizationService {
 
             next();
 
-        } catch (error: unknown) {
+        } catch (error) {
             ServerError.handle(error, response);
         }
     }

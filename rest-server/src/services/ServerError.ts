@@ -44,7 +44,7 @@ export default class ServerError extends Error {
                     break;
             }
         } else {
-            logger.error(error: unknown);
+            logger.error(error);
             response
                 .status(StatusCodes.INTERNAL_SERVER_ERROR)
                 .json({ error: StatusCodes[500] });

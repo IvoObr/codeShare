@@ -29,15 +29,20 @@ export default class SocketClient {
         return this;
     }
 
-    private setKeys(): ConnectionOptions {
-        const rejectUnauthorized: boolean = Boolean(Number(process.env.SELF_SIGNED_CERT));
-        const key: Buffer = fs.readFileSync(path.resolve(__dirname, '../ssl/private-key.pem'));
-        const cert: Buffer = fs.readFileSync(path.resolve(__dirname, '../ssl/public-key.pem'));
-        return { rejectUnauthorized, key, cert };
+    private setKeys() {
+        try {
+            return {
+                key: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.key')),
+                cert: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.crt')),
+                ca: fs.readFileSync(path.resolve(__dirname, '../../ssl/rootCA.crt'))
+            }
+        } catch (error) {
+            logger.error(error)
+        }
     }
 
     private connect = (port: number, host: string): TLSSocket => {
-        const keys: ConnectionOptions = this.setKeys();
+        const keys = this.setKeys() as ConnectionOptions;
 
         return tls.connect(port, host, keys)
             .on('data', this.onData)
@@ -59,7 +64,7 @@ export default class SocketClient {
             Event.emit(Events.messageSuccess, response);
             logger.debug('Mail sent to: ', response?.accepted);
 
-        } catch (error: unknown) {
+        } catch (error) {
             Event.emit(Events.messageError, error);
             logger.error('Message not delivered', data.toString());
         }

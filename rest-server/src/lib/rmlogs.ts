@@ -36,7 +36,7 @@ export function rmlogs(props: IProps): string[] {
             } else if (filter.test(filePath)) {
                 fileList.push(filePath);
                 console.log('deleting: ', filePath);
-                fs.unlink(filePath, (error: unknown) => error && console.error(error: unknown));
+                fs.unlink(filePath, (error) => error && console.error(error));
             }
         }
     });

@@ -14,7 +14,7 @@ class JwtService {
         try {
             return jwt.verify(token, this.secret) as IClientData;
 
-        } catch (error: unknown) {
+        } catch (error) {
             throw new ServerError(Errors.FORBIDDEN, 'Token not valid.');
         }
     }

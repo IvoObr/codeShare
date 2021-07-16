@@ -20,23 +20,30 @@ class Main {
                 .connectDB())
                 .startExpressServer();
 
-        } catch (error: unknown) {
-            logger.error(error: unknown);
+        } catch (error) {
+            logger.error(error);
             process.exit(1); /* app crashed */
+        }
+    }
+
+    private setKeys() {
+        try {
+            return {
+                key: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.key')),
+                cert: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.crt')),
+                ca: fs.readFileSync(path.resolve(__dirname, '../../ssl/rootCA.crt'))
+            }
+        } catch (error) {
+            logger.error(error)
         }
     }
 
     private startExpressServer(): this {
         const app: core.Express = new ExpressServer().start();
         const port: string = process.env.PORT || '3000';
+        const keys = this.setKeys() as ServerOptions
 
-        const options: ServerOptions = {
-            rejectUnauthorized: Boolean(Number(process.env.SELF_SIGNED_CERT)),
-            key: fs.readFileSync(path.resolve(__dirname, '../ssl/private-key.pem')),
-            cert: fs.readFileSync(path.resolve(__dirname, '../ssl/public-key.pem'))
-        };
-
-        const server: Server = https.createServer(options, app).listen(port, (): void =>
+        const server: Server = https.createServer(keys, app).listen(port, (): void =>
             logger.success(('Express server listening on port: '?.yellow + port.rainbow)?.bold)
         );
 

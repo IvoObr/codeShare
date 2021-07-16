@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "scripts": {
         "clean": "rm -rf ./dist/ && mkdir dist",
-        "copy": "cp -r ./src/public ./dist/public &&  cp -r ./src/views ./dist/views && cp ./.env ./dist/ && cp -r ./ssl ./dist/ssl",
+        "copy": "cp -r ./src/public ./dist/public &&  cp -r ./src/views ./dist/views && cp ./.env ./dist/ && cp -r ../ssl ./dist/ssl",
         "build": "npm run clean && npm run copy && tsc --build tsconfig.prod.json",
         "eslint-fix": "eslint . --ext .ts --fix",
         "start": "node -r module-alias/register ./dist ",

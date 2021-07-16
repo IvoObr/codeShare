@@ -14,16 +14,27 @@ export default class AuthorizationService {
 
             logger.warn(request.body);
 
-            const cert: PeerCertificate = (request.socket as TLSSocket).getPeerCertificate();
-            const serverIdentity = tls.checkServerIdentity(String(process.env.HOST), cert);
+            const socket = request.socket as TLSSocket;
+            const certificate = socket.getCertificate() as PeerCertificate;
 
-            logger.warn(serverIdentity);
 
-            // https://nodejs.org/dist/latest-v14.x/docs/api/tls.html#tls_tlssocket_getpeercertificate_detailed
 
-            // logger.debug(JSON.stringify(cert, null, 2));
 
-            // logger.debug(JSON.stringify(cert2, null ,2))
+            logger.success(Object.entries(certificate));
+            logger.success(certificate.valid_from)
+            logger.success(certificate.valid_to)
+
+
+            /**
+             * openssl genrsa -out rootCA.key 4096
+             * openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1024 -out rootCA.crt
+             * openssl genrsa -out localhost.key 2048
+             * openssl req -new -sha256 -key localhost.key -subj "/\.C=BG/ST=SF/O=7devWorks/CN=localhost" -out localhost.csr
+             * openssl req -in localhost.csr -noout -text
+             * openssl x509 -req -in localhost.csr -CA rootCA.crt -CAkey rootCA.key -CAcreateserial -out localhost.crt -days 3650 -sha256
+             * openssl x509 -in localhost.crt -text -noout
+             */
+
 
             if (!(request as any)?.client?.authorized) {
                 // throw  new ServerError(Errors.UNAUTHORIZED, `SSL not valid.`);
@@ -31,7 +42,7 @@ export default class AuthorizationService {
 
             next();
 
-        } catch (error: unknown) {
+        } catch (error) {
             ServerError.handle(error, response);
         }
     }
@@ -64,7 +75,7 @@ export default class AuthorizationService {
                 next();
             });
 
-        } catch (error: unknown) {
+        } catch (error) {
             ServerError.handle(tokenError, response);
         }
     }
