@@ -11,7 +11,7 @@ import dotenv, { DotenvConfigOutput } from 'dotenv';
 import { ClientRequest, IncomingMessage } from 'http';
 import AuthorizationService from './services/AuthorizationService';
 /**
- *
+ *  
  */
 export default class AuthProxy {
 
@@ -36,7 +36,9 @@ export default class AuthProxy {
     }
 
     private proxyHttps(app: Express): void {
-        app.all('/api/v1/*', AuthorizationService.validateSSL, AuthorizationService.validateJwt,
+        app.all('/api/v1/*',
+            AuthorizationService.validateSSL,
+            AuthorizationService.validateJwt,
             (request: Request, response: Response): void => this.send(request, response));
     }
 

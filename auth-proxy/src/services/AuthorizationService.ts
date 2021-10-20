@@ -28,11 +28,11 @@ export default class AuthorizationService {
             /**
              * openssl genrsa -out rootCA.key 4096
              * openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1024 -out rootCA.crt
-             * openssl genrsa -out localhost.key 2048
-             * openssl req -new -sha256 -key localhost.key -subj "/\.C=BG/ST=SF/O=7devWorks/CN=localhost" -out localhost.csr
-             * openssl req -in localhost.csr -noout -text
-             * openssl x509 -req -in localhost.csr -CA rootCA.crt -CAkey rootCA.key -CAcreateserial -out localhost.crt -days 3650 -sha256
-             * openssl x509 -in localhost.crt -text -noout
+             * openssl genrsa -out codeShare.key 2048
+             * openssl req -new -sha256 -key codeShare.key -subj "/\.C=BG/ST=SF/O=7devWorks/CN=localhost" -out codeShare.csr
+             * openssl req -in codeShare.csr -noout -text
+             * openssl x509 -req -in codeShare.csr -CA rootCA.crt -CAkey rootCA.key -CAcreateserial -out codeShare.crt -days 36500 -sha256
+             * openssl x509 -in codeShare.crt -text -noout
              */
 
 
