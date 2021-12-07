@@ -10,7 +10,10 @@ const path = require('path');
  */
 
 function rmlogs(props) {
-    const { dir, filter, fileList = [], ignore = /(node_modules|dist|src|.git)/ } = props;
+
+    const { dir, filter, fileList = [],
+        ignore = /(node_modules|dist|src|.git|.vscode)/ } = props;
+    
     const files = fs.readdirSync(dir);
     
     files.forEach((file) => {
