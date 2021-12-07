@@ -1,1 +1,7 @@
+# folders
 ssl/
+node_modules/
+# files
+tsconfig.json
+.eslintrc.json
+package-lock.json
