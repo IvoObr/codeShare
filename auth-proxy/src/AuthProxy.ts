@@ -21,21 +21,21 @@ export default class AuthProxy {
             await new Mongo().connect();
 
             const app: Express = new ExpressServer().start();
-            this.proxyHttps(app);
+            this.httpsProxy(app);
 
         } catch (error) {
             this.onError(error);
         }
     }
 
-    private proxySocket(): this {
+    private socketProxy(): this {
 
         // BIG TODO: 
 
         return this;
     }
 
-    private proxyHttps(app: Express): void {
+    private httpsProxy(app: Express): void {
         app.all('/api/v1/*',
             AuthorizationService.validateSSL,
             AuthorizationService.validateJwt,

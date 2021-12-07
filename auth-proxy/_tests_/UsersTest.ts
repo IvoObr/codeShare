@@ -58,6 +58,8 @@ export default class UsersTest {
             const req: ClientRequest = https.request(options, (res: IncomingMessage): void => {
                 console.log(`statusCode: ${res.statusCode}`);
 
+                // TODO: send requests to [proxy]
+
                 res.on('data', (data: Buffer): void => {
                     logger.debug(JSON.parse(data.toString()));
 
