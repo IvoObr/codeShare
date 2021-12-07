@@ -11,3 +11,9 @@ export interface INewUserReq {
     role: UserRole;
     password: string;
 }
+
+export interface ICerts {
+    key: Buffer;
+    cert: Buffer;
+    ca: Buffer;
+}

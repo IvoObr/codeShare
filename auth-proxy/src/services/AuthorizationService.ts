@@ -3,7 +3,7 @@ import UserDal from '../db/UserDal';
 import { Errors } from '../lib/enums';
 import JwtService from './JwtService';
 import ServerError from './ServerError';
-import tls, { TLSSocket, PeerCertificate } from 'tls';
+import { TLSSocket, PeerCertificate } from 'tls';
 import { IClientData, IUser } from '../lib/interfaces';
 import { Request, Response, NextFunction } from 'express';
 
@@ -17,13 +17,9 @@ export default class AuthorizationService {
             const socket = request.socket as TLSSocket;
             const certificate = socket.getCertificate() as PeerCertificate;
 
-
-
-
             logger.success(Object.entries(certificate));
-            logger.success(certificate.valid_from)
-            logger.success(certificate.valid_to)
-
+            logger.success(certificate.valid_from);
+            logger.success(certificate.valid_to);
 
             /**
              * openssl genrsa -out rootCA.key 4096
@@ -35,14 +31,13 @@ export default class AuthorizationService {
              * openssl x509 -in codeShare.crt -text -noout
              */
 
-
             if (!(request as any)?.client?.authorized) {
                 // throw  new ServerError(Errors.UNAUTHORIZED, `SSL not valid.`);
             }
 
             next();
 
-        } catch (error) {
+        } catch (error: any) {
             ServerError.handle(error, response);
         }
     }

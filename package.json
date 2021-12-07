@@ -1,0 +1,37 @@
+{
+  "name": "codeshare",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "eslint-fix": "eslint . --ext .ts --fix",
+    "rmlogs": "node ./rmlogs.js",
+    "build": "npm run build --prefix ./rest-server/ && npm run build --prefix ./notification/ && npm run build --prefix ./auth-proxy/"
+  },
+  "eslintIgnore": [
+    "**/src/public/",
+    "**/dist/",
+    "**/build.ts",
+    "**/node_modules/"
+  ],
+  "dependencies": {
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.2"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.6.0",
+    "@typescript-eslint/parser": "^5.6.0",
+    "eslint": "^8.4.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IvoObr/codeShare.git"
+  },
+  "author": "IvoObr",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IvoObr/codeShare/issues"
+  },
+  "homepage": "https://github.com/IvoObr/codeShare#readme"
+}

@@ -4,7 +4,7 @@ import { login, logout, register, resetPassword, sendResetPassword } from '@serv
 
 class AuthRouter {
 
-    private router: Router = Router()
+    private router: Router = Router();
     
     public getRouter = (): Router => Router()
         /* main route */

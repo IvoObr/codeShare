@@ -3,7 +3,7 @@ import path from 'path';
 import logger from './lib/logger';
 import { Events } from './lib/enums';
 import Event from './lib/EventEmitter';
-import { IMailInfo } from './lib/interfaces';
+import { ICerts, IMailInfo } from './lib/interfaces';
 import tls, { TLSSocket, TlsOptions, Server } from 'tls';
 
 export default class TLSServer {
@@ -16,15 +16,15 @@ export default class TLSServer {
             logger.success('TLSServer listening on port'.yellow, `${port}`.rainbow));
     }
 
-    private setKeys() {
+    private setKeys(): ICerts | undefined {
         try {
             return {
                 key: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.key')),
                 cert: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.crt')),
                 ca: fs.readFileSync(path.resolve(__dirname, '../../ssl/rootCA.crt'))
-            }
+            };
         } catch (error) {
-            logger.error(error)
+            logger.error(error);
         }
     }
 

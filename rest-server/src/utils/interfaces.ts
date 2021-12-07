@@ -42,6 +42,12 @@ export interface INewUserReq extends IBaseUser {
   password: string;
 }
 
+export interface ICerts {
+  key: Buffer;
+  cert: Buffer;
+  ca: Buffer;
+}
+
 export interface IUserModel extends IBaseUser {
   tokens: string[];
   password: string;

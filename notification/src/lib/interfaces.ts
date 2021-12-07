@@ -7,6 +7,12 @@ export interface IMessage {
     headers?: { [key: string]: string }
 }
 
+export interface ICerts {
+    key: Buffer;
+    cert: Buffer;
+    ca: Buffer;
+}
+
 export interface IMailInfo {
     accepted: string[];
     rejected: string[];

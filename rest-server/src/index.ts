@@ -3,11 +3,11 @@ import fs from 'fs';
 import path from 'path';
 import colors from 'colors';
 import { Mongo } from '@db';
-import { logger, Env, printLogo } from '@utils';
 import ExpressServer from './ExpressServer';
-import https, { Server, ServerOptions } from 'https';
 import * as core from "express-serve-static-core";
 import dotenv, { DotenvConfigOutput } from 'dotenv';
+import https, { Server, ServerOptions } from 'https';
+import { logger, Env, printLogo, ICerts } from '@utils';
 colors.enable();
 printLogo();
 
@@ -26,7 +26,7 @@ class Main {
         }
     }
 
-    private setKeys() {
+    private setKeys(): ICerts | undefined {
         try {
             return {
                 key: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.key')),
@@ -63,7 +63,7 @@ class Main {
     private onError = (error: Error): void => {
         logger.error('Server unable to start'.red, error);
         process.exit(0); /* clean exit */
-    }
+    };
 
     private closeServer(server: Server): void {
         server.close((): void => {

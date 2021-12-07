@@ -1,12 +1,5 @@
-import * as fs from 'fs';
-import * as path from 'path';
-
-interface IProps {
-    dir: string,
-    filter: RegExp,
-    ignore?: RegExp,
-    fileList: string[]
-}
+const fs = require('fs');
+const path = require('path');
 
 /**
  * Recursively deletes files from directory matching RegEx
@@ -16,19 +9,16 @@ interface IProps {
  * @param fileList - files paths to be deleted
  */
 
-export function rmlogs(props: IProps): string[] {
-
-    const { dir, filter, fileList = [],
-        ignore = /(node_modules|dist|src|.git)/ }: IProps = props;
-
-    const files: string[] = fs.readdirSync(dir);
-
-    files.forEach((file: string): void => {
-        const filePath: string = path.join(dir, file);
+function rmlogs(props) {
+    const { dir, filter, fileList = [], ignore = /(node_modules|dist|src|.git)/ } = props;
+    const files = fs.readdirSync(dir);
+    
+    files.forEach((file) => {
+        const filePath = path.join(dir, file);
         const excluded = filePath.match(ignore);
 
         if (!excluded) {
-            const fileStat: fs.Stats = fs.lstatSync(filePath);
+            const fileStat = fs.lstatSync(filePath);
 
             if (fileStat.isDirectory()) {
                 rmlogs({ dir: filePath, filter, ignore, fileList });
@@ -45,7 +35,7 @@ export function rmlogs(props: IProps): string[] {
 }
 
 rmlogs({
-    dir: path.join(__dirname, '../../../'),
-    filter: new RegExp(/.log/),
+    dir: path.join(__dirname, './'), // start from current dir
+    filter: new RegExp(/.log\b/),
     fileList: []
 });

@@ -5,10 +5,8 @@
         "clean": "rm -rf ./dist/ && mkdir dist",
         "copy": "cp -r ./src/public ./dist/public &&  cp -r ./src/views ./dist/views && cp ./.env ./dist/ && cp -r ../ssl ./dist/ssl",
         "build": "npm run clean && npm run copy && tsc --build tsconfig.prod.json",
-        "eslint-fix": "eslint . --ext .ts --fix",
         "start": "node -r module-alias/register ./dist ",
-        "dev": "nodemon development --delay 1",
-        "rmlogs": "node dist/lib/rmlogs.js"
+        "dev": "nodemon development --delay 1"
     },
     "nodemonConfig": {
         "watch": [
@@ -29,12 +27,6 @@
         "@services": "dist/services/",
         "@entities": "dist/entities/"
     },
-    "eslintIgnore": [
-        "src/public/",
-        "dist/",
-        "build.ts",
-        "node_modules/"
-    ],
     "dependencies": {
         "@7dev-works/log-express": "^1.0.5",
         "@7dev-works/logger": "^2.2.4",
@@ -55,9 +47,6 @@
         "@types/jsonwebtoken": "^8.5.0",
         "@types/mongodb": "^3.5.34",
         "@types/node": "^14.14.9",
-        "@typescript-eslint/eslint-plugin": "^4.8.1",
-        "@typescript-eslint/parser": "^4.8.1",
-        "eslint": "^7.13.0",
         "nodemon": "^2.0.7",
         "ts-node": "^9.0.0",
         "tsconfig-paths": "^3.9.0",

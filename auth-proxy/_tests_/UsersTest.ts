@@ -3,12 +3,11 @@ import path from 'path';
 import logger from '../src/lib/logger';
 import { handleError } from './testUtils';
 import genBase36Key from '../src/lib/genBase36Key';
-import { IHeaders, INewUserReq } from './interfaces';
 import { ClientRequest, IncomingMessage } from 'http';
 import { IUser, IStrings } from '../src/lib/interfaces';
 import { UserRole, StatusCodes } from '../src/lib/enums';
+import { IHeaders, INewUserReq, ICerts } from './interfaces';
 import https, { RequestOptions, ServerOptions } from 'https';
-
 
 export default class UsersTest {
 
@@ -20,19 +19,19 @@ export default class UsersTest {
         headers: { headers: { Authorization: 'Bearer ' } }
     };
 
-    private static setKeys() {
+    private static setKeys(): ICerts | undefined {
         try {
             return {
                 key: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.key')),
                 cert: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.crt')),
                 ca: fs.readFileSync(path.resolve(__dirname, '../../ssl/rootCA.crt'))
-            }
+            };
         } catch (error) {
-            logger.error(error)
+            logger.error(error);
         }
     }
 
-    public static async register(): Promise<void> {
+    public static register(): void {
         // const path: string = 'POST /auth/pub/register'.yellow;
         try {
             const name: string = 'ivoObr';
@@ -52,8 +51,7 @@ export default class UsersTest {
                 }
             };
 
-            options = { ...options, ...UsersTest.setKeys() }
-
+            options = { ...options, ...UsersTest.setKeys() };
 
             const req: ClientRequest = https.request(options, (res: IncomingMessage): void => {
                 console.log(`statusCode: ${res.statusCode}`);
@@ -86,7 +84,7 @@ export default class UsersTest {
         }
     }
 
-    public static async login(email: string, password: string, statusCode?: StatusCodes): Promise<void> {
+    public static login(email: string, password: string, statusCode?: StatusCodes): void {
         const path: string = 'POST /api/v1/auth/pub/login'.yellow;
         try {
             // const url: string = `http://localhost:${UsersTest.config.port}/api/v1/auth/pub/login`;
@@ -107,7 +105,7 @@ export default class UsersTest {
         }
     }
 
-    public static async logout(statusCode?: StatusCodes): Promise<void> {
+    public static logout(statusCode?: StatusCodes): void {
         const path: string = 'GET /api/v1/auth/logout'.yellow;
         try {
             // const url: string = `http://localhost:${UsersTest.config.port}/api/v1/auth/logout`;
@@ -121,7 +119,7 @@ export default class UsersTest {
         }
     }
 
-    public static async getAllUsers(statusCode?: StatusCodes): Promise<void> {
+    public static getAllUsers(statusCode?: StatusCodes): void {
         const path: string = 'GET /api/v1/user/all'.yellow;
         try {
             // const url: string = `http://localhost:${UsersTest.config.port}/api/v1/user/all`;
@@ -137,7 +135,7 @@ export default class UsersTest {
         }
     }
 
-    public static async updateUser(statusCode?: StatusCodes): Promise<void> {
+    public static updateUser(statusCode?: StatusCodes): void {
         const path: string = 'PUT /api/v1/user/update/:id'.yellow;
         try {
             // const userData: IStrings = {
@@ -165,7 +163,7 @@ export default class UsersTest {
         }
     }
 
-    public static async deleteUser(statusCode?: StatusCodes) {
+    public static deleteUser(statusCode?: StatusCodes): void {
         const path: string = 'DELETE /api/v1/user/delete/:id'.yellow;
         try {
             // const url: string = `http://localhost:${UsersTest.config.port}/api/v1/user/delete/${UsersTest.config.userId}`;
@@ -179,7 +177,7 @@ export default class UsersTest {
         }
     }
 
-    public static async sendResetPass(): Promise<void> {
+    public static sendResetPass(): void {
         const path: string = 'POST /api/v1/auth/pub/send-reset-password'.yellow;
         try {
             // const url: string = `http://localhost:${UsersTest.config.port}/api/v1/auth/pub/send-reset-password`;
@@ -196,7 +194,7 @@ export default class UsersTest {
         }
     }
 
-    public static async resetPass(statusCode?: StatusCodes): Promise<void> {
+    public static resetPass(statusCode?: StatusCodes): void {
         const path: string = 'POST /api/v1/auth/reset-password'.yellow;
         try {
             // const url: string = `http://localhost:${UsersTest.config.port}/api/v1/auth/reset-password`;

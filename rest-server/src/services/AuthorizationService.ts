@@ -15,7 +15,7 @@ class AuthorizationService {
 
             next();
 
-        } catch (error) {
+        } catch (error: any) {
             ServerError.handle(error, response);
         }
     }

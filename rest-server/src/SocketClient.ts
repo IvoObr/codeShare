@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { logger, Events, Event } from '@utils';
+import { logger, Events, Event, ICerts } from '@utils';
 import tls, { TLSSocket, ConnectionOptions } from 'tls';
 
 export default class SocketClient {
@@ -29,15 +29,15 @@ export default class SocketClient {
         return this;
     }
 
-    private setKeys() {
+    private setKeys(): ICerts | undefined {
         try {
             return {
                 key: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.key')),
                 cert: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.crt')),
                 ca: fs.readFileSync(path.resolve(__dirname, '../../ssl/rootCA.crt'))
-            }
+            };
         } catch (error) {
-            logger.error(error)
+            logger.error(error);
         }
     }
 
@@ -51,7 +51,7 @@ export default class SocketClient {
             .on('error', (error: Error): void => logger.error(error))
             .on('timeout', (): void => logger.debug('Socket timeout.'))
             .on('connect', (): void => logger.debug('Socket connected.'));
-    }
+    };
 
     private onData(data: Buffer): void {
         try {

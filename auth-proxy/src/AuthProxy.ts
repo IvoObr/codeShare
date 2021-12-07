@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { Mongo } from './db';
 import logger from './lib/logger';
+import { ICerts } from './lib/interfaces';
 import { Headers, Env } from './lib/enums';
 import ExpressServer from './ExpressServer';
 import { Request, Response } from 'express';
@@ -42,15 +43,15 @@ export default class AuthProxy {
             (request: Request, response: Response): void => this.send(request, response));
     }
 
-    private setKeys() {
+    private setKeys(): ICerts | undefined {
         try {
             return {
                 key: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.key')),
                 cert: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.crt')),
                 ca: fs.readFileSync(path.resolve(__dirname, '../../ssl/rootCA.crt'))
-            }
+            };
         } catch (error) {
-            logger.error(error)
+            logger.error(error);
         }
     }
 
@@ -65,7 +66,7 @@ export default class AuthProxy {
             headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) }
         };
 
-        options = { ...options, ...this.setKeys() }
+        options = { ...options, ...this.setKeys() };
 
         const req: ClientRequest = https.request(options, (res: IncomingMessage): void => {
             console.log(`statusCode: ${res.statusCode}`);

@@ -1,11 +1,11 @@
 import fs from 'fs';
-import tls from 'tls';
 import path from 'path';
 import cors from 'cors';
 import helmet from 'helmet';
 import express from 'express';
 import logger from './lib/logger';
 import { Headers } from './lib/enums';
+import { ICerts } from './lib/interfaces';
 import https, { Server, ServerOptions } from 'https';
 import { Express } from "express-serve-static-core";
 import { logExpress } from '@7dev-works/log-express';
@@ -13,19 +13,19 @@ import { logExpress } from '@7dev-works/log-express';
  *  
  */
 export default class ExpressServer {
-
-    private setKeys() {
+    
+    private setKeys(): ICerts | undefined {
         try {
             return {
                 key: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.key')),
                 cert: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.crt')),
                 ca: fs.readFileSync(path.resolve(__dirname, '../../ssl/rootCA.crt'))
-            }
+            };
         } catch (error) {
-            logger.error(error)
+            logger.error(error);
         }
     }
-
+    
     public start(): Express {
         const app: Express = this.setApp();
         const keys = this.setKeys() as ServerOptions;
