@@ -5,7 +5,9 @@ export default class Mongo {
 
     private readonly uri: string = 'mongodb://' +
         process.env.DB_USER + ':' +
-        process.env.DB_PASSWORD + '@127.0.0.1:27017/' +
+        process.env.DB_PASSWORD + '@' +
+        process.env.DB_HOST + ':' +
+        process.env.DB_PORT + '/' +
         process.env.DB_NAME + '?poolSize=20&writeConcern=majority';
 
     static db: Db;
