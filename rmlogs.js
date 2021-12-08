@@ -69,5 +69,11 @@ const readline = require('readline')
         fileList: []
     });
 
+    if (fileList.length === 0) {
+        console.log('\u001B[32m\u001B[1mNo logs found. Bye!\u001B[0m');
+        readline.close();
+        return;
+    }
+
     deleteFiles(fileList);
 })();
