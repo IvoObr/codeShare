@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { Logger, ILogOptions } from '@7dev-works/logger';
+import { Logger, ILogOptions } from '@7util/logger';
 dotenv.config();
 
 const options: ILogOptions = {

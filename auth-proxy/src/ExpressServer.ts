@@ -47,7 +47,7 @@ export default class ExpressServer {
 
     private onError(error: unknown): void {
         logger.error('Auth-proxy unable to start'.red, error);
-        process.exit(1); /* app crashed */
+        process.exit(0); /* clean exit */
     }
 
     private closeServer(server: Server): void {

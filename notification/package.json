@@ -18,7 +18,7 @@
         ]
     },
     "dependencies": {
-        "@7dev-works/logger": "^2.2.4",
+        "@7util/logger": "^2.2.4",
         "colors": "^1.4.0",
         "dotenv": "^8.2.0",
         "mongodb": "^3.6.3",

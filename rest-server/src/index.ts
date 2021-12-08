@@ -44,14 +44,14 @@ class Main {
         const keys: ServerOptions = this.setKeys() as ServerOptions;
 
         const server: Server = https.createServer(keys, app).listen(port, (): void =>
-            logger.success(('Express server listening on port: '?.yellow + port.rainbow)?.bold)
+            logger.success(('REST server listening on port: '?.yellow + port.rainbow)?.bold)
         );
 
         server.on('error', this.onError);
         process.on('SIGTERM', (): void => this.closeServer(server));
 
         logger.info('process id:', process.pid.toString()?.cyan.bold);
-        logger.info(`Server running in ${process.env.NODE_ENV?.cyan.bold} mode.`);
+        logger.info(`REST Server running in ${process.env.NODE_ENV?.cyan.bold} mode.`);
         return this;
     }
 
@@ -61,7 +61,7 @@ class Main {
     }
 
     private onError = (error: Error): void => {
-        logger.error('Server unable to start'.red, error);
+        logger.error('REST Server unable to start'.red, error);
         process.exit(0); /* clean exit */
     };
 
@@ -80,7 +80,7 @@ class Main {
         const result: DotenvConfigOutput = dotenv.config();
 
         if (result.error) {
-            logger.error('Server unable to start'.red, result.error);
+            logger.error('REST Server unable to start'.red, result.error);
             process.exit(0); /* clean exit */
         }
         return this;
