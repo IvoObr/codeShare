@@ -11,7 +11,8 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\rmlogs.js"
+            "program": "${workspaceFolder}\\rmlogs.js",
+            "console": "integratedTerminal"
         }
     ]
 }
