@@ -5,7 +5,7 @@ import { Env, Headers } from '@utils';
 import express, { Router } from 'express';
 import { AuthRouter, UserRouter } from '@routers';
 import * as core from "express-serve-static-core";
-import { logExpress } from '@7dev-works/log-express';
+import { logExpress } from '@7util/log-express';
 
 class ExpressServer {
 

@@ -8,7 +8,7 @@ import { Headers } from './lib/enums';
 import { ICerts } from './lib/interfaces';
 import https, { Server, ServerOptions } from 'https';
 import { Express } from "express-serve-static-core";
-import { logExpress } from '@7dev-works/log-express';
+import { logExpress } from '@7util/log-express';
 /**
  *  
  */
