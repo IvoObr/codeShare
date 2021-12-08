@@ -24,17 +24,16 @@ const readline = require('readline')
         files.forEach((file) => {
             const filePath = path.join(dir, file);
             const excluded = filePath.match(ignore);
+            if (excluded) return;
 
-            if (!excluded) {
-                const fileStat = fs.lstatSync(filePath);
+            const fileStat = fs.lstatSync(filePath);
 
-                if (fileStat.isDirectory()) {
-                    findFilesR({ dir: filePath, filter, ignore, fileList });
+            if (fileStat.isDirectory()) {
+                findFilesR({ dir: filePath, filter, ignore, fileList });
 
-                } else if (filter.test(filePath)) {
-                    fileList.push(filePath);
-                }
-            }
+            } else if (filter.test(filePath)) {
+                fileList.push(filePath);
+            }        
         });
 
         return fileList;
