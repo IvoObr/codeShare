@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "eslint-fix": "eslint . --ext .ts --fix",
+    "eslint-fix": "eslint . --ext .ts --fix && echo \u001B[32m\u001B[1mAll Fixed!\u001B[0m",
     "rmlogs": "node ./rmlogs.js",
-    "build": "npm run build --prefix ./rest-server/ && npm run build --prefix ./notification/ && npm run build --prefix ./auth-proxy/"
+    "build": "npm run build --prefix ./rest-server/ && npm run build --prefix ./notification/ && npm run build --prefix ./auth-proxy/ && echo \u001B[36m\u001B[1mAll Build!\u001B[0m"
   },
   "eslintIgnore": [
     "**/src/public/",
