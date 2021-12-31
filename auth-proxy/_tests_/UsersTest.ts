@@ -45,18 +45,19 @@ export default class UsersTest {
     }
 
     public static async register(): Promise<void> {
-        const path: string = 'POST /auth/pub/register'.yellow;
+        const method: string = 'POST';
+        const path: string = '/api/v1/uth/pub/register'; // todo: break url to test 404
         try {
             const name: string = 'ivoObr';
             const role: UserRole = UserRole.Admin;
             const password: string = 'Password123@';
             const email: string = `${genBase36Key(8)}@yopmail.com`;
             const payload: string = JSON.stringify({ name, email, role, password });
-            const options: RequestOptions = UsersTest.getOptions('POST', '/api/v1/auth/pub/register', payload);
+            const options: RequestOptions = UsersTest.getOptions(method, path, payload);
 
-            await httpsRequest(options, payload, function(response: IncomingMessage, data: Buffer) {
+            await httpsRequest(options, payload, function(response: IncomingMessage, data: Buffer) {                
                 const user: IUser = JSON.parse(data.toString());
-                logger.success(path, response.statusCode, user);
+                logger.success(`${method} ${path}`.yellow, response.statusCode, user);
 
                 UsersTest.config.email = user.email;
                 UsersTest.config.userId = user._id;

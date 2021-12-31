@@ -70,16 +70,34 @@ export default class AuthProxy {
         };
 
         const req: ClientRequest = https.request(options, (res: IncomingMessage): void => {
-            console.log(`statusCode: ${res.statusCode}`);
+            logger.info(`statusCode: ${res.statusCode}`); // todo: check is statusCode correct!!!!!!!!!!!!
 
-            res.on('data', (data: Buffer): Response => response
-                .header(Headers.Authorization, res.headers?.authorization)
-                .status(Number(res?.statusCode))
-                .json(JSON.parse(data.toString()))
-            );
+            res.on('data', function(data: Buffer): Response {
+
+                logger.debug(data.toString());
+
+                /** FIXME:
+                 * <!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                        <meta charset="utf-8">
+                        <title>Error</title>
+                        </head>
+                        <body>
+                        <pre>Cannot POST /api/v1/uth/pub/register</pre>
+                        </body>
+                    </html>
+                 * 
+                 */
+
+                return response
+                    .header(Headers.Authorization, res.headers?.authorization)
+                    .status(Number(res?.statusCode))
+                    .json(JSON.parse(data.toString()));
+            });
         });
 
-        req.on('error', (error): void => {
+        req.on('error', (error: Error): void => {
             console.error(error);
         });
 
