@@ -1,5 +1,5 @@
 import fs from 'fs';
-import path, { resolve } from 'path';
+import path from 'path';
 import logger from '../src/lib/logger';
 import { handleError } from './testUtils';
 import genBase36Key from '../src/lib/genBase36Key';
@@ -8,7 +8,6 @@ import { IUser, IStrings } from '../src/lib/interfaces';
 import { UserRole, StatusCodes } from '../src/lib/enums';
 import { IHeaders, INewUserReq, ICerts } from './interfaces';
 import https, { RequestOptions, ServerOptions } from 'https';
-import { rejects } from 'assert';
 
 export default class UsersTest {
 
