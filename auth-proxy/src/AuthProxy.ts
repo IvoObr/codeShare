@@ -58,15 +58,16 @@ export default class AuthProxy {
     private send(request: Request, response: Response): void {
         const body: string = JSON.stringify(request.body);
 
-        let options: RequestOptions = {
+        const options: RequestOptions = {
             method: request.method,
             path: request.originalUrl,
             hostname: process.env.REST_API_HOST,
             port: Number(process.env.REST_API_PORT),
-            headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) }
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(body)
+            }, ...this.setKeys() as ICerts
         };
-
-        options = { ...options, ...this.setKeys() };
 
         const req: ClientRequest = https.request(options, (res: IncomingMessage): void => {
             console.log(`statusCode: ${res.statusCode}`);

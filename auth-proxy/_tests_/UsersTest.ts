@@ -1,13 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 import logger from '../src/lib/logger';
-import { handleError } from './testUtils';
+import { RequestOptions } from 'https';
 import genBase36Key from '../src/lib/genBase36Key';
 import { ClientRequest, IncomingMessage } from 'http';
 import { IUser, IStrings } from '../src/lib/interfaces';
+import { handleError, httpsRequest } from './testUtils';
 import { UserRole, StatusCodes } from '../src/lib/enums';
 import { IHeaders, INewUserReq, ICerts } from './interfaces';
-import https, { RequestOptions, ServerOptions } from 'https';
 
 export default class UsersTest {
 
@@ -26,61 +26,49 @@ export default class UsersTest {
                 cert: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.crt')),
                 ca: fs.readFileSync(path.resolve(__dirname, '../../ssl/rootCA.crt'))
             };
-        } catch (error) {
+        } catch (error: unknown) {
             logger.error(error);
         }
     }
 
-    public static register(): Promise<IUser> {
-        return new Promise((resolve, reject): void => {
-            const path: string = 'POST /auth/pub/register'.yellow;
-            try {
-                const name: string = 'ivoObr';
-                const password: string = 'Password123@';
-                const email: string = `${genBase36Key(8)}@yopmail.com`;
-                const role: UserRole = UserRole.Admin;
-                const payload: string = JSON.stringify({ name, email, role, password });
+    private static getOptions(method: string, path: string, payload: string): RequestOptions {
+        return {
+            path: path,
+            method: method,
+            hostname: 'localhost',
+            port: Number(process.env.PORT),
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(payload)
+            }, ...UsersTest.setKeys() as ICerts
+        };
+    }
 
-                let options: RequestOptions = {
-                    hostname: 'localhost',
-                    port: Number(process.env.PORT),
-                    path: '/api/v1/auth/pub/register',
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Content-Length': Buffer.byteLength(payload)
-                    }
-                };
+    public static async register(): Promise<void> {
+        const path: string = 'POST /auth/pub/register'.yellow;
+        try {
+            const name: string = 'ivoObr';
+            const role: UserRole = UserRole.Admin;
+            const password: string = 'Password123@';
+            const email: string = `${genBase36Key(8)}@yopmail.com`;
+            const payload: string = JSON.stringify({ name, email, role, password });
+            const options: RequestOptions = UsersTest.getOptions('POST', '/api/v1/auth/pub/register', payload);
 
-                options = { ...options, ...UsersTest.setKeys() };
+            await httpsRequest(options, payload, function(response: IncomingMessage, data: Buffer) {
+                const user: IUser = JSON.parse(data.toString());
+                logger.success(path, response.statusCode, user);
 
-                const req: ClientRequest = https.request(options, (res: IncomingMessage): void => {  
+                UsersTest.config.email = user.email;
+                UsersTest.config.userId = user._id;
 
-                    res.on('data', (data: Buffer): void => {
-                        const user: IUser = JSON.parse(data.toString());
-                        logger.success(path, res.statusCode, user);
+                expect(user.role).toBe(role);
+                expect(user.email).toBe(email);
+            });
 
-                        UsersTest.config.email = user.email;
-                        UsersTest.config.userId = user._id;
-
-                        expect(user.role).toBe(role);
-                        expect(user.email).toBe(email);
-                        resolve(user);
-                    });
-                });
-
-                req.on('error', (error): void => {
-                    console.error(error);
-                    reject(error);
-                });
-
-                req.write(payload);
-                req.end();
-
-            } catch (error) {
-                handleError(path, error);
-            }
-        });
+        } catch (error) {
+            handleError(path, error);
+            // todo: fixme: handleError
+        }
     }
 
     public static login(email: string, password: string, statusCode?: StatusCodes): void {

@@ -1,9 +1,11 @@
 import colors from 'colors';
+import logger from '../src/lib/logger';
+import https, { RequestOptions } from 'https';
 import { StatusCodes } from '../src/lib/enums';
-// import { AxiosError, AxiosResponse } from 'axios';
-// colors.enable();
+import { ICallback, IFunc } from './interfaces';
+import { ClientRequest, IncomingMessage } from 'http';
+colors.enable();
 
-// error: AxiosError
 export function handleError(path: string, error: any, statusCode?: StatusCodes): void {
     
     // const response: AxiosResponse | undefined = error?.response;
@@ -14,6 +16,33 @@ export function handleError(path: string, error: any, statusCode?: StatusCodes):
     //     return;
     // }
 
-    // console.log(path, status, response?.data?.error || error);
+    // logger.info(path, status, response?.data?.error || error);
     // expect(typeof error).not.toBeDefined();
+}
+
+/**
+ * Executes https request to Proxy
+ * @param options 
+ * @param payload 
+ * @param callback 
+ * @returns response from Proxy
+ */
+export async function httpsRequest(options: RequestOptions, payload: string, callback: ICallback): Promise<unknown> {
+    return new Promise((resolve: IFunc, reject: IFunc): void => {
+        
+        const request: ClientRequest = https.request(options, (response: IncomingMessage): void => {
+            response.on('data', function(data: Buffer) {
+                callback(response, data);
+                resolve();
+            });
+        });
+
+        request.on('error', function(error: Error) {
+            logger.error(error);
+            reject(error);
+        });
+
+        request.write(payload);
+        request.end();
+    });
 }
