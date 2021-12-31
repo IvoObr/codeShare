@@ -3,22 +3,19 @@
     "version": "1.0.0",
     "scripts": {
         "clean": "rm -rf ./dist/ && mkdir dist",
-        "copy": "cp ./.env ./dist/",
+        "copy": "cp ./.env ./dist/ && cp -r ../ssl ./dist/ssl",
         "build": "npm run clean && npm run copy && tsc --build tsconfig.json",
         "test": "nodemon --config ./_tests_/nodemon.json",
         "start": "node -r ./dist ",
         "dev": "nodemon src/index.ts --delay 1"
     },
     "nodemonConfig": {
-        "watch": [
-            "src"
-        ],
+        "watch": ["src"],
         "ext": "ts",
-        "ignore": [
-            "src/public"
-        ]
+        "ignore": ["src/public"]
     },
     "jest": {
+        "testPathIgnorePatterns": ["dist/"],
         "transform": {
             "^.+\\.ts?$": "ts-jest"
         }

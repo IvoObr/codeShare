@@ -74,7 +74,7 @@ export default class AuthProxy {
             res.on('data', (data: Buffer): Response => response
                 .header(Headers.Authorization, res.headers?.authorization)
                 .status(Number(res?.statusCode))
-                .json(data.toString())
+                .json(JSON.parse(data.toString()))
             );
         });
 

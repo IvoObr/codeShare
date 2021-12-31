@@ -1,5 +1,5 @@
 import fs from 'fs';
-import path from 'path';
+import path, { resolve } from 'path';
 import logger from '../src/lib/logger';
 import { handleError } from './testUtils';
 import genBase36Key from '../src/lib/genBase36Key';
@@ -8,6 +8,7 @@ import { IUser, IStrings } from '../src/lib/interfaces';
 import { UserRole, StatusCodes } from '../src/lib/enums';
 import { IHeaders, INewUserReq, ICerts } from './interfaces';
 import https, { RequestOptions, ServerOptions } from 'https';
+import { rejects } from 'assert';
 
 export default class UsersTest {
 
@@ -31,57 +32,56 @@ export default class UsersTest {
         }
     }
 
-    public static register(): void {
-        // const path: string = 'POST /auth/pub/register'.yellow;
-        try {
-            const name: string = 'ivoObr';
-            const password: string = 'Password123@';
-            const email: string = `${genBase36Key(8)}@yopmail.com`;
-            const role: UserRole = UserRole.Admin;
-            const payload: string = JSON.stringify({ name, email, role, password });
+    public static register(): Promise<IUser> {
+        return new Promise((resolve, reject): void => {
+            const path: string = 'POST /auth/pub/register'.yellow;
+            try {
+                const name: string = 'ivoObr';
+                const password: string = 'Password123@';
+                const email: string = `${genBase36Key(8)}@yopmail.com`;
+                const role: UserRole = UserRole.Admin;
+                const payload: string = JSON.stringify({ name, email, role, password });
 
-            let options: RequestOptions = {
-                hostname: 'localhost',
-                port: Number(process.env.PORT),
-                path: '/api/v1/auth/pub/register',
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Content-Length': Buffer.byteLength(payload)
-                }
-            };
+                let options: RequestOptions = {
+                    hostname: 'localhost',
+                    port: Number(process.env.PORT),
+                    path: '/api/v1/auth/pub/register',
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Content-Length': Buffer.byteLength(payload)
+                    }
+                };
 
-            options = { ...options, ...UsersTest.setKeys() };
+                options = { ...options, ...UsersTest.setKeys() };
 
-            const req: ClientRequest = https.request(options, (res: IncomingMessage): void => {
-                console.log(`statusCode: ${res.statusCode}`);
+                const req: ClientRequest = https.request(options, (res: IncomingMessage): void => {  
 
-                // TODO: send requests to [proxy]
+                    res.on('data', (data: Buffer): void => {
+                        const user: IUser = JSON.parse(data.toString());
+                        logger.success(path, res.statusCode, user);
 
-                res.on('data', (data: Buffer): void => {
-                    logger.debug(JSON.parse(data.toString()));
+                        UsersTest.config.email = user.email;
+                        UsersTest.config.userId = user._id;
 
+                        expect(user.role).toBe(role);
+                        expect(user.email).toBe(email);
+                        resolve(user);
+                    });
                 });
-            });
 
-            req.on('error', (error): void => {
-                console.error(error);
-            });
+                req.on('error', (error): void => {
+                    console.error(error);
+                    reject(error);
+                });
 
-            req.write(payload);
-            req.end();
+                req.write(payload);
+                req.end();
 
-            // logger.success(path, response.data);
-
-            // UsersTest.config.email = response.data.email;
-            // UsersTest.config.userId = response.data._id;
-
-            // expect(response.data.role).toBe(role);
-            // expect(response.data.email).toBe(email);
-
-        } catch (error) {
-            // handleError(path, error);
-        }
+            } catch (error) {
+                handleError(path, error);
+            }
+        });
     }
 
     public static login(email: string, password: string, statusCode?: StatusCodes): void {

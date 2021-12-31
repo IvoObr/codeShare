@@ -1,6 +1,6 @@
 {
   "watch": ["_tests_"],
-  "ext": "test.ts",
+  "ext": "*.test.ts",
   "ignore": ["_test_/support"],
   "exec": "jest"
 }
