@@ -69,25 +69,25 @@ export default class AuthProxy {
             }, ...this.setKeys() as ICerts
         };
 
-        const req: ClientRequest = https.request(options, (res: IncomingMessage): Response | void => {
-            logger.info(`statusCode: ${res.statusCode}`);
+        const req: ClientRequest = https.request(options, (message: IncomingMessage): Response | void => {
+            logger.info(`statusCode: ${message.statusCode}`);
             
-            if (Number(res?.statusCode) >= 400) {
-                return this.sendRes(response, res, res.statusMessage || 'Error');            
+            if (Number(message?.statusCode) >= StatusCodes.BAD_REQUEST) {
+                return this.sendRes(response, message, message.statusMessage || 'Error');            
             }
             
-            res.on('data', (data: Buffer): Response => {
+            message.on('data', (data: Buffer): Response => {
                 try {
-                    return this.sendRes(response, res, JSON.parse(data.toString()));
+                    return this.sendRes(response, message, JSON.parse(data.toString()));
                 } catch (error: any) {
                     logger.error(error);
-                    return this.sendRes(response, res, error.message);
+                    return this.sendRes(response, message, error.message);
                 }
             });
 
         });
 
-        req.on('error', (error: Error): void => {
+        req.on('error', function(error: Error): void {
             logger.error(error);
         });
 
@@ -95,11 +95,11 @@ export default class AuthProxy {
         req.end();
     }
 
-    private sendRes(response: Response, res: IncomingMessage, message: string): Response {
+    private sendRes(response: Response, message: IncomingMessage, data: string): Response {
         return response
-            .header(Headers.Authorization, res.headers?.authorization)
-            .status(Number(res?.statusCode))
-            .json((message));
+            .header(Headers.Authorization, message.headers?.authorization)
+            .status(Number(message?.statusCode))
+            .json((data));
     }
 
     private setEnv(): void {

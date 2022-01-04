@@ -5,7 +5,7 @@ import { RequestOptions } from 'https';
 import genBase36Key from '../src/lib/genBase36Key';
 import { ClientRequest, IncomingMessage } from 'http';
 import { IUser, IStrings } from '../src/lib/interfaces';
-import { handleError, httpsRequest } from './testUtils';
+import { httpsRequest } from './testUtils';
 import { UserRole, StatusCodes } from '../src/lib/enums';
 import { IHeaders, INewUserReq, ICerts } from './interfaces';
 
@@ -15,7 +15,6 @@ export default class UsersTest {
         userId: '-1',
         email: '',
         password: 'Password123@',
-        port: Number(process.env.PORT),
         headers: { headers: { Authorization: 'Bearer ' } }
     };
 
@@ -46,30 +45,24 @@ export default class UsersTest {
 
     public static async register(): Promise<void> {
         const method: string = 'POST';
-        const path: string = '/api/v1/uth/pub/register'; // todo: break url to test 404
-        try {  
-            const name: string = 'ivoObr';
-            const role: UserRole = UserRole.Admin;
-            const password: string = 'Password123@';
-            const email: string = `${genBase36Key(8)}@yopmail.com`;
-            const payload: string = JSON.stringify({ name, email, role, password });
-            const options: RequestOptions = UsersTest.getOptions(method, path, payload);
+        const name: string = 'ivoObr';
+        const role: UserRole = UserRole.Admin;
+        const password: string = 'Password123@';
+        const path: string = '/api/v1/auth/pub/register';
+        const email: string = `${genBase36Key(8)}@yopmail.com`;
+        const payload: string = JSON.stringify({ name, email, role, password });
+        const options: RequestOptions = UsersTest.getOptions(method, path, payload);
 
-            await httpsRequest(options, payload, function(error: Error | null, response: IncomingMessage, data: Buffer | null) {   
-                const user: IUser = JSON.parse(data?.toString()); // todo: handle error with callback 
-                logger.success(`${method} ${path}`.yellow, response.statusCode, user);
+        await httpsRequest(options, payload, function(message: IncomingMessage, data: Buffer) {   
+            const user: IUser = JSON.parse(data?.toString());
+            logger.success(`${method} ${path}`.yellow, message.statusCode, user);
 
-                UsersTest.config.email = user.email;
-                UsersTest.config.userId = user._id;
+            UsersTest.config.email = user.email;
+            UsersTest.config.userId = user._id;
 
-                expect(user.role).toBe(role);
-                expect(user.email).toBe(email);
-            });
-
-        } catch (error) {
-            handleError(path, error);
-            // todo: fixme: handleError
-        }
+            expect(user.role).toBe(role);
+            expect(user.email).toBe(email);
+        });
     }
 
     public static login(email: string, password: string, statusCode?: StatusCodes): void {
@@ -89,7 +82,7 @@ export default class UsersTest {
             // expect(typeof response.data.role).toBe('string');
 
         } catch (error) {
-            handleError(path, error, statusCode);
+            // handleError(path, error, statusCode);
         }
     }
 
@@ -103,7 +96,7 @@ export default class UsersTest {
             // expect(response.status).toBe(200);
 
         } catch (error) {
-            handleError(path, error, statusCode);
+            // handleError(path, error, statusCode);
         }
     }
 
@@ -119,7 +112,7 @@ export default class UsersTest {
             /* await deleteAllUsers(data, UsersFunc.config.headers); */
 
         } catch (error) {
-            handleError(path, error, statusCode);
+            // handleError(path, error, statusCode);
         }
     }
 
@@ -147,7 +140,7 @@ export default class UsersTest {
             // UsersTest.config.password = userData.password;
 
         } catch (error) {
-            handleError(path, error, statusCode);
+            // handleError(path, error, statusCode);
         }
     }
 
@@ -161,7 +154,7 @@ export default class UsersTest {
             // expect(response.status).toBe(200);
 
         } catch (error) {
-            handleError(path, error, statusCode);
+            // handleError(path, error, statusCode);
         }
     }
 
@@ -178,7 +171,7 @@ export default class UsersTest {
             // expect(response.data.receiver).toBe(UsersTest.config.email);
 
         } catch (error) {
-            handleError(path, error);
+            // handleError(path, error);
         }
     }
 
@@ -194,7 +187,7 @@ export default class UsersTest {
             // UsersTest.config.password = newPass;
 
         } catch (error) {
-            handleError(path, error, statusCode);
+            // handleError(path, error, statusCode);
         }
     }
 
@@ -210,7 +203,7 @@ export default class UsersTest {
             }
     
         } catch (error) {
-            handleError(path, error);
+            // handleError(path, error);
         }
     }
     **************************************************************************************/
