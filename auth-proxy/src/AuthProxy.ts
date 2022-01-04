@@ -69,19 +69,20 @@ export default class AuthProxy {
             }, ...this.setKeys() as ICerts
         };
 
-        const req: ClientRequest = https.request(options, (message: IncomingMessage): Response | void => {
-            logger.info(`statusCode: ${message.statusCode}`);
-            
-            if (Number(message?.statusCode) >= StatusCodes.BAD_REQUEST) {
-                return this.sendResponse(response, message, message.statusMessage || 'Error');            
-            }
-            
-            message.on('data', (data: Buffer): Response => {
+        const req: ClientRequest = https.request(options, (message: IncomingMessage): Response | void => {          
+            message.on('data', function(data: Buffer): Response {
                 try {
-                    return this.sendResponse(response, message, JSON.parse(data.toString()));
+                    return response
+                        .header(Headers.Authorization, message.headers?.authorization)
+                        .status(Number(message?.statusCode))
+                        .json(JSON.parse(data.toString()));
+
                 } catch (error: any) {
                     logger.error(error);
-                    return this.sendResponse(response, message, error.message);
+                    return response
+                        .header(Headers.Authorization, message.headers?.authorization)
+                        .status(Number(message?.statusCode))
+                        .json(error.message);
                 }
             });
 
@@ -93,13 +94,6 @@ export default class AuthProxy {
 
         req.write(body);
         req.end();
-    }
-
-    private sendResponse(response: Response, message: IncomingMessage, data: string): Response {
-        return response
-            .header(Headers.Authorization, message.headers?.authorization)
-            .status(Number(message?.statusCode))
-            .json((data));
     }
 
     private setEnv(): void {

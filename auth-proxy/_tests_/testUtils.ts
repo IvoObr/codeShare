@@ -19,12 +19,6 @@ export async function httpsRequest(options: RequestOptions, payload: string, cal
         const request: ClientRequest = https.request(options, (message: IncomingMessage): void => {
             const statusCode: number = Number(message?.statusCode);
 
-            if (statusCode >= StatusCodes.BAD_REQUEST) {
-                logger.info(options.path?.red, statusCode.toString().yellow, message?.statusMessage?.yellow);
-                expect(statusCode).toBeLessThan(StatusCodes.BAD_REQUEST);
-                reject(statusCode);
-            }
-
             // Todo: handle UNAUTHORIZED
             // const response: AxiosResponse | undefined = error?.response;
             // const status: string = response?.status?.toString()?.cyan || 'NOT_HERE';
@@ -38,6 +32,13 @@ export async function httpsRequest(options: RequestOptions, payload: string, cal
             // expect(typeof error).not.toBeDefined();
 
             message.on('data', function(data: Buffer) {
+                
+                if (statusCode >= StatusCodes.BAD_REQUEST) {
+                    logger.info(options.path?.red, statusCode.toString().yellow, message?.statusMessage?.yellow, data.toString().yellow);
+                    expect(statusCode).toBeLessThan(StatusCodes.BAD_REQUEST);
+                    reject(statusCode);
+                }
+                
                 callback(message, data);
                 resolve();
             });

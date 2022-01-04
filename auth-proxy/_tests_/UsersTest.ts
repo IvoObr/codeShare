@@ -65,23 +65,25 @@ export default class UsersTest {
         });
     }
 
-    public static login(email: string, password: string, statusCode?: StatusCodes): void {
-        const path: string = 'POST /api/v1/auth/pub/login'.yellow;
-        
-        expect(undefined).toBeDefined();
+    public static async login(email: string, password: string, statusCode?: StatusCodes): Promise<void> {
+        const method: string = 'POST';
+        const path: string = '/api/v1/auth/pub/login';
+        const payload: string = JSON.stringify({ email, password });
+        const options: RequestOptions = UsersTest.getOptions(method, path, payload);
 
-        // const url: string = `http://localhost:${UsersTest.config.port}/api/v1/auth/pub/login`;
-        // const payload: IStrings = { email, password };
+        await httpsRequest(options, payload, function(message: IncomingMessage, data: Buffer) {
+            const user: IUser = JSON.parse(data?.toString());
+            const token: string = message.headers.authorization || '';
+            logger.success(`${method} ${path}`.yellow, message.statusCode, user, token);
 
-        // const response: AxiosResponse<IUser> = await axios.post(url, payload);
-        // logger.success(path, response);
+            /* authorize next requests */
+            UsersTest.config.headers.headers.Authorization = `Bearer ${token}`;
 
-        // /* authorize next requests */
-        // UsersTest.config.headers.headers.Authorization = `Bearer ${response.headers?.authorization}`;
-
-        // expect(response.data.email).toBe(UsersTest.config.email);
-        // expect(typeof response.data.name).toBe('string');
-        // expect(typeof response.data.role).toBe('string');
+            expect(user.email).toBe(UsersTest.config.email);
+            expect(typeof user.name).toBe('string');
+            expect(typeof user.role).toBe('string');
+        });
+        // handleError(path, error, statusCode); todo: statusCode Unauthorized
 
     }
 

@@ -7,10 +7,11 @@ dotenv.config();
 
 describe('Authorized 200 OK Users api tests', (): void => {
 
-    it('POST /api/v1/auth/pub/register user in DB', UsersTest.register);
+    it('POST /api/v1/auth/pub/register user in DB',
+        async function() { await UsersTest.register(); });
 
     it('POST /api/v1/auth/pub/login user in DB',
-        function() { UsersTest.login(UsersTest.config.email, UsersTest.config.password); });
+        async function() { await UsersTest.login(UsersTest.config.email, UsersTest.config.password); });
 
     it.skip('POST /api/v1/auth/pub/send-reset-password', UsersTest.sendResetPass);
 
@@ -39,6 +40,8 @@ describe('Unauthorized 401 Users api tests', (): void => {
     it.skip('401 POST /api/v1/auth/pub/login user in DB',
         function() { UsersTest.login(UsersTest.config.email, 'incorrect password', StatusCodes.UNAUTHORIZED); });
 
+    // Todo: invalid token    
+    
     it.skip('401 GET /api/v1/api/user/all returns all users',
         function() { UsersTest.getAllUsers(StatusCodes.UNAUTHORIZED); });
 
