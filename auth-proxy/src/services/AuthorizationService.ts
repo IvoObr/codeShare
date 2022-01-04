@@ -17,6 +17,8 @@ export default class AuthorizationService {
             const socket = request.socket as TLSSocket;
             const certificate = socket.getCertificate() as PeerCertificate;
 
+            // Todo: Reject Unauthorized.
+
             logger.success(Object.entries(certificate));
             logger.success(certificate.valid_from);
             logger.success(certificate.valid_to);
@@ -32,7 +34,7 @@ export default class AuthorizationService {
              */
 
             if (!(request as any)?.client?.authorized) {
-                // throw  new ServerError(Errors.UNAUTHORIZED, `SSL not valid.`);
+                // Todo: throw  new ServerError(Errors.UNAUTHORIZED, `SSL not valid.`);
             }
 
             next();

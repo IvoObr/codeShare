@@ -67,23 +67,22 @@ export default class UsersTest {
 
     public static login(email: string, password: string, statusCode?: StatusCodes): void {
         const path: string = 'POST /api/v1/auth/pub/login'.yellow;
-        try {
-            // const url: string = `http://localhost:${UsersTest.config.port}/api/v1/auth/pub/login`;
-            // const payload: IStrings = { email, password };
+        
+        expect(undefined).toBeDefined();
 
-            // const response: AxiosResponse<IUser> = await axios.post(url, payload);
-            // logger.success(path, response);
+        // const url: string = `http://localhost:${UsersTest.config.port}/api/v1/auth/pub/login`;
+        // const payload: IStrings = { email, password };
 
-            // /* authorize next requests */
-            // UsersTest.config.headers.headers.Authorization = `Bearer ${response.headers?.authorization}`;
+        // const response: AxiosResponse<IUser> = await axios.post(url, payload);
+        // logger.success(path, response);
 
-            // expect(response.data.email).toBe(UsersTest.config.email);
-            // expect(typeof response.data.name).toBe('string');
-            // expect(typeof response.data.role).toBe('string');
+        // /* authorize next requests */
+        // UsersTest.config.headers.headers.Authorization = `Bearer ${response.headers?.authorization}`;
 
-        } catch (error) {
-            // handleError(path, error, statusCode);
-        }
+        // expect(response.data.email).toBe(UsersTest.config.email);
+        // expect(typeof response.data.name).toBe('string');
+        // expect(typeof response.data.role).toBe('string');
+
     }
 
     public static logout(statusCode?: StatusCodes): void {

@@ -73,15 +73,15 @@ export default class AuthProxy {
             logger.info(`statusCode: ${message.statusCode}`);
             
             if (Number(message?.statusCode) >= StatusCodes.BAD_REQUEST) {
-                return this.sendRes(response, message, message.statusMessage || 'Error');            
+                return this.sendResponse(response, message, message.statusMessage || 'Error');            
             }
             
             message.on('data', (data: Buffer): Response => {
                 try {
-                    return this.sendRes(response, message, JSON.parse(data.toString()));
+                    return this.sendResponse(response, message, JSON.parse(data.toString()));
                 } catch (error: any) {
                     logger.error(error);
-                    return this.sendRes(response, message, error.message);
+                    return this.sendResponse(response, message, error.message);
                 }
             });
 
@@ -95,7 +95,7 @@ export default class AuthProxy {
         req.end();
     }
 
-    private sendRes(response: Response, message: IncomingMessage, data: string): Response {
+    private sendResponse(response: Response, message: IncomingMessage, data: string): Response {
         return response
             .header(Headers.Authorization, message.headers?.authorization)
             .status(Number(message?.statusCode))
