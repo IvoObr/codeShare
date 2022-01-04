@@ -3,7 +3,7 @@ import path from 'path';
 import { Mongo } from './db';
 import logger from './lib/logger';
 import { ICerts } from './lib/interfaces';
-import { Headers, Env } from './lib/enums';
+import { Headers, Env, StatusCodes } from './lib/enums';
 import ExpressServer from './ExpressServer';
 import { Request, Response } from 'express';
 import https, { RequestOptions, ServerOptions } from 'https';
@@ -55,7 +55,7 @@ export default class AuthProxy {
         }
     }
 
-    private send(request: Request, response: Response): void {
+    private send(request: Request, response: Response): void { 
         const body: string = JSON.stringify(request.body);
 
         const options: RequestOptions = {
@@ -69,45 +69,37 @@ export default class AuthProxy {
             }, ...this.setKeys() as ICerts
         };
 
-        const req: ClientRequest = https.request(options, (res: IncomingMessage): void => {
-            logger.info(`statusCode: ${res.statusCode}`); // todo: check is statusCode correct!!!!!!!!!!!!
-
-            res.on('data', function(data: Buffer): Response {
-
-                logger.debug(data.toString());
-
-                /** FIXME:
-                 * <!DOCTYPE html>
-                        <html lang="en">
-                        <head>
-                        <meta charset="utf-8">
-                        <title>Error</title>
-                        </head>
-                        <body>
-                        <pre>Cannot POST /api/v1/uth/pub/register</pre>
-                        </body>
-                    </html>
-                 * 
-                 */
-
-                return response
-                    .header(Headers.Authorization, res.headers?.authorization)
-                    .status(Number(res?.statusCode))
-                    .json(JSON.parse(data.toString()));
+        const req: ClientRequest = https.request(options, (res: IncomingMessage): Response | void => {
+            logger.info(`statusCode: ${res.statusCode}`);
+            
+            if (Number(res?.statusCode) >= 400) {
+                return this.sendRes(response, res, res.statusMessage || 'Error');            
+            }
+            
+            res.on('data', (data: Buffer): Response => {
+                try {
+                    return this.sendRes(response, res, JSON.parse(data.toString()));
+                } catch (error: any) {
+                    logger.error(error);
+                    return this.sendRes(response, res, error.message);
+                }
             });
+
         });
 
         req.on('error', (error: Error): void => {
-            console.error(error);
+            logger.error(error);
         });
 
         req.write(body);
         req.end();
+    }
 
-        // ).catch((error): Response => response
-        //     .status(error?.response?.status)
-        //     .json({ error: error?.response?.data })
-        // );
+    private sendRes(response: Response, res: IncomingMessage, message: string): Response {
+        return response
+            .header(Headers.Authorization, res.headers?.authorization)
+            .status(Number(res?.statusCode))
+            .json((message));
     }
 
     private setEnv(): void {

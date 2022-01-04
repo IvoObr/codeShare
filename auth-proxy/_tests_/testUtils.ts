@@ -31,8 +31,14 @@ export async function httpsRequest(options: RequestOptions, payload: string, cal
     return new Promise((resolve: IFunc, reject: IFunc): void => {
         
         const request: ClientRequest = https.request(options, (response: IncomingMessage): void => {
+            if (Number(response?.statusCode) >= 400) {
+                const error: Error = new Error(`${Number(response?.statusCode)}: ${response.statusMessage}`);
+                callback(error, response, null);
+                reject(error);
+            }
+
             response.on('data', function(data: Buffer) {
-                callback(response, data);
+                callback(null, response, data);
                 resolve();
             });
         });
