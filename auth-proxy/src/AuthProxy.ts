@@ -76,7 +76,6 @@ export default class AuthProxy {
                     .status(Number(message?.statusCode))
                     .json(JSON.parse(data.toString()));
             });
-
         });
 
         req.on('error', function(error: Error): void {

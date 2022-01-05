@@ -13,7 +13,8 @@ describe('Authorized 200 OK Users api tests', (): void => {
     it('POST /api/v1/auth/pub/login user in DB',
         async function() { await UsersTest.login(UsersTest.config.email, UsersTest.config.password); });
 
-    it.skip('POST /api/v1/auth/pub/send-reset-password', UsersTest.sendResetPass);
+    it('POST /api/v1/auth/pub/send-reset-password',
+        async function() { await UsersTest.sendResetPass(); });
 
     it.skip('POST /api/v1/auth/reset-password',
         function() { UsersTest.resetPass(); });

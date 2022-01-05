@@ -156,21 +156,17 @@ export default class UsersTest {
         }
     }
 
-    public static sendResetPass(): void {
-        const path: string = 'POST /api/v1/auth/pub/send-reset-password'.yellow;
-        try {
-            // const url: string = `http://localhost:${UsersTest.config.port}/api/v1/auth/pub/send-reset-password`;
-            // const payload: IStrings = { email: UsersTest.config.email };
+    public static async sendResetPass(): Promise<void> {
+        const method: string = 'POST';
+        const path: string = '/api/v1/auth/pub/send-reset-password';
+        const payload: string = JSON.stringify({ email: UsersTest.config.email });
+        const options: RequestOptions = UsersTest.getOptions(method, path, payload);
 
-            // const response: AxiosResponse<any> = await axios.post(url, payload);
-            // logger.success(path, response.status);
-
-            // expect(response.status).toBe(201);
-            // expect(response.data.receiver).toBe(UsersTest.config.email);
-
-        } catch (error) {
-            // handleError(path, error);
-        }
+        await httpsRequest(options, payload, function(message: IncomingMessage, data: Buffer) {
+            expect(message.statusCode).toBe(201);
+            expect(JSON.parse(data?.toString()).receiver).toBe(UsersTest.config.email);
+        });
+     
     }
 
     public static resetPass(statusCode?: StatusCodes): void {
@@ -181,6 +177,8 @@ export default class UsersTest {
             // const response: AxiosResponse<any> = await axios.post(url, { password: newPass }, UsersTest.config.headers);
             // logger.success(path, response);
 
+
+            
             // expect(response.status).toBe(200);
             // UsersTest.config.password = newPass;
 
