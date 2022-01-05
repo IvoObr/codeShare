@@ -7,7 +7,7 @@
         "build": "npm run clean && npm run copy && tsc --build tsconfig.json",
         "test": "nodemon --delay 2 --config ./_tests_/nodemon.json && echo \n\n \u001B[36m\u001B[1m-----Executing Auth-proxy tests-----\u001B[0m",
         "start": "node -r ./dist ",
-        "dev": "nodemon src/index.ts --delay 1"
+        "dev": "nodemon src/index.ts --delay 1" // todo: read from src not dist
     },
     "nodemonConfig": {
         "watch": ["src"],
