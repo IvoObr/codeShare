@@ -55,7 +55,6 @@ export default class UsersTest {
 
         await httpsRequest(options, payload, function(message: IncomingMessage, data: Buffer) {   
             const user: IUser = JSON.parse(data?.toString());
-            logger.success(`${method} ${path}`.yellow, message.statusCode, user);
 
             UsersTest.config.email = user.email;
             UsersTest.config.userId = user._id;
@@ -74,17 +73,15 @@ export default class UsersTest {
         await httpsRequest(options, payload, function(message: IncomingMessage, data: Buffer) {
             const user: IUser = JSON.parse(data?.toString());
             const token: string = message.headers.authorization || '';
-            logger.success(`${method} ${path}`.yellow, message.statusCode, user, token);
-
+            
             /* authorize next requests */
             UsersTest.config.headers.headers.Authorization = `Bearer ${token}`;
+            logger.info("TOKEN:".cyan, token);
 
             expect(user.email).toBe(UsersTest.config.email);
             expect(typeof user.name).toBe('string');
             expect(typeof user.role).toBe('string');
         });
-        // handleError(path, error, statusCode); todo: statusCode Unauthorized
-
     }
 
     public static logout(statusCode?: StatusCodes): void {

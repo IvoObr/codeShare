@@ -69,21 +69,12 @@ export default class AuthProxy {
             }, ...this.setKeys() as ICerts
         };
 
-        const req: ClientRequest = https.request(options, (message: IncomingMessage): Response | void => {          
+        const req: ClientRequest = https.request(options, (message: IncomingMessage): void => {          
             message.on('data', function(data: Buffer): Response {
-                try {
-                    return response
-                        .header(Headers.Authorization, message.headers?.authorization)
-                        .status(Number(message?.statusCode))
-                        .json(JSON.parse(data.toString()));
-
-                } catch (error: any) {
-                    logger.error(error);
-                    return response
-                        .header(Headers.Authorization, message.headers?.authorization)
-                        .status(Number(message?.statusCode))
-                        .json(error.message);
-                }
+                return response
+                    .header(Headers.Authorization, message.headers?.authorization)
+                    .status(Number(message?.statusCode))
+                    .json(JSON.parse(data.toString()));
             });
 
         });

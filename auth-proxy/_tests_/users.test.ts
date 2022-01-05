@@ -40,7 +40,8 @@ describe('Unauthorized 401 Users api tests', (): void => {
     it.skip('401 POST /api/v1/auth/pub/login user in DB',
         function() { UsersTest.login(UsersTest.config.email, 'incorrect password', StatusCodes.UNAUTHORIZED); });
 
-    // Todo: invalid token    
+    // Todo: invalid token
+    // Todo: login: invalid password or email 
     
     it.skip('401 GET /api/v1/api/user/all returns all users',
         function() { UsersTest.getAllUsers(StatusCodes.UNAUTHORIZED); });

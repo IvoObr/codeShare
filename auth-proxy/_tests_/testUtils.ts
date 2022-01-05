@@ -32,13 +32,17 @@ export async function httpsRequest(options: RequestOptions, payload: string, cal
             // expect(typeof error).not.toBeDefined();
 
             message.on('data', function(data: Buffer) {
+                const endpoint: string = `${options.method} ${options.path}`.yellow;
+                const status: string = `${message.statusCode} ${message.statusMessage}`.cyan;
+                const notification: string = `${endpoint} ${status} \n ${data.toString().italic}`;
                 
                 if (statusCode >= StatusCodes.BAD_REQUEST) {
-                    logger.info(options.path?.red, statusCode.toString().yellow, message?.statusMessage?.yellow, data.toString().yellow);
+                    logger.info('ERROR'.red.bold, notification);
                     expect(statusCode).toBeLessThan(StatusCodes.BAD_REQUEST);
                     reject(statusCode);
                 }
-                
+
+                logger.info('SUCCESS'.green.bold, notification);
                 callback(message, data);
                 resolve();
             });
