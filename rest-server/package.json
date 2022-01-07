@@ -6,7 +6,7 @@
         "copy": "cp -r ./src/public ./dist/public &&  cp -r ./src/views ./dist/views && cp ./.env ./dist/ && cp -r ../ssl ./dist/ssl",
         "build": "npm run clean && npm run copy && tsc --build tsconfig.prod.json",
         "start": "node -r module-alias/register ./dist ",
-        "dev": "nodemon development --delay 1"
+        "dev": "nodemon --delay 1"
     },
     "nodemonConfig": {
         "watch": [
@@ -16,16 +16,16 @@
         "ignore": [
             "src/public"
         ],
-        "exec": "ts-node -r tsconfig-paths/register ./src"
+        "exec": "ts-node -r tsconfig-paths/register src/index.ts"
     },
     "_moduleAliases": {
-        "@db": "dist/db/",
-        "@lib": "dist/lib/",
-        "@utils": "dist/utils/",
-        "@server": "dist/Server",
-        "@routers": "dist/routers/",
-        "@services": "dist/services/",
-        "@entities": "dist/entities/"
+        "@db": "src/db/",
+        "@lib": "src/lib/",
+        "@utils": "src/utils/",
+        "@server": "src/Server",
+        "@routers": "src/routers/",
+        "@services": "src/services/",
+        "@entities": "src/entities/"
     },
     "dependencies": {
         "@7util/log-express": "^1.0.5",
