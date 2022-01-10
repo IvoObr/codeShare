@@ -19,7 +19,7 @@ export default class AuthorizationService {
 
             // Todo: Reject Unauthorized.
 
-            logger.success(Object.entries(certificate));
+            // logger.success(Object.entries(certificate)); // todo: uncomment develop
             logger.success(certificate.valid_from);
             logger.success(certificate.valid_to);
 

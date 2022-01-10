@@ -2,12 +2,12 @@ import fs from 'fs';
 import path from 'path';
 import logger from '../src/lib/logger';
 import { RequestOptions } from 'https';
+import { httpsRequest } from './testUtils';
 import genBase36Key from '../src/lib/genBase36Key';
 import { ClientRequest, IncomingMessage } from 'http';
 import { IUser, IStrings } from '../src/lib/interfaces';
-import { httpsRequest } from './testUtils';
-import { UserRole, StatusCodes } from '../src/lib/enums';
 import { IHeaders, INewUserReq, ICerts } from './interfaces';
+import { UserRole, StatusCodes, Headers } from '../src/lib/enums';
 
 export default class UsersTest {
 
@@ -38,7 +38,8 @@ export default class UsersTest {
             port: Number(process.env.PORT),
             headers: {
                 'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(payload)
+                'Content-Length': Buffer.byteLength(payload),
+                [Headers.Authorization]: UsersTest.config.headers.headers.Authorization
             }, ...UsersTest.setKeys() as ICerts
         };
     }
@@ -91,7 +92,7 @@ export default class UsersTest {
             // const response: AxiosResponse<IUser> = await axios.get(url, UsersTest.config.headers);
             // logger.success(path, response.status);
 
-            // expect(response.status).toBe(200);
+            // expect(response.status).toBe(StatusCodes.OK);
 
         } catch (error) {
             // handleError(path, error, statusCode);
@@ -128,7 +129,7 @@ export default class UsersTest {
 
             // UsersTest.config.email = userData.email;
 
-            // expect(response.status).toBe(200);
+            // expect(response.status).toBe(StatusCodes.OK);
             // expect(typeof response.data.role).toBe('string');
 
             // userData?.email && expect(response.data.email).toBe(userData.email);
@@ -149,7 +150,7 @@ export default class UsersTest {
             // const response: AxiosResponse<IUser> = await axios.delete(url, UsersTest.config.headers);
             // logger.success(path, response.status);
 
-            // expect(response.status).toBe(200);
+            // expect(response.status).toBe(StatusCodes.OK);
 
         } catch (error) {
             // handleError(path, error, statusCode);
@@ -163,28 +164,22 @@ export default class UsersTest {
         const options: RequestOptions = UsersTest.getOptions(method, path, payload);
 
         await httpsRequest(options, payload, function(message: IncomingMessage, data: Buffer) {
-            expect(message.statusCode).toBe(201);
+            expect(message.statusCode).toBe(StatusCodes.CREATED);
             expect(JSON.parse(data?.toString()).receiver).toBe(UsersTest.config.email);
         });
-     
     }
+    
+    public static async resetPass(statusCode?: StatusCodes): Promise<void> {
+        const method: string = 'POST';
+        const path: string = '/api/v1/auth/reset-password';
+        const newPass: string = '4Password#';
+        const payload: string = JSON.stringify({ password: newPass });
+        const options: RequestOptions = UsersTest.getOptions(method, path, payload);
 
-    public static resetPass(statusCode?: StatusCodes): void {
-        const path: string = 'POST /api/v1/auth/reset-password'.yellow;
-        try {
-            // const url: string = `http://localhost:${UsersTest.config.port}/api/v1/auth/reset-password`;
-            // const newPass: string = '4Password#';
-            // const response: AxiosResponse<any> = await axios.post(url, { password: newPass }, UsersTest.config.headers);
-            // logger.success(path, response);
-
-
-            
-            // expect(response.status).toBe(200);
-            // UsersTest.config.password = newPass;
-
-        } catch (error) {
-            // handleError(path, error, statusCode);
-        }
+        await httpsRequest(options, payload, function(message: IncomingMessage, data: Buffer) {
+            expect(message.statusCode).toBe(StatusCodes.OK);
+            UsersTest.config.password = newPass;
+        });
     }
 
     /**************************************************************************************

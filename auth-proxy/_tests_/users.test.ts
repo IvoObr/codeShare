@@ -16,8 +16,8 @@ describe('Authorized 200 OK Users api tests', (): void => {
     it('POST /api/v1/auth/pub/send-reset-password',
         async function() { await UsersTest.sendResetPass(); });
 
-    it.skip('POST /api/v1/auth/reset-password',
-        function() { UsersTest.resetPass(); });
+    it('POST /api/v1/auth/reset-password',
+        async function() { await UsersTest.resetPass(); });
    
     it.skip('GET /api/v1/api/user/all returns all users',
         function() { UsersTest.getAllUsers(); });

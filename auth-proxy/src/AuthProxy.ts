@@ -70,12 +70,15 @@ export default class AuthProxy {
         };
 
         const req: ClientRequest = https.request(options, (message: IncomingMessage): void => {          
+           
             message.on('data', function(data: Buffer): Response {
                 return response
                     .header(Headers.Authorization, message.headers?.authorization)
                     .status(Number(message?.statusCode))
                     .json(JSON.parse(data.toString()));
             });
+                
+            message.on('end', (data: Buffer): void => response.end(data));
         });
 
         req.on('error', function(error: Error): void {

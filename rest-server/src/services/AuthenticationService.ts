@@ -108,7 +108,7 @@ class AuthenticationService {
                 subject: 'Password reset',
                 body: `<p>Dear ${user.name},</p>
                        <p> Please follow the link to
-                       <a href="https://${process.env.host}:${process.env.port}/api/v1/auth/reset-password/${token}">
+                       <a style="color:blue" href="https://${process.env.host}:${process.env.port}/api/v1/auth/reset-password/${token}">
                        reset your password. </a>                     
                        </p>
                        <p>The link is valid for 24 hours.</p>

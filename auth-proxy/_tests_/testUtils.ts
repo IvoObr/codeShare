@@ -31,6 +31,16 @@ export async function httpsRequest(options: RequestOptions, payload: string, cal
             // logger.info(path, status, response?.data?.error || error);
             // expect(typeof error).not.toBeDefined();
 
+            message.on('end', function(data: Buffer) {
+                const endpoint: string = `${options.method} ${options.path}`.yellow;
+                const status: string = `${message.statusCode} ${message.statusMessage}`.cyan;
+                const notification: string = `${endpoint} ${status}`;
+
+                logger.info('SUCCESS'.green.bold, notification);
+                callback(message, data);
+                resolve();
+            });
+            
             message.on('data', function(data: Buffer) {
                 const endpoint: string = `${options.method} ${options.path}`.yellow;
                 const status: string = `${message.statusCode} ${message.statusMessage}`.cyan;
