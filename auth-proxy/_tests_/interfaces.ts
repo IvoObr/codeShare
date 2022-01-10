@@ -4,7 +4,7 @@ import { IStrings } from '../src/lib/interfaces';
 
 export type IFunc = (value?: unknown) => void;
 
-export type ICallback = (message: IncomingMessage, data: Buffer) => void;
+export type ICallback = (message: IncomingMessage, data: string) => void;
 
 export interface IHeaders {
     headers: IStrings

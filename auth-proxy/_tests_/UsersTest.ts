@@ -54,9 +54,8 @@ export default class UsersTest {
         const payload: string = JSON.stringify({ name, email, role, password });
         const options: RequestOptions = UsersTest.getOptions(method, path, payload);
 
-        await httpsRequest(options, payload, function(message: IncomingMessage, data: Buffer) {   
-            const user: IUser = JSON.parse(data?.toString());
-
+        await httpsRequest(options, payload, function(message: IncomingMessage, data: string) {   
+            const user: IUser = JSON.parse(data);
             UsersTest.config.email = user.email;
             UsersTest.config.userId = user._id;
 
@@ -71,8 +70,8 @@ export default class UsersTest {
         const payload: string = JSON.stringify({ email, password });
         const options: RequestOptions = UsersTest.getOptions(method, path, payload);
 
-        await httpsRequest(options, payload, function(message: IncomingMessage, data: Buffer) {
-            const user: IUser = JSON.parse(data?.toString());
+        await httpsRequest(options, payload, function(message: IncomingMessage, data: string) {
+            const user: IUser = JSON.parse(data);
             const token: string = message.headers.authorization || '';
             
             /* authorize next requests */
@@ -163,9 +162,9 @@ export default class UsersTest {
         const payload: string = JSON.stringify({ email: UsersTest.config.email });
         const options: RequestOptions = UsersTest.getOptions(method, path, payload);
 
-        await httpsRequest(options, payload, function(message: IncomingMessage, data: Buffer) {
+        await httpsRequest(options, payload, function(message: IncomingMessage, data: string) {
             expect(message.statusCode).toBe(StatusCodes.CREATED);
-            expect(JSON.parse(data?.toString()).receiver).toBe(UsersTest.config.email);
+            expect(JSON.parse(data).receiver).toBe(UsersTest.config.email);
         });
     }
     
@@ -176,7 +175,7 @@ export default class UsersTest {
         const payload: string = JSON.stringify({ password: newPass });
         const options: RequestOptions = UsersTest.getOptions(method, path, payload);
 
-        await httpsRequest(options, payload, function(message: IncomingMessage, data: Buffer) {
+        await httpsRequest(options, payload, function(message: IncomingMessage, data: string) {
             expect(message.statusCode).toBe(StatusCodes.OK);
             UsersTest.config.password = newPass;
         });

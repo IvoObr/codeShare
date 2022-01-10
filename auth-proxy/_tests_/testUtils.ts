@@ -18,7 +18,7 @@ export async function httpsRequest(options: RequestOptions, payload: string, cal
         
         const request: ClientRequest = https.request(options, (message: IncomingMessage): void => {
             const statusCode: number = Number(message?.statusCode);
-
+            
             // Todo: handle UNAUTHORIZED
             // const response: AxiosResponse | undefined = error?.response;
             // const status: string = response?.status?.toString()?.cyan || 'NOT_HERE';
@@ -31,31 +31,38 @@ export async function httpsRequest(options: RequestOptions, payload: string, cal
             // logger.info(path, status, response?.data?.error || error);
             // expect(typeof error).not.toBeDefined();
 
-            message.on('end', function(data: Buffer) {
-                const endpoint: string = `${options.method} ${options.path}`.yellow;
-                const status: string = `${message.statusCode} ${message.statusMessage}`.cyan;
-                const notification: string = `${endpoint} ${status}`;
+            // message.on('end', function(data: Buffer) {
+            //     const result: any = data && JSON.parse(data?.toString());
 
-                logger.info('SUCCESS'.green.bold, notification);
-                callback(message, data);
-                resolve();
-            });
-            
-            message.on('data', function(data: Buffer) {
-                const endpoint: string = `${options.method} ${options.path}`.yellow;
-                const status: string = `${message.statusCode} ${message.statusMessage}`.cyan;
-                const notification: string = `${endpoint} ${status} \n ${data.toString().italic}`;
+            //     const endpoint: string = `${options.method} ${options.path}`.yellow;
+            //     const status: string = `${message.statusCode} ${message.statusMessage}`.cyan;
+            //     const notification: string = `${endpoint} ${status} \n ${result?.italic}`;
+
+            //     logger.info('END'.cyan.bold, notification);
+            //     // callback(message, result);
+            //     // resolve();
+            // });
+
+            const data: Array<Buffer> = [];
+
+            message
+                .on('data', (chunk: Buffer): number => data.push(chunk))
+                .on('end', function() {
+                    const dataString: string = Buffer.concat(data).toString();
+                    const endpoint: string = `${options.method} ${options.path}`.yellow;
+                    const status: string = `${message.statusCode} ${message.statusMessage}`.cyan;
+                    const notification: string = `${endpoint} ${status} \n ${dataString.italic}`;
                 
-                if (statusCode >= StatusCodes.BAD_REQUEST) {
-                    logger.info('ERROR'.red.bold, notification);
-                    expect(statusCode).toBeLessThan(StatusCodes.BAD_REQUEST);
-                    reject(statusCode);
-                }
+                    if (statusCode >= StatusCodes.BAD_REQUEST) {
+                        logger.info('ERROR'.red.bold, notification);
+                        expect(statusCode).toBeLessThan(StatusCodes.BAD_REQUEST);
+                        reject(statusCode);
+                    }
 
-                logger.info('SUCCESS'.green.bold, notification);
-                callback(message, data);
-                resolve();
-            });
+                    logger.info('SUCCESS'.green.bold, notification);
+                    callback(message, dataString);
+                    resolve();
+                });
         });
 
         request.on('error', function(error: Error) {
