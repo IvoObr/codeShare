@@ -31,8 +31,8 @@ export interface ICerts {
 }
 
 export enum Methods {
-    'POST' = 'POST',
     'GET' = 'GET',
+    'POST' = 'POST',
     'DELETE' = 'DELETE',
 
 }

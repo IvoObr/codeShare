@@ -45,7 +45,7 @@ export default class UsersTest {
     }
 
     public static async register(): Promise<void> {
-        // for (let index = 0; index < 50; index++) { /*** register multiple users ***/
+        // for (let index: number = 0; index < 50; index++) { /*** register multiple users ***/
         const name: string = 'ivoObr';
         const role: UserRole = UserRole.Admin;
         const password: string = 'Password123@';
@@ -190,13 +190,11 @@ export default class UsersTest {
         const path: string = '/api/v1/user/delete/';
         const options: RequestOptions = UsersTest.getOptions(Methods.DELETE, path, '');
         
-        for (let index = 0; index < users.length; index++) {
+        for (let index: number = 0; index < users.length; index++) {
             const user: IPublicUser = users[index];
             options.path = path + user._id;
 
-            await httpsRequest(options, '', function(message: IncomingMessage, data: string) {
-                expect(message.statusCode).toBe(StatusCodes.OK);
-            });
+            await httpsRequest(options, '', function() { null;});
         }
     }
     /**************************************************************************************/

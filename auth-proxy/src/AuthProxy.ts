@@ -3,13 +3,13 @@ import path from 'path';
 import { Mongo } from './db';
 import logger from './lib/logger';
 import { ICerts } from './lib/interfaces';
-import { Headers, Env, StatusCodes } from './lib/enums';
 import ExpressServer from './ExpressServer';
 import { Request, Response } from 'express';
-import https, { RequestOptions, ServerOptions } from 'https';
 import { Express } from "express-serve-static-core";
 import dotenv, { DotenvConfigOutput } from 'dotenv';
 import { ClientRequest, IncomingMessage } from 'http';
+import { Headers, Env, StatusCodes } from './lib/enums';
+import https, { RequestOptions, ServerOptions } from 'https';
 import AuthorizationService from './services/AuthorizationService';
 /**
  *  
