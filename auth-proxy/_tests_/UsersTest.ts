@@ -88,7 +88,7 @@ export default class UsersTest {
         const path: string = '/api/v1/auth/logout';
         const options: RequestOptions = UsersTest.getOptions(Methods.GET, path, '');
 
-        await httpsRequest(options, '', function(message: IncomingMessage, data: string) {
+        await httpsRequest(options, '', function(message: IncomingMessage) {
             expect(message.statusCode).toBe(StatusCodes.OK);
         });
     }
@@ -146,7 +146,7 @@ export default class UsersTest {
         const path: string = '/api/v1/user/delete/';
         const options: RequestOptions = UsersTest.getOptions(Methods.DELETE, path + UsersTest.config.userId, '');
 
-        await httpsRequest(options, '', function(message: IncomingMessage, data: string) {
+        await httpsRequest(options, '', function(message: IncomingMessage) {
             expect(message.statusCode).toBe(StatusCodes.OK);
         });
     }
@@ -168,7 +168,7 @@ export default class UsersTest {
         const payload: string = JSON.stringify({ password: newPass });
         const options: RequestOptions = UsersTest.getOptions(Methods.POST, path, payload);
 
-        await httpsRequest(options, payload, function(message: IncomingMessage, data: string) {
+        await httpsRequest(options, payload, function(message: IncomingMessage) {
             expect(message.statusCode).toBe(StatusCodes.OK);
             UsersTest.config.password = newPass;
         });
