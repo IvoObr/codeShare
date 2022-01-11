@@ -3,27 +3,40 @@ import path from 'path';
 import logger from './lib/logger';
 import { Events } from './lib/enums';
 import Event from './lib/EventEmitter';
-import { IMailInfo } from './lib/interfaces';
+import { ICerts, IMailInfo } from './lib/interfaces';
 import tls, { TLSSocket, TlsOptions, Server } from 'tls';
 
-export default class SocketServer {
+export default class TLSServer {
 
     public start(): void {
         const port: number = Number(process.env.PORT) || 8085;
         const host: string = process.env.HOST || 'localhost';
-        
-        this.createServer().listen({ host, port }, (): void =>
-            logger.success('SocketServer listening on port'.yellow, `${port}`.rainbow));
+            
+        this.createServer()
+            .listen({ host, port }, (): void =>
+                logger.success('TLSServer listening on port'.yellow, `${port}`.rainbow))
+            .on('error', (error: Error): void => {
+                logger.error('Mailer TLSServer unable to start'.red, error);
+                process.exit(0); /* clean exit */
+            });  
+    }
+
+    private setKeys(): ICerts | undefined {
+        try {
+            return {
+                key: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.key')),
+                cert: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.crt')),
+                ca: fs.readFileSync(path.resolve(__dirname, '../../ssl/rootCA.crt'))
+            };
+        } catch (error) {
+            logger.error(error);
+        }
     }
 
     private createServer(): Server {
-        const options: TlsOptions = {
-            rejectUnauthorized: false, // accept self signed certificates
-            cert: fs.readFileSync(path.resolve(__dirname, '../ssl/public-cert.pem')),
-            key: fs.readFileSync(path.resolve(__dirname, '../ssl/private-key.pem'))
-        };
+        const keys = this.setKeys() as TlsOptions;
 
-        return tls.createServer(options, (socket: TLSSocket): void => {
+        return tls.createServer(keys, (socket: TLSSocket): void => {
             logger.debug(`Client connected!`.bold);
 
             socket

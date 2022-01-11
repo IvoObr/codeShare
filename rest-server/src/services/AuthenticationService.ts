@@ -19,7 +19,7 @@ class AuthenticationService {
 
             response.status(StatusCodes.CREATED).json(publicUser);
 
-        } catch (error) {
+        } catch (error: any) {
             ServerError.handle(error, response);
         }
     }
@@ -60,7 +60,7 @@ class AuthenticationService {
             response.header(Headers.Authorization, token).json(publicUser);
             response.status(StatusCodes.OK).end();
 
-        } catch (error) {
+        } catch (error: any) {
             ServerError.handle(error, response);
         }
     }
@@ -75,7 +75,7 @@ class AuthenticationService {
 
             response.status(StatusCodes.OK).end();
 
-        } catch (error) {
+        } catch (error: any) {
             ServerError.handle(error, response);
         }
     }
@@ -87,7 +87,7 @@ class AuthenticationService {
             if (!email) {
                 throw new ServerError(Errors.MISSING_PARAMETER, `Missing email.`);
             }
-            
+
             const user: IUser = await UserDal.getUserByEmail(email);
 
             if (!user) {
@@ -108,17 +108,17 @@ class AuthenticationService {
                 subject: 'Password reset',
                 body: `<p>Dear ${user.name},</p>
                        <p> Please follow the link to
-                       <a href="http://${process.env.host}:${process.env.port}/api/v1/auth/reset-password/${token}">
+                       <a style="color:blue" href="https://${process.env.host}:${process.env.port}/api/v1/auth/reset-password/${token}">
                        reset your password. </a>                     
                        </p>
                        <p>The link is valid for 24 hours.</p>
                        <p>All the Best!</p>`
             });
 
-            // todo change url to frontend
-        
+            // todo: change url to frontend
+
             new SocketClient()
-                .mailerSocket()
+                .notificationSocket()
                 .send(message)
                 .onSuccess((info: IMailInfo): void => {
                     response
@@ -130,7 +130,7 @@ class AuthenticationService {
                     ServerError.handle(err, response);
                 });
 
-        } catch (error) {
+        } catch (error: any) {
             ServerError.handle(error, response);
         }
     }
@@ -154,8 +154,8 @@ class AuthenticationService {
             }
 
             response.status(StatusCodes.OK).end();
-            
-        } catch (error) {
+
+        } catch (error: any) {
             ServerError.handle(error, response);
         }
     }

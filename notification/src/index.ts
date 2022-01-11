@@ -1,19 +1,21 @@
 import colors from 'colors';
 import Mailer from "./Mailer";
 import logger from './lib/logger';
-import { text } from './lib/text';
+import { printLogo } from './lib/text';
 import { Events } from './lib/enums';
 import Event from './lib/EventEmitter';
-import SocketServer from './SocketServer';
+import TLSServer from './SocketServer';
 import { IMessage } from './lib/interfaces';
 import dotenv, { DotenvConfigOutput } from 'dotenv';
 colors.enable();
+printLogo();
 
 class Main {
 
     public start(): void {
         try {
-            console.log(text.rainbow);
+            logger.info('process id:', process.pid.toString()?.cyan.bold);
+            logger.info(`Notification running in ${process.env.NODE_ENV?.cyan.bold} mode.`);
             new Main()
                 .setEnvVars()
                 .subscribeMailer()
@@ -26,7 +28,7 @@ class Main {
     }
 
     public startSocketServer(): void {
-        const server: SocketServer = new SocketServer();
+        const server: TLSServer = new TLSServer();
         server.start();
     }
 
@@ -38,7 +40,7 @@ class Main {
         });
         return this;
     }
-    
+
     private setEnvVars(): this {
         const result: DotenvConfigOutput = dotenv.config();
 

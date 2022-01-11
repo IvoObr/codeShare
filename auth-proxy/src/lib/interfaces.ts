@@ -9,6 +9,12 @@ export interface IUser {
     password: string;
 }
 
+export interface ICerts {
+    key: Buffer;
+    cert: Buffer;
+    ca: Buffer;
+}
+
 export interface IClientData {
     _id: string;
     role: UserRole;

@@ -61,7 +61,7 @@ export default class UserModel implements IUserModel {
             throw new ServerError(Errors.INVALID_EMAIL, `${email} is not a valid email!`);
         }
     }
-
+    
     public static isPasswordStrong(password: string): boolean {
         const minLength: boolean = password.length > 8;
         const oneUppercase: boolean = new RegExp(/[A-Z]/).test(password);

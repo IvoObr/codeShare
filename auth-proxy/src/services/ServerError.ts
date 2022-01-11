@@ -3,7 +3,7 @@ import { Response } from "express";
 import { Errors, StatusCodes } from '../lib/enums';
 
 export default class ServerError extends Error {
-   
+
     constructor(
         public type: Errors,
         public message: string) {

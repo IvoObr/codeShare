@@ -2,7 +2,7 @@ import { Response } from "express";
 import { Errors, logger, StatusCodes } from '@utils';
 
 export default class ServerError extends Error {
-   
+
     constructor(
         public type: Errors,
         public message: string) {

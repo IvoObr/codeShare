@@ -5,7 +5,6 @@
         "clean": "rm -rf ./dist/ && mkdir dist",
         "copy": "cp ./.env ./dist/",
         "build": "npm run clean && npm run copy && tsc --build tsconfig.json",
-        "eslint-fix": "eslint . --ext .ts --fix",
         "start": "node -r ./dist ",
         "dev": "nodemon src/index.ts --delay 1"
     },
@@ -18,14 +17,8 @@
             "src/public"
         ]
     },
-    "eslintIgnore": [
-        "src/public/",
-        "dist/",
-        "build.ts",
-        "node_modules/"
-    ],
     "dependencies": {
-        "@7dev-works/logger": "^2.2.4",
+        "@7util/logger": "^2.2.4",
         "colors": "^1.4.0",
         "dotenv": "^8.2.0",
         "mongodb": "^3.6.3",
@@ -35,9 +28,6 @@
         "@types/mongodb": "^3.5.34",
         "@types/node": "^14.14.9",
         "@types/nodemailer": "^6.4.1",
-        "@typescript-eslint/eslint-plugin": "^4.8.1",
-        "@typescript-eslint/parser": "^4.8.1",
-        "eslint": "^7.13.0",
         "nodemon": "^2.0.7",
         "ts-node": "^9.0.0",
         "typescript": "^4.1.2"

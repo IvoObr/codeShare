@@ -1,7 +1,7 @@
 import { ServerError } from '@services';
 import { Request, Response, NextFunction } from 'express';
 import { Errors, IStrings, UserRole, logger } from '@utils';
-    
+
 class AuthorizationService {
 
     public static authorizeAdmin(request: Request, response: Response, next: NextFunction): void {
@@ -14,8 +14,8 @@ class AuthorizationService {
             }
 
             next();
-            
-        } catch (error) {
+
+        } catch (error: any) {
             ServerError.handle(error, response);
         }
     }

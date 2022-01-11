@@ -1,11 +1,11 @@
 import dotenv from 'dotenv';
-import { Logger, ILogOptions } from '@7dev-works/logger';
+import { Logger, ILogOptions } from '@7util/logger';
 dotenv.config();
 
 const options: ILogOptions = {
     useColor: true,
     logInFile: true,
-    fileName: 'api-mailer.log',
+    fileName: 'notification.log',
     logLevel: process.env.LOG_LEVEL
 };
 

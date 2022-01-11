@@ -1,0 +1,52 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "run codeShare",
+			"dependsOn": [
+				"rest-server",
+				"notification",
+				"auth-proxy"
+			],
+			"problemMatcher": []
+		},
+		{
+			"label": "rest-server",
+			"type": "shell",
+			"command": "cd ~/Desktop/projects/codeShare/rest-server && npm run dev",
+			"presentation": {
+				"reveal": "always",
+				"group": "codeShare"
+			}
+		},
+		{
+			"label": "notification",
+			"type": "shell",
+			"command": "cd ~/Desktop/projects/codeShare/notification && npm run dev",
+			"presentation": {
+				"reveal": "always",
+				"group": "codeShare"
+			}
+		},
+		{
+			"label": "auth-proxy",
+			"type": "shell",
+			"command": "cd ~/Desktop/projects/codeShare/auth-proxy && npm run dev",
+			"presentation": {
+				"reveal": "always",
+				"group": "codeShare"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "run tests",
+			"type": "shell",
+			"command": "cd ~/Desktop/projects/codeShare/auth-proxy && npm run test",
+			"presentation": {
+				"reveal": "always",
+				"group": "codeShare2"
+			},
+			"problemMatcher": []
+		}
+	]
+}

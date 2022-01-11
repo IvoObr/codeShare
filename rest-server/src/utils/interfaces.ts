@@ -27,6 +27,12 @@ export interface IStrings {
   [key: string]: string
 }
 
+export interface ICerts {
+  key: Buffer;
+  cert: Buffer;
+  ca: Buffer;
+}
+
 //#region User
 export interface IBaseUser {
   name: string;
@@ -52,5 +58,4 @@ export interface IUser extends IBaseUser {
   tokens: string[];
   password: string;
 }
-
 //#endregion User

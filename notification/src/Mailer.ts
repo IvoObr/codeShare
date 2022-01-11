@@ -22,7 +22,7 @@ export default class Mailer {
                 pass: process.env.MAILER_PASS
             }
         });
-    
+
         transporter.verify(function(error) {
             if (error) {
                 logger.error('Mailer unable to start'.red, error);
@@ -31,7 +31,7 @@ export default class Mailer {
                 logger.success("Mailer started!".bold);
             }
         });
-    
+
         return transporter;
     }
 
@@ -49,7 +49,7 @@ export default class Mailer {
             Event.emit(Events.emailSend, info);
             logger.debug("Message sent: ", info.envelope);
 
-        } catch (error) {
+        } catch (error: any) {
             Event.emit(Events.emailError, error.message);
             logger.error(error);
         }

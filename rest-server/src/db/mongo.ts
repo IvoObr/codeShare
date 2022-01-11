@@ -3,10 +3,12 @@ import { MongoClient, Db } from 'mongodb';
 
 export default class Mongo {
 
-    private readonly uri: string = 'mongodb+srv://' +
+    private readonly uri: string = 'mongodb://' +
         process.env.DB_USER + ':' +
-        process.env.DB_PASSWORD + '@cluster0.p73wf.mongodb.net/' +
-        process.env.DB_NAME + '?retryWrites=true&w=majority';
+        process.env.DB_PASSWORD + '@' +
+        process.env.DB_HOST + ':' +
+        process.env.DB_PORT + '/' +
+        process.env.DB_NAME + '?poolSize=20&writeConcern=majority';
 
     static db: Db;
 
