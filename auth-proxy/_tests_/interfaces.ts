@@ -17,8 +17,22 @@ export interface INewUserReq {
     password: string;
 }
 
+export interface IPublicUser {
+    _id: string;
+    name: string;
+    email: string;
+    role: UserRole;
+}
+
 export interface ICerts {
     key: Buffer;
     cert: Buffer;
     ca: Buffer;
+}
+
+export enum Methods {
+    'POST' = 'POST',
+    'GET' = 'GET',
+    'DELETE' = 'DELETE',
+
 }

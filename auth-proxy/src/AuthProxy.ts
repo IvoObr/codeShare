@@ -70,12 +70,12 @@ export default class AuthProxy {
         };
 
         const req: ClientRequest = https.request(options, (message: IncomingMessage): void => {
-            const data: Array<Buffer> = [];
+            const dataBuffer: Array<Buffer> = [];
 
             message
-                .on('data', (chunk: Buffer): number => data.push(chunk))
+                .on('data', (chunk: Buffer): number => dataBuffer.push(chunk))
                 .on('end', function(): void {
-                    const dataString: string = Buffer.concat(data).toString();
+                    const dataString: string = Buffer.concat(dataBuffer).toString();
 
                     response.on('error', function(error: Error): void {
                         logger.error(error);

@@ -18,7 +18,8 @@
         "testPathIgnorePatterns": ["dist/"],
         "transform": {
             "^.+\\.ts?$": "ts-jest"
-        }
+        },
+        "testTimeout": 20000
     },
     "dependencies": {
         "@7util/log-express": "^1.0.5",

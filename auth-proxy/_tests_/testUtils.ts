@@ -45,21 +45,29 @@ export async function httpsRequest(options: RequestOptions, payload: string, cal
 
             const data: Array<Buffer> = [];
 
+            function tryParseData(data: string): unknown {
+                try {
+                    return JSON.parse(data);
+                } catch (error: unknown) {
+                    return data;
+                }
+            }
+
             message
                 .on('data', (chunk: Buffer): number => data.push(chunk))
                 .on('end', function() {
                     const dataString: string = Buffer.concat(data).toString();
+                    const parsedData: unknown = tryParseData(dataString);
                     const endpoint: string = `${options.method} ${options.path}`.yellow;
                     const status: string = `${message.statusCode} ${message.statusMessage}`.cyan;
-                    const notification: string = `${endpoint} ${status} \n ${dataString.italic}`;
                 
                     if (statusCode >= StatusCodes.BAD_REQUEST) {
-                        logger.info('ERROR'.red.bold, notification);
+                        logger.info('ERROR'.red.bold, endpoint, status, '\n', parsedData);
                         expect(statusCode).toBeLessThan(StatusCodes.BAD_REQUEST);
                         reject(statusCode);
                     }
 
-                    logger.info('SUCCESS'.green.bold, notification);
+                    logger.info('SUCCESS'.green.bold, endpoint, status, '\n', parsedData);
                     callback(message, dataString);
                     resolve();
                 });
