@@ -2,12 +2,12 @@ import fs from 'fs';
 import path from 'path';
 import logger from '../src/lib/logger';
 import { RequestOptions } from 'https';
+import { IncomingMessage } from 'http';
 import { httpsRequest } from './testUtils';
 import genBase36Key from '../src/lib/genBase36Key';
-import { ClientRequest, IncomingMessage } from 'http';
 import { IUser, IStrings } from '../src/lib/interfaces';
+import { ICerts, Methods, IPublicUser } from './interfaces';
 import { UserRole, StatusCodes, Headers } from '../src/lib/enums';
-import { IHeaders, INewUserReq, ICerts, Methods, IPublicUser } from './interfaces';
 
 export default class UsersTest {
 
@@ -84,18 +84,13 @@ export default class UsersTest {
         });
     }
 
-    public static logout(statusCode?: StatusCodes): void {
-        const path: string = 'GET /api/v1/auth/logout'.yellow;
-        try {
-            // const url: string = `http://localhost:${UsersTest.config.port}/api/v1/auth/logout`;
-            // const response: AxiosResponse<IUser> = await axios.get(url, UsersTest.config.headers);
-            // logger.success(path, response.status);
+    public static async logout(statusCode?: StatusCodes): Promise<void> {
+        const path: string = '/api/v1/auth/logout';
+        const options: RequestOptions = UsersTest.getOptions(Methods.GET, path, '');
 
-            // expect(response.status).toBe(StatusCodes.OK);
-
-        } catch (error) {
-            // handleError(path, error, statusCode);
-        }
+        await httpsRequest(options, '', function(message: IncomingMessage, data: string) {
+            expect(message.statusCode).toBe(StatusCodes.OK);
+        });
     }
 
     public static async getAllUsers(statusCode?: StatusCodes): Promise<void> {
@@ -120,46 +115,40 @@ export default class UsersTest {
         /* await UsersTest.deleteAllUsers(users);  */
     }
 
-    public static updateUser(statusCode?: StatusCodes): void {
-        const path: string = 'PUT /api/v1/user/update/:id'.yellow;
-        try {
-            // const userData: IStrings = {
-            //     email: `${genBase36Key(8)}@yopmail.com`,
-            //     name: 'IvoG',
-            //     password: 'Password123@'
-            // };
-            // const url: string = `http://localhost:${UsersTest.config.port}/api/v1/user/update/${UsersTest.config.userId}`;
-            // const response: AxiosResponse<IUser> = await axios.put(url, userData, UsersTest.config.headers);
-            // logger.success(path, response.status);
+    public static async updateUser(statusCode?: StatusCodes): Promise<void> {
+        const path: string = '/api/v1/user/update/';
+        const userData: IStrings = {
+            email: `${genBase36Key(8)}@yopmail.com`,
+            name: 'IvoG',
+            password: 'Password123@'
+        };
 
-            // UsersTest.config.email = userData.email;
+        const payload: string = JSON.stringify(userData);
+        const options: RequestOptions = UsersTest.getOptions(Methods.PUT, path + UsersTest.config.userId, payload);
 
-            // expect(response.status).toBe(StatusCodes.OK);
-            // expect(typeof response.data.role).toBe('string');
+        await httpsRequest(options, payload, function(message: IncomingMessage, data: string) {
+            const user: IPublicUser = JSON.parse(data);
+            UsersTest.config.email = userData.email;
 
-            // userData?.email && expect(response.data.email).toBe(userData.email);
-            // userData?.name && expect(response.data.name).toBe(userData.name);
+            expect(message.statusCode).toBe(StatusCodes.OK);
+            expect(typeof user.role).toBe('string');
+            expect(typeof user._id).toBe('string');
 
-            // UsersTest.config.email = userData.email;
-            // UsersTest.config.password = userData.password;
+            userData?.email && expect(user.email).toBe(userData.email);
+            userData?.name && expect(user.name).toBe(userData.name);
 
-        } catch (error) {
-            // handleError(path, error, statusCode);
-        }
+            UsersTest.config.email = userData.email;
+            UsersTest.config.password = userData.password;
+        }); 
     }
 
-    public static deleteUser(statusCode?: StatusCodes): void {
-        const path: string = 'DELETE /api/v1/user/delete/:id'.yellow;
-        try {
-            // const url: string = `http://localhost:${UsersTest.config.port}/api/v1/user/delete/${UsersTest.config.userId}`;
-            // const response: AxiosResponse<IUser> = await axios.delete(url, UsersTest.config.headers);
-            // logger.success(path, response.status);
+    public static async deleteUser(statusCode?: StatusCodes): Promise<void> {
+        const path: string = '/api/v1/user/delete/';
+        const options: RequestOptions = UsersTest.getOptions(Methods.DELETE, path + UsersTest.config.userId, '');
 
-            // expect(response.status).toBe(StatusCodes.OK);
-
-        } catch (error) {
-            // handleError(path, error, statusCode);
-        }
+        await httpsRequest(options, '', function(message: IncomingMessage, data: string) {
+            expect(message.statusCode).toBe(StatusCodes.OK);
+        });
     }
 
     public static async sendResetPass(): Promise<void> {

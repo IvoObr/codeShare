@@ -2,8 +2,8 @@ import colors from 'colors';
 import logger from '../src/lib/logger';
 import https, { RequestOptions } from 'https';
 import { StatusCodes } from '../src/lib/enums';
-import { ClientRequest, IncomingMessage } from 'http';
 import { ICallback, IFunc } from './interfaces';
+import { ClientRequest, IncomingMessage } from 'http';
 colors.enable();
 
 /**
