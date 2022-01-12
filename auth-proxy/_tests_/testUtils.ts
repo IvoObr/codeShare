@@ -13,36 +13,11 @@ colors.enable();
  * @param callback 
  * @returns response from Proxy via callback
  */
-export async function httpsRequest(options: RequestOptions, payload: string, callback: ICallback): Promise<unknown> {
+export async function httpsRequest(options: RequestOptions, payload: string, callback: ICallback, expectedStatusCode?: StatusCodes): Promise<unknown> {
     return new Promise((resolve: IFunc, reject: IFunc): void => {
         
         const request: ClientRequest = https.request(options, (message: IncomingMessage): void => {
-            const statusCode: number = Number(message?.statusCode);
-            
-            // Todo: handle UNAUTHORIZED
-            // const response: AxiosResponse | undefined = error?.response;
-            // const status: string = response?.status?.toString()?.cyan || 'NOT_HERE';
-
-            // if (statusCode === StatusCodes.UNAUTHORIZED) {
-            //     expect(response?.status).toBe(statusCode);
-            //     return;
-            // }
-
-            // logger.info(path, status, response?.data?.error || error);
-            // expect(typeof error).not.toBeDefined();
-
-            // message.on('end', function(data: Buffer) {
-            //     const result: any = data && JSON.parse(data?.toString());
-
-            //     const endpoint: string = `${options.method} ${options.path}`.yellow;
-            //     const status: string = `${message.statusCode} ${message.statusMessage}`.cyan;
-            //     const notification: string = `${endpoint} ${status} \n ${result?.italic}`;
-
-            //     logger.info('END'.cyan.bold, notification);
-            //     // callback(message, result);
-            //     // resolve();
-            // });
-
+            const statusCode: StatusCodes = Number(message?.statusCode);
             const data: Array<Buffer> = [];
 
             function tryParseData(data: string): unknown {
@@ -53,21 +28,32 @@ export async function httpsRequest(options: RequestOptions, payload: string, cal
                 }
             }
 
+            function log(result: string, parsedData: unknown): void {
+                const endpoint: string = `${options.method} ${options.path}`.yellow;
+                const status: string = `${message.statusCode} ${message.statusMessage}`.cyan;
+                logger.info(result.bold, endpoint, status, '\n', parsedData);
+            }
+
             message
                 .on('data', (chunk: Buffer): number => data.push(chunk))
                 .on('end', function() {
                     const dataString: string = Buffer.concat(data).toString();
                     const parsedData: unknown = tryParseData(dataString);
-                    const endpoint: string = `${options.method} ${options.path}`.yellow;
-                    const status: string = `${message.statusCode} ${message.statusMessage}`.cyan;
-                
+
+                    if (statusCode === expectedStatusCode) {
+                        log(StatusCodes[expectedStatusCode].cyan, parsedData);
+                        expect(statusCode).toBe(expectedStatusCode);
+                        resolve();
+                        return;
+                    }
+
                     if (statusCode >= StatusCodes.BAD_REQUEST) {
-                        logger.info('ERROR'.red.bold, endpoint, status, '\n', parsedData);
+                        log('ERROR'.red, parsedData);
                         expect(statusCode).toBeLessThan(StatusCodes.BAD_REQUEST);
                         reject(statusCode);
                     }
 
-                    logger.info('SUCCESS'.green.bold, endpoint, status, '\n', parsedData);
+                    log('SUCCESS'.green, parsedData);
                     callback(message, dataString);
                     resolve();
                 });

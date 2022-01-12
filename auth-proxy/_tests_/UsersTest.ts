@@ -81,7 +81,7 @@ export default class UsersTest {
             expect(user.email).toBe(UsersTest.config.email);
             expect(typeof user.name).toBe('string');
             expect(typeof user.role).toBe('string');
-        });
+        }, statusCode);
     }
 
     public static async logout(statusCode?: StatusCodes): Promise<void> {
@@ -90,7 +90,7 @@ export default class UsersTest {
 
         await httpsRequest(options, '', function(message: IncomingMessage) {
             expect(message.statusCode).toBe(StatusCodes.OK);
-        });
+        }, statusCode);
     }
 
     public static async getAllUsers(statusCode?: StatusCodes): Promise<void> {
@@ -110,7 +110,7 @@ export default class UsersTest {
             }
 
             expect(typeof users.length).toBe('number');
-        });
+        }, statusCode);
 
         /* await UsersTest.deleteAllUsers(users);  */
     }
@@ -139,7 +139,7 @@ export default class UsersTest {
 
             UsersTest.config.email = userData.email;
             UsersTest.config.password = userData.password;
-        }); 
+        }, statusCode); 
     }
 
     public static async deleteUser(statusCode?: StatusCodes): Promise<void> {
@@ -148,7 +148,7 @@ export default class UsersTest {
 
         await httpsRequest(options, '', function(message: IncomingMessage) {
             expect(message.statusCode).toBe(StatusCodes.OK);
-        });
+        }, statusCode);
     }
 
     public static async sendResetPass(): Promise<void> {
@@ -171,7 +171,7 @@ export default class UsersTest {
         await httpsRequest(options, payload, function(message: IncomingMessage) {
             expect(message.statusCode).toBe(StatusCodes.OK);
             UsersTest.config.password = newPass;
-        });
+        }, statusCode);
     }
 
     /**************************************************************************************/

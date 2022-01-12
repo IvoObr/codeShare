@@ -43,21 +43,21 @@ describe('Invalid requests api tests', (): void => {
 
 describe('Unauthorized 401 Users api tests', (): void => {
 
-    it.skip('401 POST /api/v1/auth/pub/login user in DB',
-        function() { UsersTest.login(UsersTest.config.email, 'incorrect password', StatusCodes.UNAUTHORIZED); });
+    it('401 POST /api/v1/auth/pub/login user in DB',
+        async function() { await UsersTest.login(UsersTest.config.email, 'incorrect password', StatusCodes.UNAUTHORIZED); });
 
-    it.skip('401 GET /api/v1/api/user/all returns all users',
-        function() { UsersTest.getAllUsers(StatusCodes.UNAUTHORIZED); });
+    it('401 GET /api/v1/api/user/all returns all users',
+        async function() { await UsersTest.getAllUsers(StatusCodes.UNAUTHORIZED); });
 
-    it.skip('401 PUT /api/v1/user/update/:id user in DB',
-        function() { UsersTest.updateUser(StatusCodes.UNAUTHORIZED); });
+    it('401 PUT /api/v1/user/update/:id user in DB',
+        async function() { await UsersTest.updateUser(StatusCodes.UNAUTHORIZED); });
 
-    it.skip('401 DELETE /api/v1/user/delete/:id user in DB',
-        function() { UsersTest.deleteUser(StatusCodes.UNAUTHORIZED); });
+    it('401 DELETE /api/v1/user/delete/:id user in DB',
+        async function() { await UsersTest.deleteUser(StatusCodes.UNAUTHORIZED); });
 
-    it.skip('401 GET /api/v1/auth/logout user in DB',
-        function() { UsersTest.logout(StatusCodes.UNAUTHORIZED); });
+    it('401 GET /api/v1/auth/logout user in DB',
+        async function() { await UsersTest.logout(StatusCodes.UNAUTHORIZED); });
 
-    it.skip('401 POST /api/v1/auth/reset-password',
-        function() { UsersTest.resetPass(StatusCodes.UNAUTHORIZED); });
+    it('401 POST /api/v1/auth/reset-password',
+        async function() { await UsersTest.resetPass(StatusCodes.UNAUTHORIZED); });
 });
