@@ -40,6 +40,8 @@ export async function httpsRequest(options: RequestOptions, payload: string, cal
                     const dataString: string = Buffer.concat(data).toString();
                     const parsedData: unknown = tryParseData(dataString);
                     
+                    // TODO: refactor repetitions
+
                     if (expectedCode && statusCode === expectedCode) {
                         const expected: string = ' EXPECT '.green + expectedCode + ' RECEIVE '.green + statusCode;
                         log('SUCCESS'.green + expected, parsedData);
