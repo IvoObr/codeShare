@@ -37,3 +37,8 @@ export enum Methods {
     'DELETE' = 'DELETE',
 
 }
+
+export enum Success {
+    'SUCCESS' = 'green',
+    'ERROR' = 'red'
+}
