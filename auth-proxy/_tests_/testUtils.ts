@@ -13,7 +13,7 @@ colors.enable();
  * @param callback 
  * @returns response from Proxy via callback
  */
-export async function httpsRequest(options: RequestOptions, payload: string, callback: ICallback, expectedStatusCode?: StatusCodes): Promise<unknown> {
+export async function httpsRequest(options: RequestOptions, payload: string, callback: ICallback, expectedCode?: StatusCodes): Promise<unknown> {
     return new Promise((resolve: IFunc, reject: IFunc): void => {
         
         const request: ClientRequest = https.request(options, (message: IncomingMessage): void => {
@@ -39,23 +39,36 @@ export async function httpsRequest(options: RequestOptions, payload: string, cal
                 .on('end', function() {
                     const dataString: string = Buffer.concat(data).toString();
                     const parsedData: unknown = tryParseData(dataString);
+                    
+                    if (expectedCode && statusCode === expectedCode) {
+                        const expected: string = ' EXPECT '.green + expectedCode + ' RECEIVE '.green + statusCode;
+                        log('SUCCESS'.green + expected, parsedData);
+                        expect(statusCode).toBe(expectedCode);
+                        resolve();
+                        return;
+                    }
 
-                    if (statusCode === expectedStatusCode) {
-                        log(StatusCodes[expectedStatusCode].cyan, parsedData);
-                        expect(statusCode).toBe(expectedStatusCode);
+                    if (expectedCode && statusCode !== expectedCode) {
+                        const expected: string = ' EXPECT '.red + expectedCode + ' RECEIVE '.red + statusCode;
+                        log('ERROR'.red + expected, parsedData);
+                        expect(statusCode).toBe(expectedCode);
+                        resolve();
+                        return;
+                    }
+
+                    if (statusCode < StatusCodes.BAD_REQUEST) {
+                        log('SUCCESS'.green, parsedData);
+                        callback(message, dataString);
                         resolve();
                         return;
                     }
 
                     if (statusCode >= StatusCodes.BAD_REQUEST) {
                         log('ERROR'.red, parsedData);
+                        callback(message, dataString);
                         expect(statusCode).toBeLessThan(StatusCodes.BAD_REQUEST);
-                        reject(statusCode);
+                        resolve();                     
                     }
-
-                    log('SUCCESS'.green, parsedData);
-                    callback(message, dataString);
-                    resolve();
                 });
         });
 
