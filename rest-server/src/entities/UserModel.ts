@@ -20,6 +20,7 @@ export default class UserModel implements IUserModel {
     }
 
     public async validate(): Promise<UserModel> {
+        UserModel.validatRole(this.role);
         UserModel.validateName(this.name);
         UserModel.validateEmail(this.email);
         UserModel.validatePassword(this.password);
@@ -31,6 +32,12 @@ export default class UserModel implements IUserModel {
     public static async hashPassword(password: string): Promise<string> {
         const salt: string = await bcrypt.genSalt(12); // rounds
         return await bcrypt.hash(password, salt);
+    }
+
+    public static validatRole(role: UserRole): void {
+        if (!(role in UserRole)) {
+            throw new ServerError(Errors.INVALID_ROLE, `Role ${role} is invalid!`);
+        }
     }
 
     public static validateName(name: string): void {

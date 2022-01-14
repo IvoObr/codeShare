@@ -29,9 +29,8 @@ export async function httpsRequest(options: RequestOptions, payload: string, cal
             }
 
             function log(result: string, parsedData: unknown): void {
-                const endpoint: string = `${options.method} ${options.path}`.yellow;
-                const status: string = `${message.statusCode} ${message.statusMessage}`.cyan;
-                logger.info(result.bold, endpoint, status, '\n', parsedData);
+                const status: string = `${message.statusCode} ${message.statusMessage}`;
+                logger.info(result.bold, options.method, options.path?.yellow, status, '\n', parsedData);
             }
 
             function finishExpected(parsedData: unknown, success: Success): void {

@@ -44,13 +44,16 @@ export default class UsersTest {
         };
     }
 
-    public static async register(): Promise<void> {
+    public static async register(
+        name: string = 'ivoObr',
+        role: UserRole = UserRole.Admin,
+        password: string = 'Password123@',
+        email: string = `${genBase36Key(8)}@yopmail.com`,
+        statusCode?: StatusCodes
+    ): Promise<void> {
+
         // for (let index: number = 0; index < 50; index++) { /*** register multiple users ***/
-        const name: string = 'ivoObr';
-        const role: UserRole = UserRole.Admin;
-        const password: string = 'Password123@';
         const path: string = '/api/v1/auth/pub/register';
-        const email: string = `${genBase36Key(8)}@yopmail.com`;
         const payload: string = JSON.stringify({ name, email, role, password });
         const options: RequestOptions = UsersTest.getOptions(Methods.POST, path, payload);
 
@@ -61,7 +64,7 @@ export default class UsersTest {
 
             expect(user.role).toBe(role);
             expect(user.email).toBe(email);
-        });
+        }, statusCode);
         // }
     }
 
@@ -93,7 +96,7 @@ export default class UsersTest {
         }, statusCode);
     }
 
-    public static async getAllUsers(statusCode?: StatusCodes): Promise<void> {
+    public static async getAllUsers(deleteAll: boolean, statusCode?: StatusCodes): Promise<void> {
         const path: string = '/api/v1/user/all';
         const options: RequestOptions = UsersTest.getOptions(Methods.GET, path, '');
         let users: IPublicUser[] = [];
@@ -112,17 +115,20 @@ export default class UsersTest {
             expect(typeof users.length).toBe('number');
         }, statusCode);
 
-        /* await UsersTest.deleteAllUsers(users);  */
+        if (deleteAll) {
+            await UsersTest.deleteAllUsers(users);
+        }
     }
 
-    public static async updateUser(statusCode?: StatusCodes): Promise<void> {
+    public static async updateUser(
+        name: string = 'IvoG',
+        password: string = 'Password123@',
+        email: string = `${genBase36Key(8)}@yopmail.com`,
+        statusCode?: StatusCodes
+    ): Promise<void> {
+        
         const path: string = '/api/v1/user/update/';
-        const userData: IStrings = {
-            email: `${genBase36Key(8)}@yopmail.com`,
-            name: 'IvoG',
-            password: 'Password123@'
-        };
-
+        const userData: IStrings = { email, name, password };
         const payload: string = JSON.stringify(userData);
         const options: RequestOptions = UsersTest.getOptions(Methods.PUT, path + UsersTest.config.userId, payload);
 
@@ -151,20 +157,19 @@ export default class UsersTest {
         }, statusCode);
     }
 
-    public static async sendResetPass(): Promise<void> {
+    public static async sendResetPass(email: string = UsersTest.config.email, statusCode?: StatusCodes): Promise<void> {
         const path: string = '/api/v1/auth/pub/send-reset-password';
-        const payload: string = JSON.stringify({ email: UsersTest.config.email });
+        const payload: string = JSON.stringify({ email });
         const options: RequestOptions = UsersTest.getOptions(Methods.POST, path, payload);
 
         await httpsRequest(options, payload, function(message: IncomingMessage, data: string) {
             expect(message.statusCode).toBe(StatusCodes.CREATED);
             expect(JSON.parse(data).receiver).toBe(UsersTest.config.email);
-        });
+        }, statusCode);
     }
     
-    public static async resetPass(statusCode?: StatusCodes): Promise<void> {
+    public static async resetPass(newPass: string = '4Password#', statusCode?: StatusCodes): Promise<void> {
         const path: string = '/api/v1/auth/reset-password';
-        const newPass: string = '4Password#';
         const payload: string = JSON.stringify({ password: newPass });
         const options: RequestOptions = UsersTest.getOptions(Methods.POST, path, payload);
 
