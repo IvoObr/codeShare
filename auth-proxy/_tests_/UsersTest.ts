@@ -6,8 +6,8 @@ import { IncomingMessage } from 'http';
 import { httpsRequest } from './testUtils';
 import genBase36Key from '../src/lib/genBase36Key';
 import { IUser, IStrings } from '../src/lib/interfaces';
-import { ICerts, Methods, IPublicUser } from './interfaces';
 import { UserRole, StatusCodes, Headers } from '../src/lib/enums';
+import { ICerts, Methods, IPublicUser, IRegistrationResp, INotification } from './interfaces';
 
 export default class UsersTest {
 
@@ -58,12 +58,17 @@ export default class UsersTest {
         const options: RequestOptions = UsersTest.getOptions(Methods.POST, path, payload);
 
         await httpsRequest(options, payload, function(message: IncomingMessage, data: string) {
-            const user: IUser = JSON.parse(data);
+            const response: IRegistrationResp = JSON.parse(data);
+            const notification: INotification = response.notification;
+            const user: IUser = response.user;
+
             UsersTest.config.email = user.email;
             UsersTest.config.userId = user._id;
 
             expect(user.role).toBe(role);
             expect(user.email).toBe(email);
+            expect(notification.receiver).toBe(email);
+
         }, statusCode);
         // }
     }
@@ -110,6 +115,7 @@ export default class UsersTest {
                 expect(typeof users[0].email).toBe('string');
                 expect(typeof users[0].name).toBe('string');
                 expect(typeof users[0].role).toBe('string');
+                expect(typeof users[0].status).toBe('string');
             }
 
             expect(typeof users.length).toBe('number');
@@ -139,6 +145,7 @@ export default class UsersTest {
             expect(message.statusCode).toBe(StatusCodes.OK);
             expect(typeof user.role).toBe('string');
             expect(typeof user._id).toBe('string');
+            expect(user.status).toBe('NotActive');
 
             userData?.email && expect(user.email).toBe(userData.email);
             userData?.name && expect(user.name).toBe(userData.name);
@@ -171,7 +178,7 @@ export default class UsersTest {
     public static async resetPass(newPass: string = '4Password#', statusCode?: StatusCodes): Promise<void> {
         const path: string = '/api/v1/auth/reset-password';
         const payload: string = JSON.stringify({ password: newPass });
-        const options: RequestOptions = UsersTest.getOptions(Methods.POST, path, payload);
+        const options: RequestOptions = UsersTest.getOptions(Methods.GET, path, payload);
 
         await httpsRequest(options, payload, function(message: IncomingMessage) {
             expect(message.statusCode).toBe(StatusCodes.OK);

@@ -1,30 +1,53 @@
 import fs from 'fs';
 import path from 'path';
-import { logger, Events, Event, ICerts } from '@utils';
+import { Response } from 'express';
+import { ServerError } from '@services';
 import tls, { TLSSocket, ConnectionOptions } from 'tls';
+import { logger, Events, Event, ICerts, StatusCodes, IMailInfo, Errors } from '@utils';
 
 export default class SocketClient {
 
     private socket!: TLSSocket;
 
-    public notificationSocket(): this {
+    public static sendEmail(message: string, response: Response, data: any): void { 
+        new SocketClient()
+            .notificationSocket()
+            .send(message)
+            .onSuccess((info: IMailInfo): void => {
+                response
+                    .status(StatusCodes.CREATED)
+                    .json({
+                        ...data,
+                        notification: {
+                            result: `Email successfully send.`,
+                            receiver: info?.accepted?.[0] || info
+                        }
+                    });
+            })
+            .onError((error: string): void => {
+                const err: ServerError = new ServerError(Errors.COULD_NOT_SEND_EMAIL, error);
+                ServerError.handle(err, response);
+            });
+    }
+
+    private notificationSocket(): this {
         const port: number = Number(process.env.NOTIFICATION_PORT);
         const host: string = process.env.HOST || 'localhost';
-        this.socket = new SocketClient().connect(port, host);
+        this.socket = this.connect(port, host);
         return this;
     }
 
-    public send(message: string): this {
+    private send(message: string): this {
         this.socket.write(message);
         return this;
     }
 
-    public onSuccess(callback: (info: any) => void): this {
+    private onSuccess(callback: (info: any) => void): this {
         Event.once(Events.messageSuccess, callback);
         return this;
     }
 
-    public onError(callback: (error: string) => void): this {
+    private onError(callback: (error: string) => void): this {
         Event.once(Events.messageError, callback);
         return this;
     }

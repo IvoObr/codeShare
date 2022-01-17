@@ -1,6 +1,6 @@
 import { IncomingMessage } from 'http';
 import { UserRole } from '../src/lib/enums';
-import { IStrings } from '../src/lib/interfaces';
+import { IStrings, IUser } from '../src/lib/interfaces';
 
 export type IFunc = (value?: unknown) => void;
 
@@ -22,6 +22,16 @@ export interface IPublicUser {
     name: string;
     email: string;
     role: UserRole;
+    status: 'Active' | 'NotActive';
+}
+
+export interface INotification{
+    receiver: string
+}
+
+export interface IRegistrationResp {
+    user: IUser,
+    notification: INotification
 }
 
 export interface ICerts {

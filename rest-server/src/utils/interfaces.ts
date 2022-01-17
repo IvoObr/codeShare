@@ -1,4 +1,4 @@
-import { UserRole } from './enums';
+import { UserRole, UserStatus } from './enums';
 import { Request, Response, NextFunction } from 'express';
 
 export interface IMiddleware {
@@ -38,6 +38,7 @@ export interface IBaseUser {
   name: string;
   email: string;
   role: UserRole;
+  status: UserStatus;
 }
 
 export interface IPublicUser extends IBaseUser {

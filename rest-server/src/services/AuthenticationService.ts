@@ -4,10 +4,8 @@ import { UserModel } from "@entities";
 import SocketClient from '../SocketClient';
 import { Request, Response } from 'express';
 import { ServerError, JwtService } from '@services';
-import {
-    StatusCodes, IUser, Errors, Headers, IMailInfo,
-    logger, IStrings, IUserModel, IPublicUser
-} from '@utils';
+import { StatusCodes, IUser, Errors, Headers,
+    logger, IStrings, IUserModel, IPublicUser } from '@utils';
 
 class AuthenticationService {
 
@@ -16,14 +14,30 @@ class AuthenticationService {
             const newUser: IUserModel = await new UserModel(request.body).validate();
             const user: IUser = await UserDal.addUser(newUser);
             const publicUser: IPublicUser = UserModel.getPublicUser(user);
+            
+            const token: string = JwtService.sign({ _id: user._id, role: user.role });
+            const isTokenSet: boolean = await UserDal.setToken(token, user._id);
 
-            response.status(StatusCodes.CREATED).json(publicUser);
+            if (!isTokenSet) {
+                logger.debug(`Could not set token in DB. UserID: ${user._id?.bold}`);
+                throw new ServerError(Errors.COULD_NOT_SEND_EMAIL, 'Could not set token in DB.');
+            }
+            
+            const message: string = JSON.stringify({
+                to: user.email,
+                subject: 'Account Confirmation',
+                body: `<p>Welcome, dear ${user.name}!</p>
+                       <p>Please follow the link to
+                       <a style="color:blue" href="https://${process.env.host}:${process.env.port}/api/v1/auth/confirm-registration/${token}">
+                       activate your user account. </a>                     
+                       </p>
+                       <p>The link is valid for 24 hours.</p>
+                       <p>All the Best!</p>`
+            });
 
-            /** Todo:
-             * confirm email link within 24 hours
-             * job to delete users from DB within 24 h if no confirmation
-             * endpoint registration confirmed
-             */ 
+            // todo: change url to frontend
+
+            SocketClient.sendEmail(message, response, { user: publicUser });
 
         } catch (error: any) {
             ServerError.handle(error, response);
@@ -32,6 +46,10 @@ class AuthenticationService {
 
     public static async confirmRegistration(request: Request, response: Response): Promise<void> {
         try {
+
+            logger.debug(request.body);
+            logger.debug(request.params);
+            // todo: validate token!!!!!!
 
             await new Promise((res: any): void => res(null));
 
@@ -141,18 +159,7 @@ class AuthenticationService {
 
             // todo: change url to frontend
 
-            new SocketClient()
-                .notificationSocket()
-                .send(message)
-                .onSuccess((info: IMailInfo): void => {
-                    response
-                        .status(StatusCodes.CREATED)
-                        .json({ result: `Email successfully send.`, receiver: info?.accepted?.[0] || info });
-                })
-                .onError((error: string): void => {
-                    const err: ServerError = new ServerError(Errors.COULD_NOT_SEND_EMAIL, error);
-                    ServerError.handle(err, response);
-                });
+            SocketClient.sendEmail(message, response, {});
 
         } catch (error: any) {
             ServerError.handle(error, response);
@@ -161,6 +168,8 @@ class AuthenticationService {
 
     public static async resetPassword(request: Request, response: Response): Promise<void> {
         try {
+
+            // todo: validate token!!!!!!
             const userId: string = request.body.userId;
             let password: string = request.body.password;
 

@@ -3,6 +3,11 @@ export enum UserRole {
   Admin = 'Admin'
 }
 
+export enum UserStatus {
+  Active = 'Active',
+  NotActive = 'NotActive'
+}
+
 export enum Collections {
   SNIPPETS = 'snippets',
   USERS = 'users',
