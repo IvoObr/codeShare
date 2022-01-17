@@ -19,6 +19,30 @@ class AuthenticationService {
 
             response.status(StatusCodes.CREATED).json(publicUser);
 
+            /** Todo:
+             * confirm email link within 24 hours
+             * job to delete users from DB within 24 h if no confirmation
+             * endpoint registration confirmed
+             */ 
+
+        } catch (error: any) {
+            ServerError.handle(error, response);
+        }
+    }
+
+    public static async confirmRegistration(request: Request, response: Response): Promise<void> {
+        try {
+
+            await new Promise((res: any): void => res(null));
+
+            response.status(StatusCodes.CREATED).json(null);
+
+            /** Todo:
+             * confirm email link within 24 hours
+             * job to delete users from DB within 24 h if no confirmation
+             * endpoint registration confirmed
+             */
+
         } catch (error: any) {
             ServerError.handle(error, response);
         }
@@ -166,6 +190,7 @@ export const {
     logout,
     register,
     resetPassword,
-    sendResetPassword
+    sendResetPassword,
+    confirmRegistration
 }: typeof AuthenticationService = AuthenticationService;
 

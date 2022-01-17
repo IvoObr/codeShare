@@ -9,7 +9,13 @@ dotenv.config();
 const INCORRECT_PASS: string = 'password111';
 const INCORRECT_EMAIL: string = 'incorrect@email';
 
-describe('OK 200 <Users api tests>', (): void => {
+describe('SSL', (): void => {
+
+    it('201   *          POST     /api/v1/auth/pub/register',
+        async function() { await UsersTest.register(); });
+});
+
+describe.skip('OK 200 <Users api tests>', (): void => {
 
     it('201   *          POST     /api/v1/auth/pub/register',
         async function() { await UsersTest.register(); });
@@ -40,7 +46,7 @@ describe('OK 200 <Users api tests>', (): void => {
     
 });
 
-describe('Bad Request 400 <Users api tests>', (): void => {
+describe.skip('Bad Request 400 <Users api tests>', (): void => {
     
     it('400   Name       POST     /api/v1/auth/pub/register',
         async function() { await UsersTest.register('', UserRole.Admin, 'Password123@', `${genBase36Key(8)}@yopmail.com`, StatusCodes.BAD_REQUEST); });
@@ -80,7 +86,7 @@ describe('Bad Request 400 <Users api tests>', (): void => {
 
 });
 
-describe('Unauthorized 401 <Users api tests>', (): void => {
+describe.skip('Unauthorized 401 <Users api tests>', (): void => {
 
     it('201   *         POST     /api/v1/auth/pub/register',
         async function() { await UsersTest.register(); });
@@ -113,7 +119,7 @@ describe('Unauthorized 401 <Users api tests>', (): void => {
         async function() { await UsersTest.deleteUser(); });
 });
 
-describe('Delete all users <Users api tests>', (): void => {
+describe.skip('Delete all users <Users api tests>', (): void => {
 
     it('201   *         POST     /api/v1/auth/pub/register',
         async function() { await UsersTest.register(); });

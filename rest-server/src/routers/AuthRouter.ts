@@ -1,6 +1,7 @@
 import { async } from '@lib';
 import { Router } from 'express';
-import { login, logout, register, resetPassword, sendResetPassword } from '@services';
+import { login, logout, register, confirmRegistration,
+    resetPassword, sendResetPassword } from '@services';
 
 class AuthRouter {
 
@@ -14,7 +15,8 @@ class AuthRouter {
         .post('/pub/login', async(login))
         .post('/pub/register', async(register))
         .post('/reset-password', async(resetPassword))
-        .post('/pub/send-reset-password', async(sendResetPassword));   
+        .post('/pub/send-reset-password', async(sendResetPassword))
+        .get('/pub/confirmRegistration', async(confirmRegistration));
 }
 
 export default new AuthRouter().getRouter();

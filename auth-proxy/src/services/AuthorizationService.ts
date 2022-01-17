@@ -12,14 +12,12 @@ export default class AuthorizationService {
     public static validateSSL(request: Request, response: Response, next: NextFunction): void {
         try {
 
-            logger.warn(request.body);
-
             const socket = request.socket as TLSSocket;
             const certificate = socket.getCertificate() as PeerCertificate;
 
             // Todo: Reject Unauthorized.
 
-            // logger.success(Object.entries(certificate)); // todo: uncomment develop
+            logger.success(Object.entries(certificate));
             logger.success(certificate.valid_from);
             logger.success(certificate.valid_to);
 
