@@ -16,8 +16,7 @@ export default class SocketClient {
             .onSuccess((info: IMailInfo): void => {
                 response
                     .status(StatusCodes.CREATED)
-                    .json({
-                        ...data,
+                    .json({ ...data,
                         notification: {
                             result: `Email successfully send.`,
                             receiver: info?.accepted?.[0] || info

@@ -14,8 +14,8 @@ class AuthRouter {
         .get('/logout', async(logout))
         .post('/pub/login', async(login))
         .post('/pub/register', async(register))
-        .post('/reset-password', async(resetPassword))
-        .get('/confirm-registration', async(confirmRegistration))
+        .post('/reset-password/:token', async(resetPassword)) // fixme: get or post
+        .get('/confirm-registration/:token', async(confirmRegistration)) // fixme: get or post
         .post('/pub/send-reset-password', async(sendResetPassword));
 }
 

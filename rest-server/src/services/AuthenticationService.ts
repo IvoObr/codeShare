@@ -145,14 +145,36 @@ class AuthenticationService {
                 throw new ServerError(Errors.COULD_NOT_SEND_EMAIL, 'Could not set token in DB.');
             }
 
+            //<a style="color:blue" href="https://${process.env.host}:${process.env.port}/api/v1/auth/reset-password/${token}">
+           
+            const url: string = `https://${process.env.host}:${process.env.port}/api/v1/auth/reset-password/${token}`;
+
+            logger.debug(url);
+
             const message: string = JSON.stringify({
                 to: user.email,
                 subject: 'Password reset',
-                body: `<p>Dear ${user.name},</p>
-                       <p> Please follow the link to
-                       <a style="color:blue" href="https://${process.env.host}:${process.env.port}/api/v1/auth/reset-password/${token}">
-                       reset your password. </a>                     
-                       </p>
+                body: `<p>Hi ${user.name},</p>
+
+                       <p> Please enter your new password. It should have at least: </p>
+                       
+                       <span> - eight characters; </span> </br>
+                       <span> - one upper case; </span> </br>
+                       <span> - one lower case; </span> </br>
+                       <span> - one number; </span> </br>
+                       <span> - one symbol; </span>
+
+                        <form method="POST" action="${url}">
+                        <div>
+                           <p> <label for="pass">Please enter your new password</label> </p>
+                            <p> <input name="pass" id="pass" value=""> </p>
+                        </div>
+                        <div>
+                             <p> <button>Change password</button> </p>
+                        </div>
+                        </form>
+
+                     
                        <p>The link is valid for 24 hours.</p>
                        <p>All the Best!</p>`
             });
@@ -170,7 +192,21 @@ class AuthenticationService {
         try {
 
             // todo: validate token!!!!!!
-            const userId: string = request.body.userId;
+            logger.debug(request.body);
+            logger.debug(request.params);
+            logger.info('==========');
+            logger.debug(request.params.token);
+
+            const token: string = request.params.token;
+
+            // JWT validate token
+
+
+            if (!token) {
+                // 401
+            }
+
+                const userId: string = request.body.userId; // fixme: take from token
             let password: string = request.body.password;
 
             const user: IUser = await UserDal.getUserById(userId);
