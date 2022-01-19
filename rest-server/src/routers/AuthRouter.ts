@@ -10,13 +10,14 @@ class AuthRouter {
     public getRouter = (): Router => Router()
         /* main route */
         .use('/auth', this.router)
-        /* sub routes */
-        .get('/logout', async(logout))
+        /* public sub routes */
         .post('/pub/login', async(login))
         .post('/pub/register', async(register))
-        .post('/reset-password/:token', async(resetPassword)) // fixme: get or post
-        .get('/confirm-registration/:token', async(confirmRegistration)) // fixme: get or post
-        .post('/pub/send-reset-password', async(sendResetPassword));
+        .post('/pub/send-reset-password', async(sendResetPassword))
+        /* authenticated sub routes */
+        .get('/logout', async(logout))
+        .post('/reset-password', async(resetPassword))
+        .get('/confirm-registration', async(confirmRegistration));
 }
 
 export default new AuthRouter().getRouter();

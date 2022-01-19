@@ -4,7 +4,8 @@ export enum Env {
 }
 
 export enum Headers {
-    Authorization = 'authorization'
+    Authorization = 'authorization',
+    ContentType = 'content-type',
 }
 
 export enum Collections {

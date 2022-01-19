@@ -17,7 +17,7 @@ export default class AuthorizationService {
 
             // Todo: Reject Unauthorized.
 
-            logger.success(Object.entries(certificate));
+            // logger.success(Object.entries(certificate)); // todo: uncomment for SSL
             logger.success(certificate.valid_from);
             logger.success(certificate.valid_to);
 
@@ -50,7 +50,7 @@ export default class AuthorizationService {
                 return;
             }
 
-            const token: string = request.headers.authorization?.split(' ')[1] || '';
+            const token: string = request.headers.authorization?.split(' ')[1] || request.query.token as string;
 
             if (!token) {
                 throw tokenError;

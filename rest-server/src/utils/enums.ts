@@ -8,6 +8,11 @@ export enum UserStatus {
   NotActive = 'NotActive'
 }
 
+export enum ResType {
+  html = 'html',
+  json = 'json'
+}
+
 export enum Collections {
   SNIPPETS = 'snippets',
   USERS = 'users',

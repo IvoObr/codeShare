@@ -81,6 +81,10 @@ export default class AuthProxy {
                         logger.error(error);
                     });
 
+                    if (request.headers['content-type'] === 'application/x-www-form-urlencoded') {
+                        response.type('html');
+                    }
+                        
                     response
                         .header(Headers.Authorization, message.headers?.authorization)
                         .status(Number(message?.statusCode))
