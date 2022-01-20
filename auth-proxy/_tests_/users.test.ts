@@ -26,7 +26,8 @@ describe.skip('OK 200 <Users api tests>', (): void => {
     it('201   *          POST     /api/v1/auth/pub/register',
         async function() { await UsersTest.register(); });
     
-    // todo: confirmRegistration 
+    // todo: confirmRegistration
+    // todo: sendConfirmRegistration
 
     it('200   *          POST     /api/v1/auth/pub/login',
         async function() { await UsersTest.login(UsersTest.config.email, UsersTest.config.password); });
@@ -65,6 +66,9 @@ describe.skip('Bad Request 400 <Users api tests>', (): void => {
     it('400   Password   POST     /api/v1/auth/pub/register',
         async function() { await UsersTest.register('ivoObr', UserRole.Admin, INCORRECT_PASS, `${genBase36Key(8)}@yopmail.com`, StatusCodes.BAD_REQUEST); });
     
+    // todo: confirmRegistration
+    // todo: sendConfirmRegistration
+   
     it('400   Email      POST     /api/v1/auth/pub/register',
         async function() { await UsersTest.register('ivoObr', UserRole.Admin, 'Password123@', INCORRECT_EMAIL, StatusCodes.BAD_REQUEST); });
 
@@ -99,6 +103,9 @@ describe.skip('Unauthorized 401 <Users api tests>', (): void => {
     it('201   *         POST     /api/v1/auth/pub/register',
         async function() { await UsersTest.register(); });
 
+    // todo: confirmRegistration
+    // todo: sendConfirmRegistration
+   
     it('401   *         POST     /api/v1/auth/pub/login',
         async function() { await UsersTest.login(UsersTest.config.email, INCORRECT_PASS, StatusCodes.UNAUTHORIZED); });
     
@@ -125,6 +132,10 @@ describe.skip('Unauthorized 401 <Users api tests>', (): void => {
 
     it('200   *         DELETE   /api/v1/user/delete/:id',
         async function() { await UsersTest.deleteUser(); });
+});
+
+describe.skip('Forbidden 403 <Users api tests>', (): void => {
+    // todo: validateAccountStatus all APIs
 });
 
 describe.skip('Delete all users <Users api tests>', (): void => {

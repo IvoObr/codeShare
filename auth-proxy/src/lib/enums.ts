@@ -18,6 +18,11 @@ export enum UserRole {
     Admin = 'Admin'
 }
 
+export enum UserStatus {
+    Active = 'Active',
+    NotActive = 'NotActive'
+}
+
 export enum Errors {
     FORBIDDEN = 'FORBIDDEN',
     NOT_FOUND = 'NOT_FOUND',
