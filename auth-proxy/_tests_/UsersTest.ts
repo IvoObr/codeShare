@@ -20,10 +20,6 @@ export default class UsersTest {
 
     private static setKeys(): ICerts | undefined {
         try {
-            
-            // fixme: init keys
-            // throw new ServerError(Errors.SSL_HANDSHAKE_FAILED, error.message);
-
             return {
                 key: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.key')),
                 cert: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.crt')),
@@ -31,6 +27,7 @@ export default class UsersTest {
             };
         } catch (error: unknown) {
             logger.error(error);
+            process.exit(0); /* clean exit */
         }
     }
 

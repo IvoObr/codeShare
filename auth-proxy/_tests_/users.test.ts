@@ -14,10 +14,10 @@ describe('SSL', (): void => {
     it('201   *          POST     /api/v1/auth/pub/register',
         async function() { await UsersTest.register(); });
 
-    it('200   *          POST     /api/v1/auth/pub/login',
+    it.skip('200   *          POST     /api/v1/auth/pub/login',
         async function() { await UsersTest.login(UsersTest.config.email, UsersTest.config.password); });
 
-    it('200   *           POST     /api/v1/auth/pub/send-reset-password',
+    it.skip('200   *           POST     /api/v1/auth/pub/send-reset-password',
         async function() { await UsersTest.sendResetPass(); });
 });
 
@@ -133,6 +133,8 @@ describe.skip('Unauthorized 401 <Users api tests>', (): void => {
     it('200   *         DELETE   /api/v1/user/delete/:id',
         async function() { await UsersTest.deleteUser(); });
 });
+
+// todo: test 525 SSL Handshake Failed
 
 describe.skip('Forbidden 403 <Users api tests>', (): void => {
     // todo: validateAccountStatus all APIs

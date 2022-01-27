@@ -13,23 +13,19 @@ import https, { Server, ServerOptions } from 'https';
  *  
  */
 export default class ExpressServer {
-    
+
     private setKeys(): ICerts | undefined {
-
-        // fixme: init keys
-        // throw new ServerError(Errors.SSL_HANDSHAKE_FAILED, error.message);
-
         try {
             return {
                 key: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.key')),
                 cert: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.crt')),
                 ca: fs.readFileSync(path.resolve(__dirname, '../../ssl/rootCA.crt'))
             };
-        } catch (error) {
-            logger.error(error);
+        } catch (error: any) {
+            this.onError(error);
         }
     }
-    
+
     public start(): Express {
         const app: Express = this.setApp();
         const keys = this.setKeys() as ServerOptions;

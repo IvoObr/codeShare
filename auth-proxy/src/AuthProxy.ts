@@ -3,12 +3,12 @@ import path from 'path';
 import { Mongo } from './db';
 import logger from './lib/logger';
 import { ICerts } from './lib/interfaces';
+import { Headers, Env } from './lib/enums';
 import ExpressServer from './ExpressServer';
 import { Request, Response } from 'express';
 import { Express } from "express-serve-static-core";
 import dotenv, { DotenvConfigOutput } from 'dotenv';
 import { ClientRequest, IncomingMessage } from 'http';
-import { Headers, Env, StatusCodes } from './lib/enums';
 import https, { RequestOptions, ServerOptions } from 'https';
 import AuthorizationService from './services/AuthorizationService';
 /**
@@ -16,7 +16,7 @@ import AuthorizationService from './services/AuthorizationService';
  */
 export default class AuthProxy {
 
-    private keys: ICerts;
+    private keys: ICerts | undefined;
 
     constructor() {
         this.keys = this.setKeys();
@@ -49,19 +49,19 @@ export default class AuthProxy {
             (request: Request, response: Response): void => this.send(request, response));
     }
 
-    private setKeys(): ICerts {
-
-        // fixme: init keys
-        // throw new ServerError(Errors.SSL_HANDSHAKE_FAILED, error.message);
-
-        return {
-            key: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.key')),
-            cert: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.crt')),
-            ca: fs.readFileSync(path.resolve(__dirname, '../../ssl/rootCA.crt'))
-        };
+    private setKeys(): ICerts | undefined {
+        try {
+            return {
+                key: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.key')),
+                cert: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.crt')),
+                ca: fs.readFileSync(path.resolve(__dirname, '../../ssl/rootCA.crt'))
+            };
+        } catch (error: unknown) {
+            this.onError(error);
+        }
     }
 
-    private send(request: Request, response: Response): void { 
+    private send(request: Request, response: Response): void {
         const body: string = JSON.stringify(request.body);
 
         const options: RequestOptions = {
@@ -90,12 +90,12 @@ export default class AuthProxy {
                     if (request.headers['content-type'] === 'application/x-www-form-urlencoded') {
                         response.type('html');
                     }
-                        
+
                     response
                         .header(Headers.Authorization, message.headers?.authorization)
                         .status(Number(message?.statusCode))
                         .write(dataString);
-                    
+
                     response.end();
                 });
         });
@@ -118,6 +118,6 @@ export default class AuthProxy {
 
     private onError(error: unknown): void {
         logger.error('Auth-proxy unable to start'.red, error);
-        process.exit(1); /* app crashed */
+        process.exit(0); /* clean exit */
     }
 }

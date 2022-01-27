@@ -8,6 +8,11 @@ import { logger, Events, Event, ICerts, StatusCodes, IMailInfo, Errors } from '@
 export default class SocketClient {
 
     private socket!: TLSSocket;
+    private keys: ICerts | undefined;
+
+    constructor() {
+        this.keys = this.setKeys();
+    }
 
     public static sendEmail(message: string, response: Response, data: any): void { 
         new SocketClient()
@@ -53,10 +58,6 @@ export default class SocketClient {
 
     private setKeys(): ICerts | undefined {
         try {
-
-            // fixme: init keys
-            // throw new ServerError(Errors.SSL_HANDSHAKE_FAILED, error.message);
-
             return {
                 key: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.key')),
                 cert: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.crt')),
@@ -68,7 +69,7 @@ export default class SocketClient {
     }
 
     private connect = (port: number, host: string): TLSSocket => {
-        const keys = this.setKeys() as ConnectionOptions;
+        const keys = this.keys as ConnectionOptions;
 
         return tls.connect(port, host, keys)
             .on('data', this.onData)

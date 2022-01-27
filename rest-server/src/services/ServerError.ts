@@ -30,10 +30,14 @@ export default class ServerError extends Error {
                 case Errors.NOT_FOUND:
                     response.status(StatusCodes.NOT_FOUND);
                     break;
+                
+                case Errors.SSL_HANDSHAKE_FAILED:
+                    response.status(StatusCodes.SSL_HANDSHAKE_FAILED);
+                    break;
 
                 default:
                     response.status(StatusCodes.BAD_REQUEST);
-                    break;
+                    break;                
             }
 
             if (type === ResType.html) {

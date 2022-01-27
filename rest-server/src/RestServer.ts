@@ -19,25 +19,20 @@ export default class RestServer {
                 .connectDB())
                 .startExpressServer();
 
-        } catch (error) {
-            logger.error(error);
-            process.exit(1); /* app crashed */
+        } catch (error: any) {
+            this.onError(error);
         }
     }
 
     private setKeys(): ICerts | undefined {
         try {
-
-            // fixme: init keys
-            // throw new ServerError(Errors.SSL_HANDSHAKE_FAILED, error.message);
-            
             return {
                 key: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.key')),
                 cert: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.crt')),
                 ca: fs.readFileSync(path.resolve(__dirname, '../../ssl/rootCA.crt'))
             };
-        } catch (error) {
-            logger.error(error);
+        } catch (error: any) {
+            this.onError(error);
         }
     }
 
@@ -83,8 +78,7 @@ export default class RestServer {
         const result: DotenvConfigOutput = dotenv.config();
 
         if (result.error) {
-            logger.error('REST Server unable to start'.red, result.error);
-            process.exit(0); /* clean exit */
+            this.onError(result.error);
         }
         return this;
     }
