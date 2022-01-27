@@ -1,6 +1,6 @@
 import { ServerError } from '@services';
 import { Request, Response, NextFunction } from 'express';
-import { Errors, IStrings, UserRole, logger } from '@utils';
+import { Errors, IStrings, UserRole, logger, UserStatus } from '@utils';
 
 class AuthorizationService {
 
@@ -19,6 +19,25 @@ class AuthorizationService {
             ServerError.handle(error, response);
         }
     }
+
+    public static validateAccountStatus(request: Request, response: Response, next: NextFunction): void {
+        try {
+            const { userId, status }: IStrings = request.body;
+
+            if (status !== UserStatus.Active) {
+                logger.debug(`${Errors.FORBIDDEN} userId: ${userId?.bold} is not Active.`);
+                throw new ServerError(Errors.FORBIDDEN, `User account must be active.`);
+            }
+
+            next();
+
+        } catch (error: any) {
+            ServerError.handle(error, response);
+        }
+    }
 }
 
-export const { authorizeAdmin }: typeof AuthorizationService = AuthorizationService;
+export const {
+    authorizeAdmin,
+    validateAccountStatus
+}: typeof AuthorizationService = AuthorizationService;

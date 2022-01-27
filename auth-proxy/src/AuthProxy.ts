@@ -16,6 +16,12 @@ import AuthorizationService from './services/AuthorizationService';
  */
 export default class AuthProxy {
 
+    private keys: ICerts;
+
+    constructor() {
+        this.keys = this.setKeys();
+    }
+
     public async start(): Promise<void> {
         try {
             new AuthProxy().setEnv();
@@ -43,16 +49,16 @@ export default class AuthProxy {
             (request: Request, response: Response): void => this.send(request, response));
     }
 
-    private setKeys(): ICerts | undefined {
-        try {
-            return {
-                key: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.key')),
-                cert: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.crt')),
-                ca: fs.readFileSync(path.resolve(__dirname, '../../ssl/rootCA.crt'))
-            };
-        } catch (error) {
-            logger.error(error);
-        }
+    private setKeys(): ICerts {
+
+        // fixme: init keys
+        // throw new ServerError(Errors.SSL_HANDSHAKE_FAILED, error.message);
+
+        return {
+            key: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.key')),
+            cert: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.crt')),
+            ca: fs.readFileSync(path.resolve(__dirname, '../../ssl/rootCA.crt'))
+        };
     }
 
     private send(request: Request, response: Response): void { 
@@ -66,7 +72,7 @@ export default class AuthProxy {
             headers: {
                 'Content-Type': 'application/json',
                 'Content-Length': Buffer.byteLength(body)
-            }, ...this.setKeys() as ICerts
+            }, ...this.keys
         };
 
         const req: ClientRequest = https.request(options, (message: IncomingMessage): void => {

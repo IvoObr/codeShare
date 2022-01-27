@@ -1,6 +1,7 @@
 import { async } from '@lib';
 import { Router } from 'express';
-import { getAllUsers, deleteUser, updateUser, authorizeAdmin } from '@services';
+import { getAllUsers, deleteUser, updateUser,
+    authorizeAdmin, validateAccountStatus } from '@services';
 
 class UserRouter {
 
@@ -8,11 +9,12 @@ class UserRouter {
 
     public getRouter = (): Router => Router()
         /* main route */
-        .use('/user', this.router)
+        .use('/user', validateAccountStatus, this.router)
+        
         /* sub routes */
-        .put('/update/:id', async(updateUser))
-        .delete('/delete/:id', authorizeAdmin, async(deleteUser))
-        .get('/all', authorizeAdmin, async(getAllUsers));
+        .put('/update/:id', validateAccountStatus, async(updateUser))
+        .get('/all', validateAccountStatus, authorizeAdmin, async(getAllUsers))
+        .delete('/delete/:id', validateAccountStatus, authorizeAdmin, async(deleteUser));
 }
 
 export default new UserRouter().getRouter();

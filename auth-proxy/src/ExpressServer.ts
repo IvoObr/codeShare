@@ -15,6 +15,10 @@ import https, { Server, ServerOptions } from 'https';
 export default class ExpressServer {
     
     private setKeys(): ICerts | undefined {
+
+        // fixme: init keys
+        // throw new ServerError(Errors.SSL_HANDSHAKE_FAILED, error.message);
+
         try {
             return {
                 key: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.key')),

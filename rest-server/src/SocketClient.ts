@@ -16,16 +16,16 @@ export default class SocketClient {
             .onSuccess((info: IMailInfo): void => {
                 response
                     .status(StatusCodes.CREATED)
-                    .json({ ...data,
-                        notification: {
-                            result: `Email successfully send.`,
-                            receiver: info?.accepted?.[0] || info
-                        }
+                    .json({ ...data, notification: {
+                        result: `Email successfully send.`,
+                        receiver: info?.accepted?.[0] || info }
                     });
             })
-            .onError((error: string): void => {
-                const err: ServerError = new ServerError(Errors.COULD_NOT_SEND_EMAIL, error);
-                ServerError.handle(err, response);
+            .onError((error: any): void => {
+                if (!(error instanceof ServerError)) {
+                    error = new ServerError(Errors.COULD_NOT_SEND_EMAIL, error.message);
+                }
+                ServerError.handle(error, response);
             });
     }
 
@@ -53,13 +53,17 @@ export default class SocketClient {
 
     private setKeys(): ICerts | undefined {
         try {
+
+            // fixme: init keys
+            // throw new ServerError(Errors.SSL_HANDSHAKE_FAILED, error.message);
+
             return {
                 key: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.key')),
                 cert: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.crt')),
                 ca: fs.readFileSync(path.resolve(__dirname, '../../ssl/rootCA.crt'))
             };
-        } catch (error) {
-            logger.error(error);
+        } catch (error: any) {
+            throw new ServerError(Errors.SSL_HANDSHAKE_FAILED, error.message);
         }
     }
 
