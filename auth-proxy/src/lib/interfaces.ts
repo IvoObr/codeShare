@@ -19,6 +19,8 @@ export interface IClientData {
     _id: string;
     role: UserRole;
     status: UserStatus;
+    iat: number;
+    exp: number;
 }
 
 export interface IStrings {

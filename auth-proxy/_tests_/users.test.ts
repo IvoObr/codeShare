@@ -13,8 +13,14 @@ describe('SSL', (): void => {
 
     it('201   *          POST     /api/v1/auth/pub/register',
         async function() { await UsersTest.register(); });
+    
+    it('201   *          POST     /api/v1/auth/pub/send-confirm-registration',
+        async function() { await UsersTest.sendConfirmRegistration(UsersTest.config.email); });
+    
+    it('201   *          POST     /api/v1/auth/confirm-registration',
+        async function() { await UsersTest.confirmRegistration(); });
 
-    it.skip('200   *          POST     /api/v1/auth/pub/login',
+    it('200   *          POST     /api/v1/auth/pub/login',
         async function() { await UsersTest.login(UsersTest.config.email, UsersTest.config.password); });
 
     it.skip('200   *           POST     /api/v1/auth/pub/send-reset-password',
@@ -26,8 +32,12 @@ describe.skip('OK 200 <Users api tests>', (): void => {
     it('201   *          POST     /api/v1/auth/pub/register',
         async function() { await UsersTest.register(); });
     
-    // todo: confirmRegistration
-    // todo: sendConfirmRegistration
+    // todo:
+    // it('201   *          POST     /api/v1/auth/confirm-registration',
+    //     async function() { await UsersTest.confirmRegistration(); });
+
+    it('201   *          POST     /api/v1/auth/pub/send-confirm-registration',
+        async function() { await UsersTest.sendConfirmRegistration(UsersTest.config.email); });
 
     it('200   *          POST     /api/v1/auth/pub/login',
         async function() { await UsersTest.login(UsersTest.config.email, UsersTest.config.password); });
@@ -133,8 +143,6 @@ describe.skip('Unauthorized 401 <Users api tests>', (): void => {
     it('200   *         DELETE   /api/v1/user/delete/:id',
         async function() { await UsersTest.deleteUser(); });
 });
-
-// todo: test 525 SSL Handshake Failed
 
 describe.skip('Forbidden 403 <Users api tests>', (): void => {
     // todo: validateAccountStatus all APIs

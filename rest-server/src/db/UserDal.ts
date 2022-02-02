@@ -67,7 +67,11 @@ class UserDal {
         const result: mongodb.ReplaceWriteOpResult = await Mongo.db
             .collection(Collections.USERS)
             .replaceOne({ _id }, user);
-                
+
+        console.log('R: ', result); 
+        // fixme: update query result
+        // todo: check here https://docs.mongodb.com/v3.6/ ??? maybe version
+        
         return result?.result?.nModified === 1;
     }
 

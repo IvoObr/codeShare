@@ -40,7 +40,10 @@ class AuthenticationService {
                        <p>All the Best!</p>`
             });
 
-            SocketClient.sendEmail(message, response, {});
+            const publicUser: IPublicUser = UserModel.getPublicUser(user);
+
+            // todo: return token for confirm registration ???
+            SocketClient.sendEmail(message, response, publicUser);
 
         } catch (error: any) {
             ServerError.handle(error, response);
@@ -57,6 +60,10 @@ class AuthenticationService {
             const user: IUser = await UserDal.getUserById(userId);
 
             user.status = UserStatus.Active;
+
+            logger.debug('U: ', user);
+            // fixme: mongo update query
+
             const didUpdate: boolean = await UserDal.updateUser(user);
 
             if (!didUpdate) {

@@ -1,10 +1,5 @@
-import { IncomingMessage } from 'http';
-import { UserRole } from '../src/lib/enums';
-import { IStrings, IUser } from '../src/lib/interfaces';
-
-export type IFunc = (value?: unknown) => void;
-
-export type ICallback = (message: IncomingMessage, data: string) => void;
+import { IStrings } from '../src/lib/interfaces';
+import { UserRole, UserStatus } from '../src/lib/enums';
 
 export interface IHeaders {
     headers: IStrings
@@ -22,33 +17,19 @@ export interface IPublicUser {
     name: string;
     email: string;
     role: UserRole;
-    status: 'Active' | 'NotActive';
+    status: UserStatus;
 }
 
-export interface INotification{
-    receiver: string
-}
-
-export interface IRegistrationResp {
-    user: IUser,
-    notification: INotification
+export interface IEmailResp {
+    data: any
+    notification: {
+        receiver: string;
+        result: string;
+    },
 }
 
 export interface ICerts {
     key: Buffer;
     cert: Buffer;
     ca: Buffer;
-}
-
-export enum Methods {
-    'GET' = 'GET',
-    'PUT' = 'PUT',
-    'POST' = 'POST',
-    'DELETE' = 'DELETE',
-
-}
-
-export enum Success {
-    'SUCCESS' = 'green',
-    'ERROR' = 'red'
 }

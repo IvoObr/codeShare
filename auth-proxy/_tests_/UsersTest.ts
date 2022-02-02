@@ -1,13 +1,14 @@
 import fs from 'fs';
 import path from 'path';
+import { Methods } from './enums';
 import logger from '../src/lib/logger';
 import { RequestOptions } from 'https';
 import { IncomingMessage } from 'http';
 import { httpsRequest } from './testUtils';
 import genBase36Key from '../src/lib/genBase36Key';
 import { IUser, IStrings } from '../src/lib/interfaces';
-import { UserRole, StatusCodes, Headers } from '../src/lib/enums';
-import { ICerts, Methods, IPublicUser, IRegistrationResp, INotification } from './interfaces';
+import { ICerts, IPublicUser, IEmailResp } from './interfaces';
+import { UserRole, StatusCodes, Headers, UserStatus } from '../src/lib/enums';
 
 export default class UsersTest {
 
@@ -59,19 +60,53 @@ export default class UsersTest {
         const options: RequestOptions = UsersTest.getOptions(Methods.POST, path, payload);
 
         await httpsRequest(options, payload, function(message: IncomingMessage, data: string) {
-            const response: IRegistrationResp = JSON.parse(data);
-            const notification: INotification = response.notification;
-            const user: IUser = response.user;
+            const response: IEmailResp = JSON.parse(data);
+            const user: IPublicUser = response.data;
 
             UsersTest.config.email = user.email;
             UsersTest.config.userId = user._id;
 
             expect(user.role).toBe(role);
             expect(user.email).toBe(email);
-            expect(notification.receiver).toBe(email);
+            expect(user.name).toBe(name);
+            expect(user.status).toBe(UserStatus.NotActive);
+            expect(response.notification.receiver).toBe(email);
 
         }, statusCode);
         // }
+    }
+
+    public static async sendConfirmRegistration(email: string, statusCode?: StatusCodes): Promise<void> {
+        const path: string = '/api/v1/auth/pub/send-confirm-registration';
+        const payload: string = JSON.stringify({ email });
+        const options: RequestOptions = UsersTest.getOptions(Methods.POST, path, payload);
+
+        await httpsRequest(options, payload, function(message: IncomingMessage, data: string) {
+            const response: IEmailResp = JSON.parse(data);
+            
+            expect(response.notification.receiver).toBe(email);
+            expect(response.notification.result).toBe('Email successfully send.');
+
+        }, statusCode);
+    }
+
+    public static async confirmRegistration(statusCode?: StatusCodes): Promise<void> {
+        //fixme: token
+      
+        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MWZhYTUzMjMwMTM1NzQ0N2M2NTAwMGYiLCJyb2xlIjoiQWRtaW4iLCJzdGF0dXMiOiJOb3RBY3RpdmUiLCJpYXQiOjE2NDM4MTYyNDMsImV4cCI6MTY0Mzk4OTA0M30.BiJj15PSHu15UWaebHwn0JR23H1vaBwEhx83T1hXqBs';
+        const path: string = `/api/v1/auth/confirm-registration?token=${token}`;
+        const payload: string = '';
+        const options: RequestOptions = UsersTest.getOptions(Methods.GET, path, payload);
+
+        await httpsRequest(options, payload, function(message: IncomingMessage, data: string) {
+            const response: IEmailResp = JSON.parse(data);
+
+            logger.debug(data);
+            // todo: expect
+            // expect(response.notification.receiver).toBe(email);
+            // expect(response.notification.result).toBe('Email successfully send.');
+
+        }, statusCode);
     }
 
     public static async login(email: string, password: string, statusCode?: StatusCodes): Promise<void> {

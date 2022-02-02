@@ -21,9 +21,11 @@ export default class SocketClient {
             .onSuccess((info: IMailInfo): void => {
                 response
                     .status(StatusCodes.CREATED)
-                    .json({ ...data, notification: {
-                        result: `Email successfully send.`,
-                        receiver: info?.accepted?.[0] || info }
+                    .json({
+                        data: { ...data },
+                        notification: {
+                            result: `Email successfully send.`,
+                            receiver: info?.accepted?.[0] || info }
                     });
             })
             .onError((error: any): void => {

@@ -1,9 +1,10 @@
 import colors from 'colors';
+import { Success } from './enums';
 import logger from '../src/lib/logger';
+import { ICallback, IFunc } from './types';
 import https, { RequestOptions } from 'https';
 import { StatusCodes } from '../src/lib/enums';
 import { ClientRequest, IncomingMessage } from 'http';
-import { ICallback, IFunc, Success } from './interfaces';
 colors.enable();
 
 /**
