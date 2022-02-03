@@ -87,12 +87,10 @@ export default class AuthProxy {
                         logger.error(error);
                     });
 
-                    // fixme: html response
-                    // logger.debug(request.headers);
-                    logger.debug('================================');
-                    logger.debug(response);
+                    const isHTMLrequest: boolean = request.headers['content-type'] === 'application/x-www-form-urlencoded';
+                    const isHTMLmessage: boolean = message.headers['content-type']?.includes('text/html') || false;
 
-                    if (request.headers['content-type'] === 'application/x-www-form-urlencoded') {
+                    if (isHTMLmessage || isHTMLrequest) {
                         response.type('html');
                     }
 
