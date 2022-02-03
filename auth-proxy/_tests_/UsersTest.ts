@@ -103,9 +103,7 @@ export default class UsersTest {
         const options: RequestOptions = UsersTest.getOptions(Methods.GET, path, payload);
 
         await httpsRequest(options, payload, function(message: IncomingMessage, data: string) {
-            logger.debug(data);
             expect(data).toBe("<h4 style='font-family: cursive'> Your account has been successfully activated!</h4>");
-
         }, statusCode);
     }
 
