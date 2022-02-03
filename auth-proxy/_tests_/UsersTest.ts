@@ -63,6 +63,12 @@ export default class UsersTest {
             const response: IEmailResp = JSON.parse(data);
             const user: IPublicUser = response.data;
 
+            const token: string = message.headers.authorization || '';
+
+            /* authorize next requests */
+            UsersTest.config.headers.headers.Authorization = `Bearer ${token}`;
+            logger.info("TOKEN:".cyan, token);
+
             UsersTest.config.email = user.email;
             UsersTest.config.userId = user._id;
 
@@ -90,21 +96,15 @@ export default class UsersTest {
         }, statusCode);
     }
 
-    public static async confirmRegistration(statusCode?: StatusCodes): Promise<void> {
-        //fixme: token
-      
-        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MWZhYTUzMjMwMTM1NzQ0N2M2NTAwMGYiLCJyb2xlIjoiQWRtaW4iLCJzdGF0dXMiOiJOb3RBY3RpdmUiLCJpYXQiOjE2NDM4MTYyNDMsImV4cCI6MTY0Mzk4OTA0M30.BiJj15PSHu15UWaebHwn0JR23H1vaBwEhx83T1hXqBs';
-        const path: string = `/api/v1/auth/confirm-registration?token=${token}`;
+    public static async confirmRegistration(statusCode?: StatusCodes): Promise<void> {      
+        const token: string = UsersTest.config.headers.headers.Authorization;
+        const path: string = encodeURI(`/api/v1/auth/confirm-registration?token=${token}`);
         const payload: string = '';
         const options: RequestOptions = UsersTest.getOptions(Methods.GET, path, payload);
 
         await httpsRequest(options, payload, function(message: IncomingMessage, data: string) {
-            const response: IEmailResp = JSON.parse(data);
-
             logger.debug(data);
-            // todo: expect
-            // expect(response.notification.receiver).toBe(email);
-            // expect(response.notification.result).toBe('Email successfully send.');
+            expect(data).toBe("<h4 style='font-family: cursive'> Your account has been successfully activated!</h4>");
 
         }, statusCode);
     }

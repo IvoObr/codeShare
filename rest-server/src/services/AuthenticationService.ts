@@ -42,7 +42,7 @@ class AuthenticationService {
 
             const publicUser: IPublicUser = UserModel.getPublicUser(user);
 
-            // todo: return token for confirm registration ???
+            response.header(Headers.Authorization, token);
             SocketClient.sendEmail(message, response, publicUser);
 
         } catch (error: any) {
@@ -63,6 +63,7 @@ class AuthenticationService {
             }
 
             response
+                .type('html')
                 .status(StatusCodes.OK)
                 .send(`<h4 style='font-family: cursive'> Your account has been successfully activated!</h4>`);
 

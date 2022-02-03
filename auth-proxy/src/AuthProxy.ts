@@ -87,6 +87,11 @@ export default class AuthProxy {
                         logger.error(error);
                     });
 
+                    // fixme: html response
+                    // logger.debug(request.headers);
+                    logger.debug('================================');
+                    logger.debug(response);
+
                     if (request.headers['content-type'] === 'application/x-www-form-urlencoded') {
                         response.type('html');
                     }
