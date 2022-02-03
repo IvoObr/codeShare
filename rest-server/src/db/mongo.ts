@@ -3,6 +3,8 @@ import { MongoClient, Db } from 'mongodb';
 
 export default class Mongo {
 
+    /* Docs https://docs.mongodb.com/v3.6/reference/method/js-collection/ */
+
     private readonly uri: string = 'mongodb://' +
         process.env.DB_USER + ':' +
         process.env.DB_PASSWORD + '@' +
@@ -21,7 +23,7 @@ export default class Mongo {
             const db: Db = client.db(process.env.DB_NAME);
             await db.command({ ping: 1 });
 
-            logger.success(`Connected to ${process.env.DB_NAME?.yellow?.bold} DB`);
+            logger.success(`Connected to ${process.env.DB_NAME?.yellow?.bold} DB: \n${this.uri.yellow}`);
             Mongo.db = db;
 
         } catch (error) {

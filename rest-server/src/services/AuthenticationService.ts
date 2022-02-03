@@ -52,18 +52,10 @@ class AuthenticationService {
 
     public static async confirmRegistration(request: Request, response: Response): Promise<void> {
         try {
-
-            logger.debug(request.body);
-            logger.debug(request.params);
-
             const userId: string = request.body.userId;
             const user: IUser = await UserDal.getUserById(userId);
 
             user.status = UserStatus.Active;
-
-            logger.debug('U: ', user);
-            // fixme: mongo update query
-
             const didUpdate: boolean = await UserDal.updateUser(user);
 
             if (!didUpdate) {
