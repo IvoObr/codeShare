@@ -20,7 +20,6 @@ describe('SSL', (): void => {
     it('201   *          POST     /api/v1/auth/confirm-registration',
         async function() { await UsersTest.confirmRegistration(); });
 
-    // fixme: login
     it('200   *          POST     /api/v1/auth/pub/login',
         async function() { await UsersTest.login(UsersTest.config.email, UsersTest.config.password); });
 
