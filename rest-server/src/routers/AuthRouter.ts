@@ -13,14 +13,14 @@ class AuthRouter {
 
         /* public sub routes */
         .post('/pub/register', async(register))
-        .post('/pub/login', validateAccountStatus, async(login))
-        .post('/pub/send-reset-password', async(sendResetPassword))
+        .post('/pub/login', async(validateAccountStatus), async(login))
         .post('/pub/send-confirm-registration', async(sendConfirmRegistration))
+        .post('/pub/send-reset-password', async(validateAccountStatus), async(sendResetPassword))
     
         /* authenticated sub routes */
-        .post('/reset-password', async(resetPassword))
-        .get('/logout', validateAccountStatus, async(logout))
-        .get('/confirm-registration', async(confirmRegistration));
+        .get('/logout', async(validateAccountStatus), async(logout))
+        .get('/confirm-registration', async(confirmRegistration))
+        .post('/reset-password', async(validateAccountStatus), async(resetPassword));
 }
 
 export default new AuthRouter().getRouter();

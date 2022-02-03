@@ -66,7 +66,6 @@ export default class AuthorizationService {
 
                 request.body.userId = clientData._id;
                 request.body.userRole = clientData.role;
-                request.body.userStatus = clientData.status;
 
                 next();
             });

@@ -67,7 +67,6 @@ export default class UsersTest {
 
             /* authorize next requests */
             UsersTest.config.headers.headers.Authorization = `Bearer ${token}`;
-            logger.info("TOKEN:".cyan, token);
 
             UsersTest.config.email = user.email;
             UsersTest.config.userId = user._id;
@@ -118,7 +117,6 @@ export default class UsersTest {
             
             /* authorize next requests */
             UsersTest.config.headers.headers.Authorization = `Bearer ${token}`;
-            logger.info("TOKEN:".cyan, token);
 
             expect(user.email).toBe(UsersTest.config.email);
             expect(typeof user.name).toBe('string');

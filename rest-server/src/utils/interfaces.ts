@@ -21,7 +21,6 @@ export interface IMailInfo {
 export interface IClientData {
     _id: string;
     role: UserRole;
-    status: UserStatus;
 }
 
 export interface IStrings {

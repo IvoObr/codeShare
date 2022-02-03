@@ -17,7 +17,7 @@ class AuthenticationService {
             const newUser: IUserModel = await new UserModel(request.body).validate();
             const user: IUser = await UserDal.addUser(newUser);
             
-            const token: string = JwtService.sign({ _id: user._id, role: user.role, status: user.status });
+            const token: string = JwtService.sign({ _id: user._id, role: user.role });
             const isTokenSet: boolean = await UserDal.setToken(token, user._id);
 
             if (!isTokenSet) {
@@ -63,7 +63,6 @@ class AuthenticationService {
             }
 
             response
-                .type('html')
                 .status(StatusCodes.OK)
                 .send(`<h4 style='font-family: cursive'> Your account has been successfully activated!</h4>`);
 
@@ -83,11 +82,11 @@ class AuthenticationService {
             const user: IUser = await UserDal.getUserByEmail(email);
 
             if (!user) {
-                logger.debug(`User ${email?.bold} not found.`);
-                throw new ServerError(Errors.NOT_FOUND, 'User not found.');
+                logger.debug(`${Errors.NOT_FOUND} User ${email?.bold} not found.`);
+                throw new ServerError(Errors.NOT_FOUND, `User ${email} not found.`);
             }
 
-            const token: string = JwtService.sign({ _id: user._id, role: user.role, status: user.status });
+            const token: string = JwtService.sign({ _id: user._id, role: user.role });
             const isTokenSet: boolean = await UserDal.setToken(token, user._id);
 
             if (!isTokenSet) {
@@ -128,11 +127,11 @@ class AuthenticationService {
             const user: IUser = await UserDal.getUserByEmail(email);
 
             if (!user) {
-                logger.debug(`User ${email?.bold} not found.`);
-                throw new ServerError(Errors.NOT_FOUND, 'User not found.');
+                logger.debug(`${Errors.NOT_FOUND} User ${email?.bold} not found.`);
+                throw new ServerError(Errors.NOT_FOUND, `User ${email} not found.`);
             }
 
-            const token: string = JwtService.sign({ _id: user._id, role: user.role, status: user.status });
+            const token: string = JwtService.sign({ _id: user._id, role: user.role });
             const isTokenSet: boolean = await UserDal.setToken(token, user._id);
 
             if (!isTokenSet) {
@@ -208,7 +207,7 @@ class AuthenticationService {
                 throw loginError;
             }
 
-            const token: string = JwtService.sign({ _id: user._id, role: user.role, status: user.status });
+            const token: string = JwtService.sign({ _id: user._id, role: user.role });
 
             const isTokenSet: boolean = await UserDal.setToken(token, user._id);
 

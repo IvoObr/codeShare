@@ -1,6 +1,7 @@
+import { UserDal } from '@db';
 import { ServerError } from '@services';
 import { Request, Response, NextFunction } from 'express';
-import { Errors, IStrings, UserRole, logger, UserStatus } from '@utils';
+import { Errors, IStrings, UserRole, logger, UserStatus, IUser } from '@utils';
 
 class AuthorizationService {
 
@@ -20,13 +21,26 @@ class AuthorizationService {
         }
     }
 
-    public static validateAccountStatus(request: Request, response: Response, next: NextFunction): void {
+    public static async validateAccountStatus(request: Request, response: Response, next: NextFunction): Promise<void> {
         try {
-            const { userId, status }: IStrings = request.body;
+            const { userId, email }: IStrings = request.body;
+            let user: IUser | null = null;
 
-            if (status !== UserStatus.Active) {
+            if (userId) {
+                user = await UserDal.getUserById(userId);
+            }
+            else if (email) {
+                user = await UserDal.getUserByEmail(email);
+            }
+                
+            if (!user) {
+                logger.debug(`${Errors.FORBIDDEN} User email: ${email?.bold} id: ${userId} not found.`);
+                throw new ServerError(Errors.FORBIDDEN, `User email: ${email} id: ${userId} not found.`);
+            }
+
+            if (user.status !== UserStatus.Active) {
                 logger.debug(`${Errors.FORBIDDEN} userId: ${userId?.bold} is not Active.`);
-                throw new ServerError(Errors.FORBIDDEN, `User account must be active.`);
+                throw new ServerError(Errors.FORBIDDEN, `User account must be active. Email: ${email}`);
             }
 
             next();

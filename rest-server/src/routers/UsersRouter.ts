@@ -9,12 +9,12 @@ class UserRouter {
 
     public getRouter = (): Router => Router()
         /* main route */
-        .use('/user', validateAccountStatus, this.router)
+        .use('/user', async(validateAccountStatus), this.router)
         
         /* sub routes */
-        .put('/update/:id', validateAccountStatus, async(updateUser))
-        .get('/all', validateAccountStatus, authorizeAdmin, async(getAllUsers))
-        .delete('/delete/:id', validateAccountStatus, authorizeAdmin, async(deleteUser));
+        .put('/update/:id', async(validateAccountStatus), async(updateUser))
+        .get('/all', async(validateAccountStatus), authorizeAdmin, async(getAllUsers))
+        .delete('/delete/:id', async(validateAccountStatus), authorizeAdmin, async(deleteUser));
 }
 
 export default new UserRouter().getRouter();
