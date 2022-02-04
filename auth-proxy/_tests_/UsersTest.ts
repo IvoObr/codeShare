@@ -177,7 +177,7 @@ export default class UsersTest {
             expect(message.statusCode).toBe(StatusCodes.OK);
             expect(typeof user.role).toBe('string');
             expect(typeof user._id).toBe('string');
-            expect(user.status).toBe('NotActive');
+            expect(user.status).toBe('Active');
 
             userData?.email && expect(user.email).toBe(userData.email);
             userData?.name && expect(user.name).toBe(userData.name);
