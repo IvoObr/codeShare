@@ -9,7 +9,7 @@ dotenv.config();
 const INCORRECT_PASS: string = 'password111';
 const INCORRECT_EMAIL: string = 'incorrect@email';
 
-describe('SSL', (): void => {
+describe.skip('SSL', (): void => {
 
     it('201   *          POST     /api/v1/auth/pub/register',
         async function() { await UsersTest.register(); });
@@ -23,18 +23,17 @@ describe('SSL', (): void => {
     it('200   *          POST     /api/v1/auth/pub/login',
         async function() { await UsersTest.login(UsersTest.config.email, UsersTest.config.password); });
 
-    it.skip('200   *           POST     /api/v1/auth/pub/send-reset-password',
+    it.skip('200   *          POST     /api/v1/auth/pub/send-reset-password',
         async function() { await UsersTest.sendResetPass(); });
 });
 
-describe.skip('OK 200 <Users api tests>', (): void => {
+describe('OK 200 <Users api tests>', (): void => {
 
     it('201   *          POST     /api/v1/auth/pub/register',
         async function() { await UsersTest.register(); });
     
-    // todo:
-    // it('201   *          POST     /api/v1/auth/confirm-registration',
-    //     async function() { await UsersTest.confirmRegistration(); });
+    it('201   *          POST     /api/v1/auth/confirm-registration',
+        async function() { await UsersTest.confirmRegistration(); });
 
     it('201   *          POST     /api/v1/auth/pub/send-confirm-registration',
         async function() { await UsersTest.sendConfirmRegistration(UsersTest.config.email); });
@@ -42,7 +41,7 @@ describe.skip('OK 200 <Users api tests>', (): void => {
     it('200   *          POST     /api/v1/auth/pub/login',
         async function() { await UsersTest.login(UsersTest.config.email, UsersTest.config.password); });
 
-    it('200   *           POST     /api/v1/auth/pub/send-reset-password',
+    it('200   *          POST     /api/v1/auth/pub/send-reset-password',
         async function() { await UsersTest.sendResetPass(); });
 
     it('200   *          POST     /api/v1/auth/reset-password',

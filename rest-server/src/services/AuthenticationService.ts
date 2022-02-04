@@ -10,7 +10,6 @@ import { StatusCodes, IUser, Errors, Headers,
 class AuthenticationService {
 
     private static baseUrl: string = `https://${process.env.host}:${process.env.AUTH_PROXY_PORT}/api/v1/auth`;
-    /* todo: change url to frontend */
 
     public static async register(request: Request, response: Response): Promise<void> {
         try {
@@ -140,6 +139,7 @@ class AuthenticationService {
             }
           
             const url: string = `${AuthenticationService.baseUrl}/reset-password?token=${token}`;
+            /* todo: change url to frontend */
 
             const message: string = JSON.stringify({
                 to: user.email,

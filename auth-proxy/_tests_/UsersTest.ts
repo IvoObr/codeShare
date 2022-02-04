@@ -202,15 +202,18 @@ export default class UsersTest {
         const options: RequestOptions = UsersTest.getOptions(Methods.POST, path, payload);
 
         await httpsRequest(options, payload, function(message: IncomingMessage, data: string) {
+            const response: IEmailResp = JSON.parse(data);
+
             expect(message.statusCode).toBe(StatusCodes.CREATED);
-            expect(JSON.parse(data).receiver).toBe(UsersTest.config.email);
+            expect(response.notification.receiver).toBe(email);
+            expect(response.notification.result).toBe('Email successfully send.');
         }, statusCode);
     }
     
     public static async resetPass(newPass: string = '4Password#', statusCode?: StatusCodes): Promise<void> {
         const path: string = '/api/v1/auth/reset-password';
         const payload: string = JSON.stringify({ password: newPass });
-        const options: RequestOptions = UsersTest.getOptions(Methods.GET, path, payload);
+        const options: RequestOptions = UsersTest.getOptions(Methods.POST, path, payload);
 
         await httpsRequest(options, payload, function(message: IncomingMessage) {
             expect(message.statusCode).toBe(StatusCodes.OK);
