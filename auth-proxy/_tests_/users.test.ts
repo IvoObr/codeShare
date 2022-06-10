@@ -27,7 +27,7 @@ describe.skip('SSL', (): void => {
         async function() { await UsersTest.sendResetPass(); });
 });
 
-describe('OK 200 <Users api tests>', (): void => {
+describe.skip('OK 200 <Users api tests>', (): void => {
 
     it('201   *          POST     /api/v1/auth/pub/register',
         async function() { await UsersTest.register(); });
@@ -64,7 +64,7 @@ describe('OK 200 <Users api tests>', (): void => {
     
 });
 
-describe.skip('Bad Request 400 <Users api tests>', (): void => {
+describe('Bad Request 400 <Users api tests>', (): void => {
     
     it('400   Name       POST     /api/v1/auth/pub/register',
         async function() { await UsersTest.register('', UserRole.Admin, 'Password123@', `${genBase36Key(8)}@yopmail.com`, StatusCodes.BAD_REQUEST); });
@@ -74,15 +74,15 @@ describe.skip('Bad Request 400 <Users api tests>', (): void => {
 
     it('400   Password   POST     /api/v1/auth/pub/register',
         async function() { await UsersTest.register('ivoObr', UserRole.Admin, INCORRECT_PASS, `${genBase36Key(8)}@yopmail.com`, StatusCodes.BAD_REQUEST); });
+        
+    it('400   Email      POST     /api/v1/auth/pub/register',
+        async function() { await UsersTest.register('ivoObr', UserRole.Admin, 'Password123@', INCORRECT_EMAIL, StatusCodes.BAD_REQUEST); });
+        
+    it('201   *          POST     /api/v1/auth/pub/register',
+        async function() { await UsersTest.register(); });
     
     // todo: confirmRegistration
     // todo: sendConfirmRegistration
-   
-    it('400   Email      POST     /api/v1/auth/pub/register',
-        async function() { await UsersTest.register('ivoObr', UserRole.Admin, 'Password123@', INCORRECT_EMAIL, StatusCodes.BAD_REQUEST); });
-
-    it('201   *          POST     /api/v1/auth/pub/register',
-        async function() { await UsersTest.register(); });
     
     it('200   *          POST     /api/v1/auth/pub/login',
         async function() { await UsersTest.login(UsersTest.config.email, UsersTest.config.password); });
