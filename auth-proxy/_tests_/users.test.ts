@@ -81,8 +81,11 @@ describe('Bad Request 400 <Users api tests>', (): void => {
     it('201   *          POST     /api/v1/auth/pub/register',
         async function() { await UsersTest.register(); });
     
-    // todo: confirmRegistration
-    // todo: sendConfirmRegistration
+    it('201   *          POST     /api/v1/auth/confirm-registration',
+        async function() { await UsersTest.confirmRegistration(); });
+    
+    it('201   *          POST     /api/v1/auth/pub/send-confirm-registration',
+        async function() { await UsersTest.sendConfirmRegistration(UsersTest.config.email); });
     
     it('200   *          POST     /api/v1/auth/pub/login',
         async function() { await UsersTest.login(UsersTest.config.email, UsersTest.config.password); });
@@ -97,7 +100,7 @@ describe('Bad Request 400 <Users api tests>', (): void => {
         async function() { await UsersTest.updateUser('IvoG', 'Password123@', INCORRECT_EMAIL, StatusCodes.BAD_REQUEST); });
 
     it('404   Email      POST     /api/v1/auth/pub/send-reset-password',
-        async function() { await UsersTest.sendResetPass(INCORRECT_EMAIL, StatusCodes.NOT_FOUND); });
+        async function() { await UsersTest.sendResetPass(INCORRECT_EMAIL, StatusCodes.FORBIDDEN); });
 
     it('400   Password   POST     /api/v1/auth/reset-password',
         async function() { await UsersTest.resetPass(INCORRECT_PASS, StatusCodes.BAD_REQUEST); });
