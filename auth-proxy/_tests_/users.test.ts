@@ -9,7 +9,7 @@ dotenv.config();
 const INCORRECT_PASS: string = 'password111';
 const INCORRECT_EMAIL: string = 'incorrect@email';
 
-describe.skip('SSL', (): void => {
+describe('SSL', (): void => {
 
     it('201   *          POST     /api/v1/auth/pub/register',
         async function() { await UsersTest.register(); });
@@ -27,7 +27,7 @@ describe.skip('SSL', (): void => {
         async function() { await UsersTest.sendResetPass(); });
 });
 
-describe.skip('OK 200 <Users api tests>', (): void => {
+describe('OK 200 <Users api tests>', (): void => {
 
     it('201   *          POST     /api/v1/auth/pub/register',
         async function() { await UsersTest.register(); });
@@ -64,7 +64,7 @@ describe.skip('OK 200 <Users api tests>', (): void => {
     
 });
 
-describe.skip('Bad Request 400 <Users api tests>', (): void => {
+describe('Bad Request 400 <Users api tests>', (): void => {
     
     it('400   Name       POST     /api/v1/auth/pub/register',
         async function() { await UsersTest.register('', UserRole.Admin, 'Password123@', `${genBase36Key(8)}@yopmail.com`, StatusCodes.BAD_REQUEST); });
@@ -157,6 +157,12 @@ describe.skip('Delete all users <Users api tests>', (): void => {
 
     it('201   *         POST     /api/v1/auth/pub/register',
         async function() { await UsersTest.register(); });
+    
+    it('201   *         POST     /api/v1/auth/confirm-registration',
+        async function() { await UsersTest.confirmRegistration(); });
+
+    it('201   *         POST     /api/v1/auth/pub/send-confirm-registration',
+        async function() { await UsersTest.sendConfirmRegistration(UsersTest.config.email); });
 
     it('200   *         POST     /api/v1/auth/pub/login',
         async function() { await UsersTest.login(UsersTest.config.email, UsersTest.config.password); });
