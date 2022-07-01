@@ -15,9 +15,9 @@
     "@lib": ["src/lib/"],
     "@utils": ["src/utils/"],
     "@server": ["src/Server"],
+    "@models": ["src/models/"],
     "@routers": ["src/routers/"],
-    "@services": ["src/services/"],      
-    "@entities": ["src/entities/"]
+    "@services": ["src/services/"]   
     },
   },
   "include": ["src/**/*.ts","_tests_/**/*.ts"],

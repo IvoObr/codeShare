@@ -5,22 +5,22 @@ import { UserRole, UserStatus, Errors, IUser, INewUserReq, IUserModel, IPublicUs
 
 export default class UserModel implements IUserModel {
 
-    public tokens: string[];
+    public name: string;
     public email: string;
     public role: UserRole;
+    public tokens: string[];
     public password: string;
-    public name: string;
-    public status: UserStatus;
     public loggedIn: boolean;
+    public status: UserStatus;
 
     constructor({ name, email, password, role }: INewUserReq) {
         this.tokens = [];
+        this.loggedIn = false;
         this.name = name || '';
         this.email = email || '';
         this.password = password || '';
-        this.role = role || UserRole.Member;
         this.status = UserStatus.NotActive;
-        this.loggedIn = false;
+        this.role = role || UserRole.Member;
     }
 
     public async validate(): Promise<UserModel> {
@@ -75,9 +75,9 @@ export default class UserModel implements IUserModel {
     
     public static isPasswordStrong(password: string): boolean {
         const minLength: boolean = password.length > 8;
+        const oneNumber: boolean = new RegExp(/[0-9]/).test(password);
         const oneUppercase: boolean = new RegExp(/[A-Z]/).test(password);
         const oneLowercase: boolean = new RegExp(/[a-z]/).test(password);
-        const oneNumber: boolean = new RegExp(/[0-9]/).test(password);
         const oneSymbol: boolean = new RegExp(/[-#!$@%^&*()_+|~=`{}\[\]:";'<>?,.\/]/).test(password);
 
         return minLength && oneUppercase && oneLowercase && oneNumber && oneSymbol;

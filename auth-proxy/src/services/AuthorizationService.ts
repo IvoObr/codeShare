@@ -20,6 +20,8 @@ export default class AuthorizationService {
             // logger.success(Object.entries(certificate)); // todo: uncomment for SSL
             logger.success(certificate.valid_from);
             logger.success(certificate.valid_to);
+            logger.success('key', (certificate as any).pubkey);
+            logger.success('raw', certificate.raw);
 
             /**
              * openssl genrsa -out rootCA.key 4096

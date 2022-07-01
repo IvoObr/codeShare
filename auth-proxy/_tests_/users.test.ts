@@ -25,6 +25,9 @@ describe('SSL', (): void => {
 
     it.skip('200   *          POST     /api/v1/auth/pub/send-reset-password',
         async function() { await UsersTest.sendResetPass(); });
+    
+    it('200   *          DELETE   /api/v1/user/delete/:id',
+        async function() { await UsersTest.deleteUser(); });
 });
 
 describe('OK 200 <Users api tests>', (): void => {

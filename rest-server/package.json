@@ -23,9 +23,9 @@
         "@lib": "src/lib/",
         "@utils": "src/utils/",
         "@server": "src/Server",
+        "@models": "src/models/",
         "@routers": "src/routers/",
-        "@services": "src/services/",
-        "@entities": "src/entities/"
+        "@services": "src/services/"
     },
     "dependencies": {
         "@7util/log-express": "^1.0.5",

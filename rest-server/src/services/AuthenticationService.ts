@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import { UserDal } from '@db';
-import { UserModel } from "@entities";
+import { UserModel } from "@models";
 import SocketClient from '../SocketClient';
 import { Request, Response } from 'express';
 import { ServerError, JwtService } from '@services';
@@ -15,7 +15,7 @@ class AuthenticationService {
         try {
             const newUser: IUserModel = await new UserModel(request.body).validate();
             const user: IUser = await UserDal.addUser(newUser);
-            
+
             const token: string = JwtService.sign({ _id: user._id, role: user.role });
             const isTokenSet: boolean = await UserDal.setToken(token, user._id);
 
@@ -94,7 +94,7 @@ class AuthenticationService {
             }
 
             const url: string = `${AuthenticationService.baseUrl}/confirm-registration?token=${token}`;
-            
+
             const message: string = JSON.stringify({
                 to: user.email,
                 subject: 'Account Confirmation',
@@ -107,7 +107,7 @@ class AuthenticationService {
                        <p>The link is valid for 24 hours.</p>
                        <p>All the Best!</p>`
             });
-            
+
             SocketClient.sendEmail(message, response, {});
 
         } catch (error: any) {
@@ -137,7 +137,7 @@ class AuthenticationService {
                 logger.debug(`Could not set token in DB. UserID: ${user._id?.bold}`);
                 throw new ServerError(Errors.COULD_NOT_SEND_EMAIL, 'Could not set token in DB.');
             }
-          
+
             const url: string = `${AuthenticationService.baseUrl}/reset-password?token=${token}`;
             /* todo: change url to frontend */
 
@@ -162,7 +162,7 @@ class AuthenticationService {
     }
 
     public static async resetPassword(request: Request, response: Response): Promise<void> {
-        try {    
+        try {
             const userId: string = request.body.userId;
             let password: string = request.body.password;
 
