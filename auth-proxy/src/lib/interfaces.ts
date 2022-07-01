@@ -1,4 +1,4 @@
-import { UserRole } from './enums';
+import { UserRole, UserStatus } from './enums';
 
 export interface IUser {
     name: string;
@@ -18,8 +18,11 @@ export interface ICerts {
 export interface IClientData {
     _id: string;
     role: UserRole;
+    status: UserStatus;
+    iat: number;
+    exp: number;
 }
 
 export interface IStrings {
     [key: string]: string
-}
+} 

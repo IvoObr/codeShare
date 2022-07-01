@@ -7,16 +7,7 @@ class JwtService {
 
     private readonly secret: string = process.env.JWT_SECRET || genBase36Key();
 
-    public sign = (payload: IClientData): string => jwt.sign(payload, this.secret);
-
-    public verify(token: string): IClientData {
-        try {
-            return jwt.verify(token, this.secret) as IClientData;
-
-        } catch (error) {
-            throw new ServerError(Errors.FORBIDDEN, 'Token not valid.');
-        }
-    }
+    public sign = (payload: IClientData): string => jwt.sign(payload, this.secret, { expiresIn: '2d' });
 }
 
 export default new JwtService();

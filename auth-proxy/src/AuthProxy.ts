@@ -3,18 +3,24 @@ import path from 'path';
 import { Mongo } from './db';
 import logger from './lib/logger';
 import { ICerts } from './lib/interfaces';
+import { Headers, Env } from './lib/enums';
 import ExpressServer from './ExpressServer';
 import { Request, Response } from 'express';
 import { Express } from "express-serve-static-core";
 import dotenv, { DotenvConfigOutput } from 'dotenv';
 import { ClientRequest, IncomingMessage } from 'http';
-import { Headers, Env, StatusCodes } from './lib/enums';
 import https, { RequestOptions, ServerOptions } from 'https';
 import AuthorizationService from './services/AuthorizationService';
 /**
  *  
  */
 export default class AuthProxy {
+
+    private keys: ICerts | undefined;
+
+    constructor() {
+        this.keys = this.setKeys();
+    }
 
     public async start(): Promise<void> {
         try {
@@ -50,12 +56,12 @@ export default class AuthProxy {
                 cert: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.crt')),
                 ca: fs.readFileSync(path.resolve(__dirname, '../../ssl/rootCA.crt'))
             };
-        } catch (error) {
-            logger.error(error);
+        } catch (error: unknown) {
+            this.onError(error);
         }
     }
 
-    private send(request: Request, response: Response): void { 
+    private send(request: Request, response: Response): void {
         const body: string = JSON.stringify(request.body);
 
         const options: RequestOptions = {
@@ -66,7 +72,7 @@ export default class AuthProxy {
             headers: {
                 'Content-Type': 'application/json',
                 'Content-Length': Buffer.byteLength(body)
-            }, ...this.setKeys() as ICerts
+            }, ...this.keys
         };
 
         const req: ClientRequest = https.request(options, (message: IncomingMessage): void => {
@@ -81,11 +87,18 @@ export default class AuthProxy {
                         logger.error(error);
                     });
 
+                    const isHTMLrequest: boolean = request.headers['content-type'] === 'application/x-www-form-urlencoded';
+                    const isHTMLmessage: boolean = message.headers['content-type']?.includes('text/html') || false;
+
+                    if (isHTMLmessage || isHTMLrequest) {
+                        response.type('html');
+                    }
+
                     response
                         .header(Headers.Authorization, message.headers?.authorization)
                         .status(Number(message?.statusCode))
                         .write(dataString);
-                    
+
                     response.end();
                 });
         });
@@ -108,6 +121,6 @@ export default class AuthProxy {
 
     private onError(error: unknown): void {
         logger.error('Auth-proxy unable to start'.red, error);
-        process.exit(1); /* app crashed */
+        process.exit(0); /* clean exit */
     }
 }

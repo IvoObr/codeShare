@@ -16,11 +16,15 @@ export default class Mailer {
     private initTransporter(): Mail {
 
         const transporter: Mail = nodemailer.createTransport({
-            service: process.env.SERVICE,
+            host: process.env.MAILER_SERVICE,
+            secure: true,
+            port: Number(process.env.MAILER_PORT),
             auth: {
                 user: process.env.MAILER_USER,
                 pass: process.env.MAILER_PASS
-            }
+            },
+            debug: false,
+            logger: true
         });
 
         transporter.verify(function(error) {
@@ -38,7 +42,7 @@ export default class Mailer {
     public async sendMail(msg: IMessage): Promise<void> {
         try {
             const info: IMailInfo = await this.transporter.sendMail({
-                from: msg?.from || '"CodeShare" <codeShare@example.com>',
+                from: msg?.from || `"CodeShare" <${process.env.MAILER_USER}>`,
                 to: msg?.to,
                 subject: msg?.subject,
                 html: msg?.body,

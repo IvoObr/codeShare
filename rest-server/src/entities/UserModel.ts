@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { UserDal } from '@db';
 import { ServerError } from '@services';
-import { UserRole, Errors, IUser, INewUserReq, IUserModel, IPublicUser } from '@utils';
+import { UserRole, UserStatus, Errors, IUser, INewUserReq, IUserModel, IPublicUser } from '@utils';
 
 export default class UserModel implements IUserModel {
 
@@ -10,17 +10,21 @@ export default class UserModel implements IUserModel {
     public role: UserRole;
     public password: string;
     public name: string;
+    public status: UserStatus;
+    public loggedIn: boolean;
 
     constructor({ name, email, password, role }: INewUserReq) {
-        this.email = email || '';
-        this.role = role || UserRole.Member;
-        this.password = password || '';
-        this.name = name || '';
         this.tokens = [];
+        this.name = name || '';
+        this.email = email || '';
+        this.password = password || '';
+        this.role = role || UserRole.Member;
+        this.status = UserStatus.NotActive;
+        this.loggedIn = false;
     }
 
     public async validate(): Promise<UserModel> {
-        UserModel.validatRole(this.role);
+        UserModel.validateRole(this.role);
         UserModel.validateName(this.name);
         UserModel.validateEmail(this.email);
         UserModel.validatePassword(this.password);
@@ -34,7 +38,7 @@ export default class UserModel implements IUserModel {
         return await bcrypt.hash(password, salt);
     }
 
-    public static validatRole(role: UserRole): void {
+    public static validateRole(role: UserRole): void {
         if (!(role in UserRole)) {
             throw new ServerError(Errors.INVALID_ROLE, `Role ${role} is invalid!`);
         }
@@ -87,9 +91,11 @@ export default class UserModel implements IUserModel {
     public static getPublicUser(user: IUser): IPublicUser {
         return {
             _id: user._id,
-            email: user.email,
             name: user.name,
-            role: user.role
+            role: user.role,
+            email: user.email,
+            status: user.status,
+            loggedIn: user.loggedIn
         };
     }
 }

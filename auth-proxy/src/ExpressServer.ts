@@ -13,7 +13,7 @@ import https, { Server, ServerOptions } from 'https';
  *  
  */
 export default class ExpressServer {
-    
+
     private setKeys(): ICerts | undefined {
         try {
             return {
@@ -21,11 +21,11 @@ export default class ExpressServer {
                 cert: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.crt')),
                 ca: fs.readFileSync(path.resolve(__dirname, '../../ssl/rootCA.crt'))
             };
-        } catch (error) {
-            logger.error(error);
+        } catch (error: any) {
+            this.onError(error);
         }
     }
-    
+
     public start(): Express {
         const app: Express = this.setApp();
         const keys = this.setKeys() as ServerOptions;

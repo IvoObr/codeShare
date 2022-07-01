@@ -2,7 +2,7 @@ import { UserDal } from '@db';
 import { UserModel } from '@entities';
 import { ServerError } from '@services';
 import { Request, Response } from 'express';
-import { StatusCodes, IUser, Errors, IStrings, IPublicUser } from '@utils';
+import { StatusCodes, IUser, Errors, IStrings, IPublicUser, logger } from '@utils';
 
 class UserService {
 
@@ -54,6 +54,7 @@ class UserService {
             const user: IUser = await UserDal.getUserById(id);
 
             if (!user) {
+                logger.debug(`${Errors.NOT_FOUND} User ${email?.bold} not found.`);
                 throw new ServerError(Errors.NOT_FOUND, `User not found id: ${id}.`);
             }
 

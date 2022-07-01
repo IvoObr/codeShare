@@ -1,13 +1,14 @@
 import fs from 'fs';
 import path from 'path';
+import { Methods } from './enums';
 import logger from '../src/lib/logger';
 import { RequestOptions } from 'https';
 import { IncomingMessage } from 'http';
 import { httpsRequest } from './testUtils';
 import genBase36Key from '../src/lib/genBase36Key';
 import { IUser, IStrings } from '../src/lib/interfaces';
-import { ICerts, Methods, IPublicUser } from './interfaces';
-import { UserRole, StatusCodes, Headers } from '../src/lib/enums';
+import { ICerts, IPublicUser, IEmailResp } from './interfaces';
+import { UserRole, StatusCodes, Headers, UserStatus } from '../src/lib/enums';
 
 export default class UsersTest {
 
@@ -27,6 +28,7 @@ export default class UsersTest {
             };
         } catch (error: unknown) {
             logger.error(error);
+            process.exit(0); /* clean exit */
         }
     }
 
@@ -58,14 +60,51 @@ export default class UsersTest {
         const options: RequestOptions = UsersTest.getOptions(Methods.POST, path, payload);
 
         await httpsRequest(options, payload, function(message: IncomingMessage, data: string) {
-            const user: IUser = JSON.parse(data);
+            const response: IEmailResp = JSON.parse(data);
+            const user: IPublicUser = response.data;
+
+            const token: string = message.headers.authorization || '';
+
+            /* authorize next requests */
+            UsersTest.config.headers.headers.Authorization = `Bearer ${token}`;
+
             UsersTest.config.email = user.email;
             UsersTest.config.userId = user._id;
 
             expect(user.role).toBe(role);
             expect(user.email).toBe(email);
+            expect(user.name).toBe(name);
+            expect(user.status).toBe(UserStatus.NotActive);
+            expect(typeof user.loggedIn).toBe('boolean');
+            expect(response.notification.receiver).toBe(email);
+
         }, statusCode);
         // }
+    }
+
+    public static async sendConfirmRegistration(email: string, statusCode?: StatusCodes): Promise<void> {
+        const path: string = '/api/v1/auth/pub/send-confirm-registration';
+        const payload: string = JSON.stringify({ email });
+        const options: RequestOptions = UsersTest.getOptions(Methods.POST, path, payload);
+
+        await httpsRequest(options, payload, function(message: IncomingMessage, data: string) {
+            const response: IEmailResp = JSON.parse(data);
+            
+            expect(response.notification.receiver).toBe(email);
+            expect(response.notification.result).toBe('Email successfully send.');
+
+        }, statusCode);
+    }
+
+    public static async confirmRegistration(statusCode?: StatusCodes): Promise<void> {      
+        const token: string = UsersTest.config.headers.headers.Authorization;
+        const path: string = encodeURI(`/api/v1/auth/confirm-registration?token=${token}`);
+        const payload: string = '';
+        const options: RequestOptions = UsersTest.getOptions(Methods.GET, path, payload);
+
+        await httpsRequest(options, payload, function(message: IncomingMessage, data: string) {
+            expect(data).toBe("<h4 style='font-family: cursive'> Your account has been successfully activated!</h4>");
+        }, statusCode);
     }
 
     public static async login(email: string, password: string, statusCode?: StatusCodes): Promise<void> {
@@ -79,7 +118,6 @@ export default class UsersTest {
             
             /* authorize next requests */
             UsersTest.config.headers.headers.Authorization = `Bearer ${token}`;
-            logger.info("TOKEN:".cyan, token);
 
             expect(user.email).toBe(UsersTest.config.email);
             expect(typeof user.name).toBe('string');
@@ -104,20 +142,22 @@ export default class UsersTest {
         await httpsRequest(options, '', function(message: IncomingMessage, data: string) {
             expect(message.statusCode).toBe(StatusCodes.OK);
             users = JSON.parse(data);
+
+            if (deleteAll) {
+                UsersTest.deleteAllUsers(users);
+                return;
+            }
             
             if (users.length > 0) { 
                 expect(typeof users[0]._id).toBe('string');
                 expect(typeof users[0].email).toBe('string');
                 expect(typeof users[0].name).toBe('string');
                 expect(typeof users[0].role).toBe('string');
+                expect(typeof users[0].status).toBe('string');
             }
 
             expect(typeof users.length).toBe('number');
         }, statusCode);
-
-        if (deleteAll) {
-            await UsersTest.deleteAllUsers(users);
-        }
     }
 
     public static async updateUser(
@@ -139,6 +179,9 @@ export default class UsersTest {
             expect(message.statusCode).toBe(StatusCodes.OK);
             expect(typeof user.role).toBe('string');
             expect(typeof user._id).toBe('string');
+            expect(user.status).toBe('Active');
+            expect(typeof user.loggedIn).toBe('boolean');
+
 
             userData?.email && expect(user.email).toBe(userData.email);
             userData?.name && expect(user.name).toBe(userData.name);
@@ -163,8 +206,11 @@ export default class UsersTest {
         const options: RequestOptions = UsersTest.getOptions(Methods.POST, path, payload);
 
         await httpsRequest(options, payload, function(message: IncomingMessage, data: string) {
+            const response: IEmailResp = JSON.parse(data);
+
             expect(message.statusCode).toBe(StatusCodes.CREATED);
-            expect(JSON.parse(data).receiver).toBe(UsersTest.config.email);
+            expect(response.notification.receiver).toBe(email);
+            expect(response.notification.result).toBe('Email successfully send.');
         }, statusCode);
     }
     
