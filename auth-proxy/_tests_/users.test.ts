@@ -32,11 +32,11 @@ describe('OK 200 <Users api tests>', (): void => {
     it('201   *          POST     /api/v1/auth/pub/register',
         async function() { await UsersTest.register(); });
     
-    it('201   *          POST     /api/v1/auth/confirm-registration',
-        async function() { await UsersTest.confirmRegistration(); });
-
-    it('201   *          POST     /api/v1/auth/pub/send-confirm-registration',
+    it('201   *         POST     /api/v1/auth/pub/send-confirm-registration',
         async function() { await UsersTest.sendConfirmRegistration(UsersTest.config.email); });
+
+    it('201   *         POST     /api/v1/auth/confirm-registration',
+        async function() { await UsersTest.confirmRegistration(); });
 
     it('200   *          POST     /api/v1/auth/pub/login',
         async function() { await UsersTest.login(UsersTest.config.email, UsersTest.config.password); });
@@ -81,11 +81,11 @@ describe('Bad Request 400 <Users api tests>', (): void => {
     it('201   *          POST     /api/v1/auth/pub/register',
         async function() { await UsersTest.register(); });
     
-    it('201   *          POST     /api/v1/auth/confirm-registration',
-        async function() { await UsersTest.confirmRegistration(); });
-    
-    it('201   *          POST     /api/v1/auth/pub/send-confirm-registration',
+    it('201   *         POST     /api/v1/auth/pub/send-confirm-registration',
         async function() { await UsersTest.sendConfirmRegistration(UsersTest.config.email); });
+
+    it('201   *         POST     /api/v1/auth/confirm-registration',
+        async function() { await UsersTest.confirmRegistration(); });
     
     it('200   *          POST     /api/v1/auth/pub/login',
         async function() { await UsersTest.login(UsersTest.config.email, UsersTest.config.password); });
@@ -115,11 +115,11 @@ describe('Unauthorized 401 <Users api tests>', (): void => {
     it('201   *         POST     /api/v1/auth/pub/register',
         async function() { await UsersTest.register(); });
 
-    it('201   *         POST     /api/v1/auth/confirm-registration',
-        async function() { await UsersTest.confirmRegistration(); });
-
     it('201   *         POST     /api/v1/auth/pub/send-confirm-registration',
         async function() { await UsersTest.sendConfirmRegistration(UsersTest.config.email); });
+
+    it('201   *         POST     /api/v1/auth/confirm-registration',
+        async function() { await UsersTest.confirmRegistration(); });
     
     it('401   Password  POST     /api/v1/auth/pub/login',
         async function() { await UsersTest.login(UsersTest.config.email, INCORRECT_PASS, StatusCodes.UNAUTHORIZED); });
@@ -149,20 +149,52 @@ describe('Unauthorized 401 <Users api tests>', (): void => {
         async function() { await UsersTest.deleteUser(); });
 });
 
-describe.skip('Forbidden 403 <Users api tests>', (): void => {
-    // todo: validateAccountStatus all APIs
+describe('Forbidden 403 <Users api tests>', (): void => {
+    
+    it('201   *         POST     /api/v1/auth/pub/register',
+        async function() { await UsersTest.register(); });
+
+    it('201   *         POST     /api/v1/auth/pub/send-confirm-registration',
+        async function() { await UsersTest.sendConfirmRegistration(UsersTest.config.email); });
+
+    it('403   *n        POST     /api/v1/auth/pub/login',
+        async function() { await UsersTest.login(UsersTest.config.email, UsersTest.config.password, StatusCodes.FORBIDDEN); });
+
+    it('403   *         GET      /api/v1/api/user/all',
+        async function() { await UsersTest.getAllUsers(false, StatusCodes.FORBIDDEN); });
+
+    it('403   *         PUT      /api/v1/user/update/:id',
+        async function() { await UsersTest.updateUser(undefined, undefined, undefined, StatusCodes.FORBIDDEN); });
+
+    it('403   *         DELETE   /api/v1/user/delete/:id',
+        async function() { await UsersTest.deleteUser(StatusCodes.FORBIDDEN); });
+
+    it('403   *         GET      /api/v1/auth/logout',
+        async function() { await UsersTest.logout(StatusCodes.FORBIDDEN); });
+
+    it('403   *         POST     /api/v1/auth/reset-password',
+        async function() { await UsersTest.resetPass(undefined, StatusCodes.FORBIDDEN); });
+
+    it('201   *         POST     /api/v1/auth/confirm-registration',
+        async function() { await UsersTest.confirmRegistration(); });
+   
+    it('200   *         POST     /api/v1/auth/pub/login',
+        async function() { await UsersTest.login(UsersTest.config.email, UsersTest.config.password); });
+
+    it('200   *         DELETE   /api/v1/user/delete/:id',
+        async function() { await UsersTest.deleteUser(); });
 });
 
 describe.skip('Delete all users <Users api tests>', (): void => {
 
     it('201   *         POST     /api/v1/auth/pub/register',
         async function() { await UsersTest.register(); });
-    
-    it('201   *         POST     /api/v1/auth/confirm-registration',
-        async function() { await UsersTest.confirmRegistration(); });
 
     it('201   *         POST     /api/v1/auth/pub/send-confirm-registration',
         async function() { await UsersTest.sendConfirmRegistration(UsersTest.config.email); });
+    
+    it('201   *         POST     /api/v1/auth/confirm-registration',
+        async function() { await UsersTest.confirmRegistration(); });
 
     it('200   *         POST     /api/v1/auth/pub/login',
         async function() { await UsersTest.login(UsersTest.config.email, UsersTest.config.password); });

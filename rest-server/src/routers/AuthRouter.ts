@@ -16,7 +16,6 @@ class AuthRouter {
             async(register))
 
         .post('/pub/login',
-            async(validateLogin),
             async(validateAccountStatus),
             async(login))
         
@@ -24,22 +23,21 @@ class AuthRouter {
             async(sendConfirmRegistration))
         
         .post('/pub/send-reset-password',
-            async(validateLogin),
             async(validateAccountStatus),
             async(sendResetPassword))
     
         /* authenticated sub routes */
         .get('/logout',
-            async(validateLogin),
             async(validateAccountStatus),
+            async(validateLogin),
             async(logout))
         
         .get('/confirm-registration',
             async(confirmRegistration))
         
         .post('/reset-password',
-            async(validateLogin),
             async(validateAccountStatus),
+            async(validateLogin),
             async(resetPassword));
 }
 

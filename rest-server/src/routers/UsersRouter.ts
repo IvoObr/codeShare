@@ -10,25 +10,25 @@ class UserRouter {
     public getRouter = (): Router => Router()
         /* main route */
         .use('/user',
-            async(validateLogin),
             async(validateAccountStatus),
+            async(validateLogin),
             this.router)
         
         /* sub routes */
         .put('/update/:id',
-            async(validateLogin),
             async(validateAccountStatus),
+            async(validateLogin),
             async(updateUser))
         
         .get('/all',
-            async(validateLogin),
             async(validateAccountStatus),
+            async(validateLogin),
             authorizeAdmin,
             async(getAllUsers))
         
         .delete('/delete/:id',
-            async(validateLogin),
             async(validateAccountStatus),
+            async(validateLogin),
             authorizeAdmin,
             async(deleteUser));
 }
