@@ -17,7 +17,7 @@ export default class Mailer {
 
         const transporter: Mail = nodemailer.createTransport({
             host: process.env.MAILER_SERVICE,
-            secure: false,
+            secure: true,
             port: Number(process.env.MAILER_PORT),
             auth: {
                 user: process.env.MAILER_USER,
@@ -42,7 +42,7 @@ export default class Mailer {
     public async sendMail(msg: IMessage): Promise<void> {
         try {
             const info: IMailInfo = await this.transporter.sendMail({
-                from: msg?.from || '"CodeShare" <server_notifier@outlook.com>',
+                from: msg?.from || `"CodeShare" <${process.env.MAILER_USER}>`,
                 to: msg?.to,
                 subject: msg?.subject,
                 html: msg?.body,

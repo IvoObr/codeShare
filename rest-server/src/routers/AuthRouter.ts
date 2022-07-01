@@ -1,7 +1,7 @@
 import { async } from '@lib';
 import { Router } from 'express';
-import { login, logout, register, confirmRegistration,
-    resetPassword, sendResetPassword, validateAccountStatus, sendConfirmRegistration } from '@services';
+import { login, logout, register, confirmRegistration, resetPassword, 
+    sendResetPassword, validateAccountStatus, sendConfirmRegistration, validateLogin } from '@services';
 
 class AuthRouter {
 
@@ -12,15 +12,35 @@ class AuthRouter {
         .use('/auth', this.router)
 
         /* public sub routes */
-        .post('/pub/register', async(register))
-        .post('/pub/login', async(validateAccountStatus), async(login))
-        .post('/pub/send-confirm-registration', async(sendConfirmRegistration))
-        .post('/pub/send-reset-password', async(validateAccountStatus), async(sendResetPassword))
+        .post('/pub/register',
+            async(register))
+
+        .post('/pub/login',
+            async(validateLogin),
+            async(validateAccountStatus),
+            async(login))
+        
+        .post('/pub/send-confirm-registration',
+            async(sendConfirmRegistration))
+        
+        .post('/pub/send-reset-password',
+            async(validateLogin),
+            async(validateAccountStatus),
+            async(sendResetPassword))
     
         /* authenticated sub routes */
-        .get('/logout', async(validateAccountStatus), async(logout))
-        .get('/confirm-registration', async(confirmRegistration))
-        .post('/reset-password', async(validateAccountStatus), async(resetPassword));
+        .get('/logout',
+            async(validateLogin),
+            async(validateAccountStatus),
+            async(logout))
+        
+        .get('/confirm-registration',
+            async(confirmRegistration))
+        
+        .post('/reset-password',
+            async(validateLogin),
+            async(validateAccountStatus),
+            async(resetPassword));
 }
 
 export default new AuthRouter().getRouter();

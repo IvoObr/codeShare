@@ -49,9 +49,32 @@ class AuthorizationService {
             ServerError.handle(error, response);
         }
     }
+
+    public static async validateLogin(request: Request, response: Response, next: NextFunction): Promise<void> {
+        const loginError: ServerError = new ServerError(Errors.UNAUTHORIZED, `User not logged in.`);
+        try {
+            if (request.url.includes('/pub/')) {
+                next();
+                return;
+            }
+
+            const isLoggedIn: boolean = await UserDal.getUserLogin(request.body.userId);
+
+            if (!isLoggedIn) {
+                ServerError.handle(loginError, response);
+                return;
+            }
+
+            next();
+
+        } catch (error: unknown) {
+            ServerError.handle(loginError, response);
+        }
+    }
 }
 
 export const {
+    validateLogin,
     authorizeAdmin,
     validateAccountStatus
 }: typeof AuthorizationService = AuthorizationService;

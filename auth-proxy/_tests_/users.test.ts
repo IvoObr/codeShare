@@ -111,15 +111,14 @@ describe.skip('Bad Request 400 <Users api tests>', (): void => {
 });
 
 describe('Unauthorized 401 <Users api tests>', (): void => {
-    // todo: check if these test pass...
 
     it('201   *         POST     /api/v1/auth/pub/register',
         async function() { await UsersTest.register(); });
 
-    it('201   *          POST    /api/v1/auth/confirm-registration',
+    it('201   *         POST     /api/v1/auth/confirm-registration',
         async function() { await UsersTest.confirmRegistration(); });
 
-    it('201   *          POST    /api/v1/auth/pub/send-confirm-registration',
+    it('201   *         POST     /api/v1/auth/pub/send-confirm-registration',
         async function() { await UsersTest.sendConfirmRegistration(UsersTest.config.email); });
     
     it('401   Password  POST     /api/v1/auth/pub/login',

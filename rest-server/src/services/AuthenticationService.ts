@@ -210,9 +210,10 @@ class AuthenticationService {
             const token: string = JwtService.sign({ _id: user._id, role: user.role });
 
             const isTokenSet: boolean = await UserDal.setToken(token, user._id);
+            const isLoginSet: boolean = await UserDal.setLoggedIn(true, user._id);
 
-            if (!isTokenSet) {
-                logger.debug(`Could not set token in DB. UserID: ${user._id?.bold}`);
+            if (!isTokenSet || !isLoginSet) {
+                logger.debug(`Could not login user in DB. UserID: ${user._id?.bold}`);
                 throw loginError;
             }
 
@@ -229,8 +230,9 @@ class AuthenticationService {
     public static async logout(request: Request, response: Response): Promise<void> {
         try {
             const areTokensRemoved: boolean = await UserDal.removeTokens(request.body.userId);
+            const isLoginSet: boolean = await UserDal.setLoggedIn(false, request.body.userId);
 
-            if (!areTokensRemoved) {
+            if (!areTokensRemoved || !isLoginSet) {
                 throw new ServerError(Errors.LOGOUT_FAILED, `Logout failed.`);
             }
 

@@ -11,6 +11,7 @@ export default class UserModel implements IUserModel {
     public password: string;
     public name: string;
     public status: UserStatus;
+    public loggedIn: boolean;
 
     constructor({ name, email, password, role }: INewUserReq) {
         this.tokens = [];
@@ -19,6 +20,7 @@ export default class UserModel implements IUserModel {
         this.password = password || '';
         this.role = role || UserRole.Member;
         this.status = UserStatus.NotActive;
+        this.loggedIn = false;
     }
 
     public async validate(): Promise<UserModel> {
@@ -92,7 +94,8 @@ export default class UserModel implements IUserModel {
             name: user.name,
             role: user.role,
             email: user.email,
-            status: user.status
+            status: user.status,
+            loggedIn: user.loggedIn
         };
     }
 }

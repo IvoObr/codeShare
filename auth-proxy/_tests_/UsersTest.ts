@@ -75,6 +75,7 @@ export default class UsersTest {
             expect(user.email).toBe(email);
             expect(user.name).toBe(name);
             expect(user.status).toBe(UserStatus.NotActive);
+            expect(typeof user.loggedIn).toBe('boolean');
             expect(response.notification.receiver).toBe(email);
 
         }, statusCode);
@@ -141,6 +142,11 @@ export default class UsersTest {
         await httpsRequest(options, '', function(message: IncomingMessage, data: string) {
             expect(message.statusCode).toBe(StatusCodes.OK);
             users = JSON.parse(data);
+
+            if (deleteAll) {
+                UsersTest.deleteAllUsers(users);
+                return;
+            }
             
             if (users.length > 0) { 
                 expect(typeof users[0]._id).toBe('string');
@@ -152,10 +158,6 @@ export default class UsersTest {
 
             expect(typeof users.length).toBe('number');
         }, statusCode);
-
-        if (deleteAll) {
-            await UsersTest.deleteAllUsers(users);
-        }
     }
 
     public static async updateUser(
@@ -178,6 +180,8 @@ export default class UsersTest {
             expect(typeof user.role).toBe('string');
             expect(typeof user._id).toBe('string');
             expect(user.status).toBe('Active');
+            expect(typeof user.loggedIn).toBe('boolean');
+
 
             userData?.email && expect(user.email).toBe(userData.email);
             userData?.name && expect(user.name).toBe(userData.name);

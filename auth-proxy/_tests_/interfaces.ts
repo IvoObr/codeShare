@@ -18,6 +18,7 @@ export interface IPublicUser {
     email: string;
     role: UserRole;
     status: UserStatus;
+    loggedIn: boolean;
 }
 
 export interface IEmailResp {

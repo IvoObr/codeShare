@@ -39,6 +39,7 @@ export interface IBaseUser {
     email: string;
     role: UserRole;
     status: UserStatus;
+    loggedIn: boolean;
 }
 
 export interface IPublicUser extends IBaseUser {
