@@ -1,25 +1,30 @@
 import bcrypt from 'bcrypt';
 import { UserDal } from '@db';
 import { ServerError } from '@services';
-import { UserRole, Errors, IUser, INewUserReq, IUserModel, IPublicUser } from '@utils';
+import { UserRole, UserStatus, Errors, IUser, INewUserReq, IUserModel, IPublicUser } from '@utils';
 
 export default class UserModel implements IUserModel {
 
-    public tokens: string[];
+    public name: string;
     public email: string;
     public role: UserRole;
+    public tokens: string[];
     public password: string;
-    public name: string;
+    public loggedIn: boolean;
+    public status: UserStatus;
 
     constructor({ name, email, password, role }: INewUserReq) {
-        this.email = email || '';
-        this.role = role || UserRole.Member;
-        this.password = password || '';
-        this.name = name || '';
         this.tokens = [];
+        this.loggedIn = false;
+        this.name = name || '';
+        this.email = email || '';
+        this.password = password || '';
+        this.status = UserStatus.NotActive;
+        this.role = role || UserRole.Member;
     }
 
     public async validate(): Promise<UserModel> {
+        UserModel.validateRole(this.role);
         UserModel.validateName(this.name);
         UserModel.validateEmail(this.email);
         UserModel.validatePassword(this.password);
@@ -31,6 +36,12 @@ export default class UserModel implements IUserModel {
     public static async hashPassword(password: string): Promise<string> {
         const salt: string = await bcrypt.genSalt(12); // rounds
         return await bcrypt.hash(password, salt);
+    }
+
+    public static validateRole(role: UserRole): void {
+        if (!(role in UserRole)) {
+            throw new ServerError(Errors.INVALID_ROLE, `Role ${role} is invalid!`);
+        }
     }
 
     public static validateName(name: string): void {
@@ -64,9 +75,9 @@ export default class UserModel implements IUserModel {
     
     public static isPasswordStrong(password: string): boolean {
         const minLength: boolean = password.length > 8;
+        const oneNumber: boolean = new RegExp(/[0-9]/).test(password);
         const oneUppercase: boolean = new RegExp(/[A-Z]/).test(password);
         const oneLowercase: boolean = new RegExp(/[a-z]/).test(password);
-        const oneNumber: boolean = new RegExp(/[0-9]/).test(password);
         const oneSymbol: boolean = new RegExp(/[-#!$@%^&*()_+|~=`{}\[\]:";'<>?,.\/]/).test(password);
 
         return minLength && oneUppercase && oneLowercase && oneNumber && oneSymbol;
@@ -80,9 +91,11 @@ export default class UserModel implements IUserModel {
     public static getPublicUser(user: IUser): IPublicUser {
         return {
             _id: user._id,
-            email: user.email,
             name: user.name,
-            role: user.role
+            role: user.role,
+            email: user.email,
+            status: user.status,
+            loggedIn: user.loggedIn
         };
     }
 }

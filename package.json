@@ -1,5 +1,7 @@
 {
   "name": "codeshare",
+  "author": "IvoObr",
+  "license": "ISC",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -28,8 +30,6 @@
     "type": "git",
     "url": "git+https://github.com/IvoObr/codeShare.git"
   },
-  "author": "IvoObr",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/IvoObr/codeShare/issues"
   },

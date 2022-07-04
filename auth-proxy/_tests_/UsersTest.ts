@@ -1,13 +1,14 @@
 import fs from 'fs';
 import path from 'path';
+import { Methods } from './enums';
 import logger from '../src/lib/logger';
 import { RequestOptions } from 'https';
+import { IncomingMessage } from 'http';
 import { httpsRequest } from './testUtils';
 import genBase36Key from '../src/lib/genBase36Key';
-import { ClientRequest, IncomingMessage } from 'http';
 import { IUser, IStrings } from '../src/lib/interfaces';
-import { UserRole, StatusCodes, Headers } from '../src/lib/enums';
-import { IHeaders, INewUserReq, ICerts, Methods, IPublicUser } from './interfaces';
+import { ICerts, IPublicUser, IEmailResp } from './interfaces';
+import { UserRole, StatusCodes, Headers, UserStatus } from '../src/lib/enums';
 
 export default class UsersTest {
 
@@ -27,6 +28,7 @@ export default class UsersTest {
             };
         } catch (error: unknown) {
             logger.error(error);
+            process.exit(0); /* clean exit */
         }
     }
 
@@ -44,25 +46,65 @@ export default class UsersTest {
         };
     }
 
-    public static async register(): Promise<void> {
-        // for (let index = 0; index < 50; index++) { /*** register multiple users ***/
-        const name: string = 'ivoObr';
-        const role: UserRole = UserRole.Admin;
-        const password: string = 'Password123@';
+    public static async register(
+        name: string = 'ivoObr',
+        role: UserRole = UserRole.Admin,
+        password: string = 'Password123@',
+        email: string = `${genBase36Key(8)}@yopmail.com`,
+        statusCode?: StatusCodes
+    ): Promise<void> {
+
+        // for (let index: number = 0; index < 50; index++) { /*** register multiple users ***/
         const path: string = '/api/v1/auth/pub/register';
-        const email: string = `${genBase36Key(8)}@yopmail.com`;
         const payload: string = JSON.stringify({ name, email, role, password });
         const options: RequestOptions = UsersTest.getOptions(Methods.POST, path, payload);
 
         await httpsRequest(options, payload, function(message: IncomingMessage, data: string) {
-            const user: IUser = JSON.parse(data);
+            const response: IEmailResp = JSON.parse(data);
+            const user: IPublicUser = response.data;
+
+            const token: string = message.headers.authorization || '';
+
+            /* authorize next requests */
+            UsersTest.config.headers.headers.Authorization = `Bearer ${token}`;
+
             UsersTest.config.email = user.email;
             UsersTest.config.userId = user._id;
 
             expect(user.role).toBe(role);
             expect(user.email).toBe(email);
-        });
+            expect(user.name).toBe(name);
+            expect(user.status).toBe(UserStatus.NotActive);
+            expect(typeof user.loggedIn).toBe('boolean');
+            expect(response.notification.receiver).toBe(email);
+
+        }, statusCode);
         // }
+    }
+
+    public static async sendConfirmRegistration(email: string, statusCode?: StatusCodes): Promise<void> {
+        const path: string = '/api/v1/auth/pub/send-confirm-registration';
+        const payload: string = JSON.stringify({ email });
+        const options: RequestOptions = UsersTest.getOptions(Methods.POST, path, payload);
+
+        await httpsRequest(options, payload, function(message: IncomingMessage, data: string) {
+            const response: IEmailResp = JSON.parse(data);
+            
+            expect(response.notification.receiver).toBe(email);
+            expect(response.notification.result).toBe('Email successfully send.');
+
+        }, statusCode);
+    }
+
+    public static async confirmRegistration(statusCode?: StatusCodes): Promise<void> {      
+        const token: string = UsersTest.config.headers.headers.Authorization;
+        const path: string = encodeURI(`/api/v1/auth/confirm-registration?token=${token}`);
+        const payload: string = '';
+        const options: RequestOptions = UsersTest.getOptions(Methods.GET, path, payload);
+
+        await httpsRequest(options, payload, function(message: IncomingMessage, data: string) {
+            expect(data).toBe("<h4 style='font-family: cursive'> Your account has been successfully activated!</h4>");
+        }, statusCode);
     }
 
     public static async login(email: string, password: string, statusCode?: StatusCodes): Promise<void> {
@@ -76,29 +118,23 @@ export default class UsersTest {
             
             /* authorize next requests */
             UsersTest.config.headers.headers.Authorization = `Bearer ${token}`;
-            logger.info("TOKEN:".cyan, token);
 
             expect(user.email).toBe(UsersTest.config.email);
             expect(typeof user.name).toBe('string');
             expect(typeof user.role).toBe('string');
-        });
+        }, statusCode);
     }
 
-    public static logout(statusCode?: StatusCodes): void {
-        const path: string = 'GET /api/v1/auth/logout'.yellow;
-        try {
-            // const url: string = `http://localhost:${UsersTest.config.port}/api/v1/auth/logout`;
-            // const response: AxiosResponse<IUser> = await axios.get(url, UsersTest.config.headers);
-            // logger.success(path, response.status);
+    public static async logout(statusCode?: StatusCodes): Promise<void> {
+        const path: string = '/api/v1/auth/logout';
+        const options: RequestOptions = UsersTest.getOptions(Methods.GET, path, '');
 
-            // expect(response.status).toBe(StatusCodes.OK);
-
-        } catch (error) {
-            // handleError(path, error, statusCode);
-        }
+        await httpsRequest(options, '', function(message: IncomingMessage) {
+            expect(message.statusCode).toBe(StatusCodes.OK);
+        }, statusCode);
     }
 
-    public static async getAllUsers(statusCode?: StatusCodes): Promise<void> {
+    public static async getAllUsers(deleteAll: boolean, statusCode?: StatusCodes): Promise<void> {
         const path: string = '/api/v1/user/all';
         const options: RequestOptions = UsersTest.getOptions(Methods.GET, path, '');
         let users: IPublicUser[] = [];
@@ -106,83 +142,86 @@ export default class UsersTest {
         await httpsRequest(options, '', function(message: IncomingMessage, data: string) {
             expect(message.statusCode).toBe(StatusCodes.OK);
             users = JSON.parse(data);
+
+            if (deleteAll) {
+                UsersTest.deleteAllUsers(users);
+                return;
+            }
             
             if (users.length > 0) { 
                 expect(typeof users[0]._id).toBe('string');
                 expect(typeof users[0].email).toBe('string');
                 expect(typeof users[0].name).toBe('string');
                 expect(typeof users[0].role).toBe('string');
+                expect(typeof users[0].status).toBe('string');
             }
 
             expect(typeof users.length).toBe('number');
-        });
-
-        /* await UsersTest.deleteAllUsers(users);  */
+        }, statusCode);
     }
 
-    public static updateUser(statusCode?: StatusCodes): void {
-        const path: string = 'PUT /api/v1/user/update/:id'.yellow;
-        try {
-            // const userData: IStrings = {
-            //     email: `${genBase36Key(8)}@yopmail.com`,
-            //     name: 'IvoG',
-            //     password: 'Password123@'
-            // };
-            // const url: string = `http://localhost:${UsersTest.config.port}/api/v1/user/update/${UsersTest.config.userId}`;
-            // const response: AxiosResponse<IUser> = await axios.put(url, userData, UsersTest.config.headers);
-            // logger.success(path, response.status);
+    public static async updateUser(
+        name: string = 'IvoG',
+        password: string = 'Password123@',
+        email: string = `${genBase36Key(8)}@yopmail.com`,
+        statusCode?: StatusCodes
+    ): Promise<void> {
+        
+        const path: string = '/api/v1/user/update/';
+        const userData: IStrings = { email, name, password };
+        const payload: string = JSON.stringify(userData);
+        const options: RequestOptions = UsersTest.getOptions(Methods.PUT, path + UsersTest.config.userId, payload);
 
-            // UsersTest.config.email = userData.email;
+        await httpsRequest(options, payload, function(message: IncomingMessage, data: string) {
+            const user: IPublicUser = JSON.parse(data);
+            UsersTest.config.email = userData.email;
 
-            // expect(response.status).toBe(StatusCodes.OK);
-            // expect(typeof response.data.role).toBe('string');
+            expect(message.statusCode).toBe(StatusCodes.OK);
+            expect(typeof user.role).toBe('string');
+            expect(typeof user._id).toBe('string');
+            expect(user.status).toBe('Active');
+            expect(typeof user.loggedIn).toBe('boolean');
 
-            // userData?.email && expect(response.data.email).toBe(userData.email);
-            // userData?.name && expect(response.data.name).toBe(userData.name);
+            userData?.email && expect(user.email).toBe(userData.email);
+            userData?.name && expect(user.name).toBe(userData.name);
 
-            // UsersTest.config.email = userData.email;
-            // UsersTest.config.password = userData.password;
-
-        } catch (error) {
-            // handleError(path, error, statusCode);
-        }
+            UsersTest.config.email = userData.email;
+            UsersTest.config.password = userData.password;
+        }, statusCode); 
     }
 
-    public static deleteUser(statusCode?: StatusCodes): void {
-        const path: string = 'DELETE /api/v1/user/delete/:id'.yellow;
-        try {
-            // const url: string = `http://localhost:${UsersTest.config.port}/api/v1/user/delete/${UsersTest.config.userId}`;
-            // const response: AxiosResponse<IUser> = await axios.delete(url, UsersTest.config.headers);
-            // logger.success(path, response.status);
+    public static async deleteUser(statusCode?: StatusCodes): Promise<void> {
+        const path: string = '/api/v1/user/delete/';
+        const options: RequestOptions = UsersTest.getOptions(Methods.DELETE, path + UsersTest.config.userId, '');
 
-            // expect(response.status).toBe(StatusCodes.OK);
-
-        } catch (error) {
-            // handleError(path, error, statusCode);
-        }
+        await httpsRequest(options, '', function(message: IncomingMessage) {
+            expect(message.statusCode).toBe(StatusCodes.OK);
+        }, statusCode);
     }
 
-    public static async sendResetPass(): Promise<void> {
+    public static async sendResetPass(email: string = UsersTest.config.email, statusCode?: StatusCodes): Promise<void> {
         const path: string = '/api/v1/auth/pub/send-reset-password';
-        const payload: string = JSON.stringify({ email: UsersTest.config.email });
+        const payload: string = JSON.stringify({ email });
         const options: RequestOptions = UsersTest.getOptions(Methods.POST, path, payload);
 
         await httpsRequest(options, payload, function(message: IncomingMessage, data: string) {
+            const response: IEmailResp = JSON.parse(data);
+
             expect(message.statusCode).toBe(StatusCodes.CREATED);
-            expect(JSON.parse(data).receiver).toBe(UsersTest.config.email);
-        });
+            expect(response.notification.receiver).toBe(email);
+            expect(response.notification.result).toBe('Email successfully send.');
+        }, statusCode);
     }
     
-    public static async resetPass(statusCode?: StatusCodes): Promise<void> {
+    public static async resetPass(newPass: string = '4Password#', statusCode?: StatusCodes): Promise<void> {
         const path: string = '/api/v1/auth/reset-password';
-        const newPass: string = '4Password#';
         const payload: string = JSON.stringify({ password: newPass });
         const options: RequestOptions = UsersTest.getOptions(Methods.POST, path, payload);
 
-        await httpsRequest(options, payload, function(message: IncomingMessage, data: string) {
+        await httpsRequest(options, payload, function(message: IncomingMessage) {
             expect(message.statusCode).toBe(StatusCodes.OK);
             UsersTest.config.password = newPass;
-        });
+        }, statusCode);
     }
 
     /**************************************************************************************/
@@ -190,13 +229,11 @@ export default class UsersTest {
         const path: string = '/api/v1/user/delete/';
         const options: RequestOptions = UsersTest.getOptions(Methods.DELETE, path, '');
         
-        for (let index = 0; index < users.length; index++) {
+        for (let index: number = 0; index < users.length; index++) {
             const user: IPublicUser = users[index];
             options.path = path + user._id;
 
-            await httpsRequest(options, '', function(message: IncomingMessage, data: string) {
-                expect(message.statusCode).toBe(StatusCodes.OK);
-            });
+            await httpsRequest(options, '', function() { null;});
         }
     }
     /**************************************************************************************/

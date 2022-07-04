@@ -3,6 +3,16 @@ export enum UserRole {
   Admin = 'Admin'
 }
 
+export enum UserStatus {
+  Active = 'Active',
+  NotActive = 'NotActive'
+}
+
+export enum ResType {
+  html = 'html',
+  json = 'json'
+}
+
 export enum Collections {
   SNIPPETS = 'snippets',
   USERS = 'users',
@@ -28,9 +38,11 @@ export enum Errors {
   NOT_FOUND = 'NOT_FOUND',
   BAD_REQUEST = 'BAD_REQUEST',
   UNAUTHORIZED = 'UNAUTHORIZED',
+  SSL_HANDSHAKE_FAILED = 'SSL_HANDSHAKE_FAILED',
  // User Errors
   USER_EXISTS = 'USER_EXISTS',
   INVALID_NAME = 'INVALID_NAME',
+  INVALID_ROLE = 'INVALID_ROLE',
   LOGIN_FAILED = 'LOGIN_FAILED',
   LOGOUT_FAILED = 'LOGOUT_FAILED',
   INVALID_EMAIL = 'INVALID_EMAIL',
@@ -61,4 +73,5 @@ export enum StatusCodes {
   NOT_IMPLEMENTED = 501,
   BAD_GATEWAY = 502,
   GATEWAY_TIMEOUT = 504,
+  SSL_HANDSHAKE_FAILED = 525,
 }

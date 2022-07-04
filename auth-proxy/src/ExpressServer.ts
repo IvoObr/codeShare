@@ -6,14 +6,14 @@ import express from 'express';
 import logger from './lib/logger';
 import { Headers } from './lib/enums';
 import { ICerts } from './lib/interfaces';
-import https, { Server, ServerOptions } from 'https';
-import { Express } from "express-serve-static-core";
 import { logExpress } from '@7util/log-express';
+import { Express } from "express-serve-static-core";
+import https, { Server, ServerOptions } from 'https';
 /**
  *  
  */
 export default class ExpressServer {
-    
+
     private setKeys(): ICerts | undefined {
         try {
             return {
@@ -21,11 +21,11 @@ export default class ExpressServer {
                 cert: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.crt')),
                 ca: fs.readFileSync(path.resolve(__dirname, '../../ssl/rootCA.crt'))
             };
-        } catch (error) {
-            logger.error(error);
+        } catch (error: any) {
+            this.onError(error);
         }
     }
-    
+
     public start(): Express {
         const app: Express = this.setApp();
         const keys = this.setKeys() as ServerOptions;

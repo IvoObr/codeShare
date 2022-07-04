@@ -1,30 +1,59 @@
 import fs from 'fs';
 import path from 'path';
-import { logger, Events, Event, ICerts } from '@utils';
+import { Response } from 'express';
+import { ServerError } from '@services';
 import tls, { TLSSocket, ConnectionOptions } from 'tls';
+import { logger, Events, Event, ICerts, StatusCodes, IMailInfo, Errors } from '@utils';
 
 export default class SocketClient {
 
     private socket!: TLSSocket;
+    private keys: ICerts | undefined;
 
-    public notificationSocket(): this {
+    constructor() {
+        this.keys = this.setKeys();
+    }
+
+    public static sendEmail(message: string, response: Response, data: any): void { 
+        new SocketClient()
+            .notificationSocket()
+            .send(message)
+            .onSuccess((info: IMailInfo): void => {
+                response
+                    .status(StatusCodes.CREATED)
+                    .json({
+                        data: { ...data },
+                        notification: {
+                            result: `Email successfully send.`,
+                            receiver: info?.accepted?.[0] || info }
+                    });
+            })
+            .onError((error: any): void => {
+                if (!(error instanceof ServerError)) {
+                    error = new ServerError(Errors.COULD_NOT_SEND_EMAIL, error.message);
+                }
+                ServerError.handle(error, response);
+            });
+    }
+
+    private notificationSocket(): this {
         const port: number = Number(process.env.NOTIFICATION_PORT);
         const host: string = process.env.HOST || 'localhost';
-        this.socket = new SocketClient().connect(port, host);
+        this.socket = this.connect(port, host);
         return this;
     }
 
-    public send(message: string): this {
+    private send(message: string): this {
         this.socket.write(message);
         return this;
     }
 
-    public onSuccess(callback: (info: any) => void): this {
+    private onSuccess(callback: (info: any) => void): this {
         Event.once(Events.messageSuccess, callback);
         return this;
     }
 
-    public onError(callback: (error: string) => void): this {
+    private onError(callback: (error: string) => void): this {
         Event.once(Events.messageError, callback);
         return this;
     }
@@ -36,13 +65,13 @@ export default class SocketClient {
                 cert: fs.readFileSync(path.resolve(__dirname, '../../ssl/codeShare.crt')),
                 ca: fs.readFileSync(path.resolve(__dirname, '../../ssl/rootCA.crt'))
             };
-        } catch (error) {
-            logger.error(error);
+        } catch (error: any) {
+            throw new ServerError(Errors.SSL_HANDSHAKE_FAILED, error.message);
         }
     }
 
     private connect = (port: number, host: string): TLSSocket => {
-        const keys = this.setKeys() as ConnectionOptions;
+        const keys = this.keys as ConnectionOptions;
 
         return tls.connect(port, host, keys)
             .on('data', this.onData)

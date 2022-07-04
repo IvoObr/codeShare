@@ -41,6 +41,19 @@ class UserDal {
 
         return result[0] || null;
     }
+
+    public async getUserLogin(userId: string): Promise<boolean> {
+        this.validateId(userId);
+
+        const _id: mongodb.ObjectID = new ObjectId(userId);
+
+        const result: IUser[] = await Mongo.db
+            .collection(Collections.USERS)
+            .find({ _id })
+            .toArray();
+
+        return result[0].loggedIn || false;
+    }
     
     public async getAllUsers(): Promise<IUser[]> {
         const result: IUser[] = await Mongo.db
@@ -67,8 +80,8 @@ class UserDal {
         const result: mongodb.ReplaceWriteOpResult = await Mongo.db
             .collection(Collections.USERS)
             .replaceOne({ _id }, user);
-                
-        return result?.result?.nModified === 1;
+        
+        return result.modifiedCount === 1 || result.matchedCount === 1;
     }
 
     public async setToken(token: string, userId: string): Promise<boolean> {
@@ -81,6 +94,19 @@ class UserDal {
             .collection(Collections.USERS)
             .updateOne({ _id }, updateToken);
                 
+        return result?.result?.nModified === 1;
+    }
+
+    public async setLoggedIn(loggedIn: boolean, userId: string): Promise<boolean> {
+        this.validateId(userId);
+
+        const _id: mongodb.ObjectID = new ObjectId(userId);
+        const updateToken: UpdateQuery<{ $push: IStrings }> = { $set: { 'loggedIn': loggedIn } };
+
+        const result: mongodb.UpdateWriteOpResult = await Mongo.db
+            .collection(Collections.USERS)
+            .updateOne({ _id }, updateToken);
+
         return result?.result?.nModified === 1;
     }
 

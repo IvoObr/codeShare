@@ -4,7 +4,8 @@ export enum Env {
 }
 
 export enum Headers {
-    Authorization = 'authorization'
+    Authorization = 'authorization',
+    ContentType = 'content-type',
 }
 
 export enum Collections {
@@ -17,11 +18,17 @@ export enum UserRole {
     Admin = 'Admin'
 }
 
+export enum UserStatus {
+    Active = 'Active',
+    NotActive = 'NotActive'
+}
+
 export enum Errors {
     FORBIDDEN = 'FORBIDDEN',
     NOT_FOUND = 'NOT_FOUND',
     BAD_REQUEST = 'BAD_REQUEST',
     UNAUTHORIZED = 'UNAUTHORIZED',
+    SSL_HANDSHAKE_FAILED = 'SSL_HANDSHAKE_FAILED',
 }
 
 export enum StatusCodes {
@@ -36,4 +43,5 @@ export enum StatusCodes {
     // NOT_IMPLEMENTED = 501,
     // BAD_GATEWAY = 502,
     // GATEWAY_TIMEOUT = 504,
+    SSL_HANDSHAKE_FAILED = 525,
 }
