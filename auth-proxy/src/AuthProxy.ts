@@ -6,10 +6,10 @@ import { ICerts } from './lib/interfaces';
 import { Headers, Env } from './lib/enums';
 import ExpressServer from './ExpressServer';
 import { Request, Response } from 'express';
+import https, { RequestOptions } from 'https';
 import { Express } from "express-serve-static-core";
 import dotenv, { DotenvConfigOutput } from 'dotenv';
 import { ClientRequest, IncomingMessage } from 'http';
-import https, { RequestOptions, ServerOptions } from 'https';
 import AuthorizationService from './services/AuthorizationService';
 /**
  *  
@@ -44,7 +44,6 @@ export default class AuthProxy {
 
     private httpsProxy(app: Express): void {
         app.all('/api/v1/*',
-            AuthorizationService.validateSSL,
             AuthorizationService.validateJwt,
             (request: Request, response: Response): void => this.send(request, response));
     }

@@ -182,7 +182,6 @@ export default class UsersTest {
             expect(user.status).toBe('Active');
             expect(typeof user.loggedIn).toBe('boolean');
 
-
             userData?.email && expect(user.email).toBe(userData.email);
             userData?.name && expect(user.name).toBe(userData.name);
 

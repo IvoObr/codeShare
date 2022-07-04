@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { genBase36Key } from '@lib';
-import { ServerError } from '@services';
-import { Errors, IClientData } from '@utils';
+import { IClientData } from '@utils';
 
 class JwtService {
 
