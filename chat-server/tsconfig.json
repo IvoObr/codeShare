@@ -11,6 +11,6 @@
   "skipLibCheck": true,
   "forceConsistentCasingInFileNames": true,
   },
-  "include": ["**/src/**/*.ts","**/_tests_/**/*.ts", "rmlogs.js", "chat-server/public/*.js"],
-  "exclude": ["**/src/public/", "**/dist/"]
+  "include": ["src/**/*.ts","_tests_/**/*.ts"],
+  "exclude": ["src/public/", "dist/"]
 }

@@ -1,5 +1,6 @@
 {
     "name": "rest-server",
+    "author": "IvoObr",
     "version": "1.0.0",
     "scripts": {
         "clean": "rm -rf ./dist/ && mkdir dist",

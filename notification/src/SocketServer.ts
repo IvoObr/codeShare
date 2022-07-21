@@ -18,6 +18,8 @@ export default class TLSServer {
             .on('error', this.onError);
     }
 
+    // TODO: reconnect!!!
+
     private setKeys(): ICerts | undefined {
         try {
             return {
